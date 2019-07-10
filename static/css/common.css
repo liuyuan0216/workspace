@@ -1,0 +1,360 @@
+html{font-size:calc(100vw/7.5);}
+html,body {
+  font-family: PingFangSC-Regular, sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+body * {
+  -webkit-text-size-adjust: 100%;
+  -webkit-user-select: none;
+}
+*:not(input,textarea) {
+ -webkit-touch-callout: none;
+ -webkit-user-select: none;
+}
+/*避免mescroll设置padding的时候出现两个滚动条*/
+*{
+  margin: 0;
+  padding: 0;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+}
+li{ list-style: none;}
+a, input, button{
+  text-decoration: none;
+}
+input, button {
+  border-radius: 0;
+  user-select: text;
+	-webkit-user-select: text;
+  outline: none;
+
+  border: none;
+  background: none;
+  color: #999;
+}
+h1,h2,h3,h4{
+  font-weight: 600;
+}
+textarea{
+  resize: none;
+  outline: none;
+  border: none;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/*修改提示文字的颜色*/
+input::-webkit-input-placeholder { /* WebKit browsers */
+  color: #ccc;
+  font-size: 0.28rem;
+}
+
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #ccc;
+  font-size: 0.28rem;
+}
+
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #ccc;
+  font-size: 0.28rem;
+}
+
+input:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color: #ccc;
+  font-size: 0.28rem;
+}
+
+
+
+textarea::-webkit-input-placeholder { /* WebKit browsers */
+  color: #ccc;
+}
+
+textarea:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #ccc;
+}
+
+textarea::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #ccc;
+}
+
+textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color: #ccc;
+}
+
+/*input list*/
+.marginTop{
+  margin-top: 62px;
+}
+.commonList{
+  background: #fff;
+  padding: 0 0.32rem;
+  border-top: 0.01rem solid #f2f2f2;
+  border-bottom: 0.01rem solid #f2f2f2;
+}
+.commonList li{
+  /*height: 0.6rem;*/
+  padding: 0.24rem 0;
+  line-height: 0.6rem;
+  border-bottom: 0.01rem solid #f2f2f2;
+  display: flex;
+  align-items: center;
+}
+.commonList li:last-child{
+  border:none;
+}
+.leftCon{
+  width:1.6rem;
+  font-size: 0.3rem;
+  color: #333;
+}
+.rightCon{
+  width: 5.5rem;
+  height: 0.46rem;
+  line-height: 0.46rem;
+  color: #999;
+  font-size: 0.28rem;
+}
+.rightInput{
+  -webkit-appearance: none;
+  width: 5rem;
+  height: 0.46rem;
+  line-height: 0.46rem;
+  color: #999;
+  font-size: 0.28rem;
+}
+.rightText{
+  width: 5rem;
+  line-height: 0.46rem;
+  color: #999;
+  font-size: 0.28rem;
+}
+.commonBtn{
+  width: 6rem;
+  height: 0.8rem;
+  line-height: 0.8rem;
+  text-align: center;
+  margin: 0.72rem auto 0;
+  background: #ff9900;
+  border-radius: 0.12rem;
+  display: block;
+  color: #fff;
+  font-size: 0.3rem;
+}
+.icon_arrow{
+  background: url(../../src/assets/icon_view.png) no-repeat;
+  background-size: contain;
+  width: 0.26rem;
+  height: 0.28rem;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 0.1rem;
+}
+/*
+  * express
+*/
+.express .vux-timeline-item-color{
+  background-color: #ccc;
+}
+.express .vux-timeline-item-head-first{
+  background-color: #ff9900;
+}
+.express .weui-icon-success-no-circle{
+  color: #ff9900;
+}
+.express .vux-timeline-item-content{
+  padding: 0 0 0.6rem 0.68rem;
+}
+.express .vux-timeline-item-tail{
+  background-color: #ccc;
+}
+
+/*clear*/
+.clear{zoom:1;}
+.clear:after{content:"";display:block;clear:both;}
+
+/*overflow*/
+.overflowCon{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+    * XHeader
+  */
+#app .header{
+  width: 100%;
+  position: absolute;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+}
+#app .vux-header{
+  background-color: #ff9900;
+}
+#app .vux-header .vux-header-left .left-arrow:before{
+  border: 1px solid #fff;
+  border-width: 1px 0 0 1px;
+}
+.header_title{
+  font-size: 0.34rem;
+  color: #fff;
+  font-weight: bold;
+}
+/*
+  * tabbar
+*/
+.activeCon{
+  color: #ff9900 !important;
+}
+#app .weui-tabbar{
+  background: #f5f5f5;
+  padding: 0.08rem 0 0.36rem;
+  z-index: 9999;
+}
+#app .weui-tabbar:before{
+  border-top:none;
+}
+#app .weui-tabbar__label{
+  font-size: 0.25rem;
+  line-height: 0.4rem;
+}
+#app .weui-tabbar__icon{
+  width: 22px;
+  height: 22px;
+}
+#app .weui-tabbar__icon img{
+  width: 90%;
+  height: 90%;
+}
+#app .weui-tabbar__label{
+  color: #333;
+}
+.billing .weui-tab__panel{
+  padding-bottom: 1.5rem;
+}
+.goodsList .weui-tab__panel{
+  padding-bottom: 0rem;
+}
+.my_title_list .weui-tab__panel{
+  padding-bottom: 0;
+}
+.my_list .weui-tab__panel{
+  padding-bottom: 0;
+}
+/*
+  * alert
+*/
+#app .weui-dialog__hd{
+  padding: 0.3rem 0.45rem 0;
+}
+#app .weui-dialog__title{
+  font-size:0.36rem;
+  line-height: 0.8rem;
+  display: block;
+}
+#app .weui-dialog__bd{
+  line-height: 0.46rem;
+  padding: 0.1rem 0.45rem 0.32rem;
+  min-height: auto;
+  font-size: 0.32rem;
+}
+#app .weui-dialog__ft a{
+  color: #ff9900;
+  font-size:0.36rem;
+}
+#app .weui-dialog__ft .weui-dialog__btn_default{
+  color: #999;
+}
+
+#app .vux-actionsheet-menu-default{
+  font-size: 0.34rem;
+}
+#app .weui-actionsheet__cell{
+  font-size: 0.34rem;
+}
+.mint-loadmore-bottom{
+  text-align: center;
+  line-height: 1rem;
+  max-height: 1.2rem;
+}
+.mint-loadmore-bottom span{
+  display: block;
+  font-size: 0.28rem;
+  color: #999;
+}
+.loadMoreWrap{
+  position: absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  overflow:auto;
+  padding-bottom: 50px;
+  box-sizing:border-box;
+  -webkit-overflow-scrolling: touch;
+}
+/*header*/
+.mui-ios header{
+  padding-top: 8px !important;
+}
+.mui-android header{
+  padding-top: 10px !important;
+}
+
+/*icon*/
+#app .weui-toast{
+  top:28%;
+  min-height: 40px;
+  width: 1.85rem !important;
+  margin-left: -0.8rem;
+  background: rgba(0, 0, 0, 0.6);
+}
+#app .again .weui-toast{
+  top: 22%;
+}
+#app .weui-icon_toast.weui-loading{
+  margin: 25px 0 0;
+  width: 32px;
+  height: 32px;
+}
+#app .weui-toast__content{
+  font-size: 0.3rem;
+}
+#app .weui-icon-success-no-circle{
+  color: #fcfcfc;
+  font-size: 26px;
+}
+#app .weui-mask_transparent{
+  z-index: 200;
+}
+#app .all_list .vux-divider{
+  color: #999;
+  font-size: 0.28rem;
+  padding: 0 0.32rem 0.14rem;
+  line-height: 0.8rem;
+}
+#app .vux-divider{
+  color: #999;
+  font-size: 0.28rem;
+  padding: 0.12rem 0.32rem;
+}
+.mint-loadmore-top{
+  margin-top: 62px;
+  text-align: center;
+}
+.mint-loadmore-top span{
+  font-size: 0.28rem;
+  color: #999;
+}
