@@ -205,6 +205,7 @@ export default {
   methods:{
     //发票列表
     listData(){
+      alert('这是v1.0')
       if(!this.token){
         this.empty = true;
         return
