@@ -31,14 +31,14 @@
         <p class="leftCon">邮箱</p>
         <input class="rightInput" placeholder="请输入邮箱" v-model="list.email" ref="email" />
       </li>
-      <li>
+      <!--<li>
         <p class="leftCon">收货地址</p>
         <input class="rightInput" placeholder="请输入收货地址" v-model="list.receipt_address" ref="receipt_address">
       </li>
       <li>
         <p class="leftCon">收货人</p>
         <input class="rightInput" placeholder="请输入收货人" v-model="list.receiver" ref="receiver" />
-      </li>
+      </li>-->
       <li>
         <p class="leftCon">联系电话</p>
         <input class="rightInput" placeholder="请输入联系电话" v-model="list.phone" ref="phone" />
@@ -71,6 +71,7 @@
       {{text}}
     </confirm>
     <loading v-model="showLoading" text=""></loading>
+    <toast v-model="showToast" type="text">提交成功</toast>
   </view-box>
 </template>
 
@@ -80,6 +81,7 @@ import XHeader from 'vux/src/components/x-header'
 import Alert from 'vux/src/components/alert'
 import Confirm from 'vux/src/components/Confirm'
 import Loading from 'vux/src/components/Loading'
+import Toast from 'vux/src/components/toast'
 
 export default {
   name: 'TitleEdit',
@@ -103,9 +105,11 @@ export default {
       popupsStatus: false,
       show: false,
       showLoading: false,
+      showToast: false,
       text: '',
       showUpdate: false,
-      showInvalid: false
+      showInvalid: false,
+      timer: null
     }
   },
   components:{
@@ -113,7 +117,8 @@ export default {
     XHeader,
     Alert,
     Confirm,
-    Loading
+    Loading,
+    Toast
   },
   methods:{
     //弹窗显示
@@ -161,11 +166,11 @@ export default {
         this.$ajaxjp(url, data, true, (response) => {
           if(response.errcode == 0){
             this.showLoading = false;
-            this.popupsStatus = true;
-            this.showPopups();
-            this.title = '提示';
-            this.text = '保存成功！';
-            return;
+            this.showToast = true;
+            this.timer = setTimeout(() => {
+              this.$router.go(-1);
+            }, 500)
+            return false
           }
           if(response.errcode==1003){   //登录用户失效
             this.showLoading = false;
@@ -264,6 +269,9 @@ export default {
   mounted () {
     this.locationData();  //local
     this.getData();
+  },
+  beforeDestroy () {
+    clearInterval(this.timer)
   }
 }
 </script>

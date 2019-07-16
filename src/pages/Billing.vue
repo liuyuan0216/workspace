@@ -76,7 +76,6 @@
         <p class="leftCon">邮箱地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
       </li>
-
       <li v-show="type_c">
         <p class="leftCon">邮寄地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
@@ -90,75 +89,35 @@
         <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
       </li>
     </ul>
-    <div ref="listBox">
-      <ul class="commonList listBilling ulList" v-for="(item,index) in spxx" :key="index">
-        <li class="itemBillingName">
-          <p class="leftCon">商品名称</p>
-          <input type="hidden" class="spid" ref="spid" v-model="item.spid" />
-          <input type="text" class="rightInput spmc" placeholder="请输入名称" v-model="item.spmc"/>
-          <span class="chooseGoods" @click="jumpGoodsList">+ 选择商品</span>
-        </li>
-        <li>
-          <p class="leftCon">规格型号</p>
-          <input type="text" class="rightInput ggxh" placeholder="请输入规格型号" v-model="item.ggxh"/>
-        </li>
-        <li>
-          <p class="leftCon">计算单位</p>
-          <input type="text" class="rightInput jldw" placeholder="请输入计算单位"/>
-        </li>
-        <li>
-          <p class="leftCon">税率</p>
-          <select class="rightSelect slv" v-model="item.slv">
-            <option>13%</option>
-            <option>9%</option>
-            <option>6%</option>
-            <option>5%</option>
-            <option>4%</option>
-            <option>3%</option>
-            <option>1.5%</option>
-            <option>0</option>
-          </select>
-        </li>
-        <li>
-          <p class="leftCon">单价</p>
-          <input
-            type="number"
-            class="rightInput spdj"
-            placeholder="请输入单价"
-            v-model="spdj"
-            @change="spdjNum($event)" />
-        </li>
-        <li>
-          <p class="leftCon">数量</p>
-          <input
-            type="number"
-            class="rightInput spsl"
-            placeholder="请输入数量"
-            v-model="spsl"
-            @change="spslNum($event)"/>
-        </li>
-        <li>
-          <p class="leftCon">金额</p>
-          <input
-            type="number"
-            class="rightInput je"
-            placeholder="请输入金额"
-            v-model="price"
-            @change="jeNum($event)" />
+    <div class="commonList listBilling">
+      <div class="addGoodsTitle">
+        <p>商品</p>
+        <p>数量</p>
+        <p>含税单价</p>
+        <p>含税金额</p>
+      </div>
+      <ul class="addGoodsList" ref="listBox">
+        <li class="itemGoods" v-if="spxx" v-for="(item,index) in spxx" @click="changeItem(item,index)">
+          <input class="spid" v-model="item.spid" hidden></input>
+          <div class="goodsItem spmcItem">
+            <p class="spmc overflowCon">{{item.spmc}}</p>
+            <span v-if="item.slv">税率：<b class="slv">{{item.slv}}</b></span>
+          </div>
+          <input class="ggxh" v-model="item.ggxh" hidden></input>
+          <input class="jldw" v-model="item.jldw" hidden></input>
+          <p class="goodsItem spsl">{{item.spsl||0}}</p>
+          <p class="goodsItem spdj">{{item.spdj||0}}</p>
+          <p class="goodsItem je">{{item.je}}</p>
         </li>
       </ul>
+      <p class="addCon" @click="jumpAddGoods">点击录入商品</p>
     </div>
-
-    <!--<div class="addGoods" @click="addGoodsList">
-      <img src="../assets/icon_plus_circle.png" />
-      <p class="addGoodsCon">增加一条商品明细</p>
-    </div>-->
     <div
       class="ftWrap"
       slot="bottom">
       <div class="jeBox">
         <p>合计金额：</p>
-        <span class="jeNum">{{price||0}}</span>
+        <span class="jeNum">{{price}}</span>
       </div>
       <button class="submitBtn" @click="submitFpSp" v-show="modeType==0">生成二维码</button>
       <button class="submitBtn" @click="submitFpInfo" v-show="modeType==1">提交开票</button>
@@ -226,7 +185,7 @@ export default {
         }
       ],
       //alert
-      title: '',
+      title: '温馨提示',
       popupsStatus: false,
       show: false,
       text: '',
@@ -236,6 +195,7 @@ export default {
       showToast: false,
       //submit
       isDone: false,
+      timer: null,
       //type
       fpzl: 't',
       title_type: '1',
@@ -249,20 +209,18 @@ export default {
       //选择的数据
       titleData: [],
       goodsData: [],
-      spxx: [
-        {
-          spid: '',
-          spmc: '',
-          ggxh: '',
-          slv: '13%'
-        }
-      ],
+      spxx: [],
       //data
       itemTitleData: this.$route.query.itemTitleData,
       itemGoodsData: this.$route.query.itemGoodsData,
+      changeStatus: this.$route.query.changeStatus,
+      deleteStatus: this.$route.query.deleteStatus,
+      index: this.$route.query.index,
+      return: this.$route.query.return,
+      scrollTop: 0,
       list: {},
-      listAtrr: [],
-      price: '',  //总金额
+      dataArr: [],
+      price: 0,  //总金额
       spdj: '',
       spsl: ''
     }
@@ -275,7 +233,6 @@ export default {
     Loading,
     Toast
   },
-  inject: ['reload'],
   watch:{
     radioStatus: function(newval, oldval){
       console.log(newval, oldval);
@@ -284,9 +241,6 @@ export default {
       this.answer=[];
       this.answer.push(this.checkedValue);
     }
-  },
-  computed:{
-
   },
   beforeRouteEnter(to, from, next){
     var fromparams_title = [];
@@ -301,26 +255,51 @@ export default {
       next(vm => {
         vm.titleData = fromparams_title;
       });
-    }else if(from.name=='GoodsList'){
+    }else if(from.name=='AddGoods'){
       if(typeof(to.query.itemGoodsData)=='object'){
         fromparams_goods = to.query.itemGoodsData;
       }else{
-        next();
+        next(vm => {
+          vm.price = 0;
+          vm.deleteStatus = vm.$route.query.deleteStatus;
+          if(vm.deleteStatus){
+            vm.spxx.splice(vm.index,1);
+          }
+          //计算总金额
+          for(var i in vm.spxx){
+            var val = Number(vm.spxx[i].je);
+            vm.price += val;
+          }
+        });
         return
       }
       next(vm => {
+        vm.changeStatus = vm.$route.query.changeStatus;
+        vm.index = vm.$route.query.index;
         vm.goodsData = fromparams_goods;
-        var slv = Number(vm.goodsData.slv)*100;
-        vm.spxx = [
-          {
-            spid: vm.goodsData.spid,
-            spmc: vm.goodsData.spmc,
-            ggxh: vm.goodsData.ggxh,
-            slv: slv+'%'
-          }]
-        vm.spdj = '';
-        vm.spsl = '';
-        vm.price = '';
+        var add = {
+            spid: vm.goodsData[0].spid,
+            spmc: vm.goodsData[0].spmc,
+            ggxh: vm.goodsData[0].ggxh,
+            jldw: vm.goodsData[0].jldw,
+            slv: vm.goodsData[0].slv,
+            spsl: vm.goodsData[0].spsl,
+            spdj: vm.goodsData[0].spdj,
+            je: vm.goodsData[0].je
+          }
+        var obj = {};
+        vm.price = 0;
+        //判断是不是修改过来的
+        if(vm.changeStatus){
+          vm.spxx.splice(vm.index,1,add);
+        }else{
+          vm.spxx.push(Object.assign(obj, add));
+        }
+        //计算总金额
+        for(var i in vm.spxx){
+          var val = Number(vm.spxx[i].je);
+          vm.price += val;
+        }
       });
     }else{
       next(vm => {
@@ -330,18 +309,43 @@ export default {
         vm.company = localStorage.getItem("company");
         vm.titleData = [];
         vm.goodsData = [];
-        vm.spxx = [
+        //清空商品列表
+        vm.spxx = [];
+        //重置抬头类型
+        vm.radios = [
           {
-            spid: '',
-            spmc: '',
-            ggxh: '',
-            slv: '13%'
+            label: '企业',
+            value:'企业',
+            isChecked: true,
+          },
+          {
+            label: '个人/其他',
+            value:'个人/其他',
+            isChecked: false,
           }
         ]
-        vm.spdj = '';
-        vm.spsl = '';
-        vm.price = '';
+        vm.type_enterprises = true;
+        vm.price = 0;
       });
+    }
+  },
+  beforeRouteLeave(to, from, next){
+    this.scrollTop = this.$refs.viewBox.getScrollTop();
+    this.$store.commit('changeRecruitScrollY', this.scrollTop);
+    next();
+  },
+  watch:{
+    $route(to, from){
+      if(to.name==='Billing'){
+        if(from.name=='AddGoods'){
+          this.return = this.$route.query.return;
+          if(this.return){
+            this.$nextTick(() => {
+              this.$refs.viewBox.scrollTo(this.$store.getters.recruitScrollY);
+            })
+          }
+        }
+      }
     }
   },
   methods:{
@@ -395,94 +399,6 @@ export default {
         this.type_enterprises = false;
       }
     },
-    //change单价和数量
-    spdjNum(e){
-      if(e.currentTarget.value){
-        this.spdj = Number(e.currentTarget.value).toFixed(2);
-        //如果有单价和数量 计算总额
-        if(this.spsl){
-          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2);
-          return false
-        }
-        //如果有总额 计算数量
-        if(this.price){
-          this.spsl = (Number(this.price)/Number(this.spdj));
-          //如果存在小数
-          if((this.spsl).toString().split(".")[1]){
-            if((this.spsl).toString().split(".")[1].length>6){
-              this.spsl = (this.spsl).toFixed(6);
-            }
-          }
-        }
-      }else{
-        this.spdj = (Number(this.price)/Number(this.spsl));
-        //如果存在小数
-        if((this.spdj).toString().split(".")[1]){
-          if((this.spdj).toString().split(".")[1].length>6){
-            this.spdj = (this.spdj).toFixed(6);
-          }
-        }
-      }
-    },
-    spslNum(e){
-      if(e.currentTarget.value){
-        this.spsl = Number(e.currentTarget.value).toFixed(2);
-        //如果有单价和数量 计算总额
-        if(this.spdj){
-          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2);
-          return false
-        }
-        //如果有总额 计算单价
-        if(this.price){
-          this.spdj = (Number(this.price)/Number(this.spsl));
-          //如果存在小数
-          if((this.spdj).toString().split(".")[1]){
-            if((this.spdj).toString().split(".")[1].length>6){
-              this.spdj = (this.spdj).toFixed(6);
-            }
-          }
-        }
-      }else{
-        this.spsl = (Number(this.price)/Number(this.spdj));
-        //如果存在小数
-        if((this.spsl).toString().split(".")[1]){
-          if((this.spsl).toString().split(".")[1].length>6){
-            this.spsl = (this.spsl).toFixed(6);
-          }
-        }
-      }
-    },
-    //金额控制数量
-    jeNum(e){
-      if(e.currentTarget.value){
-        this.price = Number(e.currentTarget.value).toFixed(2);
-        //如果有总额和数量 计算单价
-        if(this.spsl){
-          this.spdj = Number(this.price)/Number(this.spsl);
-          //如果存在小数
-          if((this.spdj).toString().split(".")[1]){
-            if((this.spdj).toString().split(".")[1].length>6){
-              this.spdj = (this.spdj).toFixed(6);
-            }
-          }
-          return false
-        }
-        //如果有总额和单价 计算数量
-        if(this.spdj){
-          this.spsl = Number(this.price)/Number(this.spdj);
-          //如果存在小数
-          if((this.spsl).toString().split(".")[1]){
-            if((this.spsl).toString().split(".")[1].length>6){
-              this.spsl = (this.spsl).toFixed(6);
-            }
-          }
-        }
-      }else{
-        if(this.spdj&&this.spsl){
-          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2);
-        }
-      }
-    },
     //弹窗显示
     showPopups(){
       if(this.popupsStatus){
@@ -492,44 +408,43 @@ export default {
         }, 3000)
       }
     },
-    //返回上一页
-    goback(){
-      this.$router.push({path:'/entrust'});
-    },
     //手填模式 提交开票
     submitFpInfo(){
       this.submit();
       var _this = this;
       if(this.isDone){ //通过了
         this.showLoading = true;  //loading
-        var listBox = this.$refs.listBox;
-        var ul = listBox.getElementsByClassName("ulList");
-        for(var i=0;i<ul.length;i++){
-          var spid = ul[i].getElementsByClassName("spid");
-          var spmc = ul[i].getElementsByClassName("spmc");
-          var ggxh = ul[i].getElementsByClassName("ggxh");
-          var jldw = ul[i].getElementsByClassName("jldw");
-          var slv = ul[i].getElementsByClassName("slv");
-          var spdj = ul[i].getElementsByClassName("spdj");
-          var spsl = ul[i].getElementsByClassName("spsl");
-          var je = ul[i].getElementsByClassName("je");
-          var datadata =[{  //商品信息
+        this.dataArr = [];
+        var li = this.$refs.listBox.children;
+        for(var i=0;i<li.length;i++){
+          var spid = li[i].getElementsByClassName("spid");
+          var spmc = li[i].getElementsByClassName("spmc");
+          var ggxh = li[i].getElementsByClassName("ggxh");
+          var jldw = li[i].getElementsByClassName("jldw");
+          var slv = li[i].getElementsByClassName("slv");
+          var spdj = li[i].getElementsByClassName("spdj");
+          var spsl = li[i].getElementsByClassName("spsl");
+          var je = li[i].getElementsByClassName("je");
+          var itemData ={  //商品信息
             spid: spid[0].value,
-            spmc: spmc[0].value,
+            spmc: spmc[0].innerHTML,
             ggxh: ggxh[0].value,
             jldw: jldw[0].value,
-            spsl: spsl[0].value,
-            spdj: spdj[0].value,
-            slv: slv[0].value,
-            je: je[0].value
-          }]
+            spsl: spsl[0].innerHTML,
+            spdj: spdj[0].innerHTML,
+            slv: slv[0].innerHTML,
+            je: je[0].innerHTML
+          }
+          this.dataArr.push(itemData);
         }
         var url = this.local+'/api/user/submitFpInfo';
-        var listData = JSON.stringify(datadata);
+        var listData = JSON.stringify(this.dataArr);
+
         //企业类型才有税号
-        var shVal = this.$refs.sh.value;
         if(this.title_type==0){
-          shVal = '';
+          this.$refs.sh.value = '';
+          this.$refs.dzdh.value = '';
+          this.$refs.yhzh.value = '';
         }
         var data = {
           userid: localStorage.getItem("token"),
@@ -537,7 +452,7 @@ export default {
           name: this.$refs.name.value,
           title_type: this.title_type,  //抬头类型
           fpzl: this.fpzl,  //发票类型
-          sh: shVal,
+          sh: this.$refs.sh.value,
           dzdh: this.$refs.dzdh.value,
           yhzh: this.$refs.yhzh.value,
           email: this.$refs.email.value,
@@ -552,6 +467,7 @@ export default {
             this.timer = setTimeout(() => {
               this.$router.push({path:'/'});
             }, 500)
+            return false
           }
           if(response.errcode==1003){   //登录用户失效
             this.showLoading = false;
@@ -579,30 +495,31 @@ export default {
       var _this = this;
       if(this.isDone){ //通过了
         this.showLoading = true;  //loading
-        var listBox = this.$refs.listBox;
-        var ul = listBox.getElementsByClassName("ulList");
-        for(var i=0;i<ul.length;i++){
-          var spid = ul[i].getElementsByClassName("spid");
-          var spmc = ul[i].getElementsByClassName("spmc");
-          var ggxh = ul[i].getElementsByClassName("ggxh");
-          var jldw = ul[i].getElementsByClassName("jldw");
-          var slv = ul[i].getElementsByClassName("slv");
-          var spdj = ul[i].getElementsByClassName("spdj");
-          var spsl = ul[i].getElementsByClassName("spsl");
-          var je = ul[i].getElementsByClassName("je");
-          var datadata =[{  //商品信息
+        this.dataArr = [];
+        var li = this.$refs.listBox.children;
+        for(var i=0;i<li.length;i++){
+          var spid = li[i].getElementsByClassName("spid");
+          var spmc = li[i].getElementsByClassName("spmc");
+          var ggxh = li[i].getElementsByClassName("ggxh");
+          var jldw = li[i].getElementsByClassName("jldw");
+          var slv = li[i].getElementsByClassName("slv");
+          var spdj = li[i].getElementsByClassName("spdj");
+          var spsl = li[i].getElementsByClassName("spsl");
+          var je = li[i].getElementsByClassName("je");
+          var itemData ={  //商品信息
             spid: spid[0].value,
-            spmc: spmc[0].value,
+            spmc: spmc[0].innerHTML,
             ggxh: ggxh[0].value,
             jldw: jldw[0].value,
-            spsl: spsl[0].value,
-            spdj: spdj[0].value,
-            slv: slv[0].value,
-            je: je[0].value
-          }]
+            spsl: spsl[0].innerHTML,
+            spdj: spdj[0].innerHTML,
+            slv: slv[0].innerHTML,
+            je: je[0].innerHTML
+          }
+          this.dataArr.push(itemData);
         }
         var url = this.local+'/api/user/submitFpSp';
-        var listData = JSON.stringify(datadata);
+        var listData = JSON.stringify(this.dataArr);
         var data = {
           userid: localStorage.getItem("token"),
           fpzl: 't',
@@ -615,11 +532,17 @@ export default {
             this.timer = setTimeout(() => {
               this.$router.push({path:'/code_infor',query:{data:response}});
             }, 500)
+            return false
           }
           if(response.errcode==1003){   //登录用户失效
             this.showLoading = false;
             this.showInvalid = true;
             this.text = '登录用户失效，请重新登录';
+          }else{
+            this.showLoading = false;
+            this.popupsStatus = true;
+            this.showPopups();
+            this.text = response.errmsg;
           }
         },function (error) {
           _this.showLoading = false;
@@ -693,39 +616,15 @@ export default {
           }
         }
       }
-
-      for(var i in this.spxx){
-        var spmc = this.spxx[i].spmc;
-        var slv = this.spxx[i].slv;
-      }
-      //商品名称
-      if(!spmc){
+      //商品不能为空
+      if(this.spxx.length<1){
         this.popupsStatus = true;
         this.showPopups();
         this.title = '温馨提示';
-        this.text = '商品名称不能为空';
+        this.text = '商品不能为空';
         this.isDone = false;
         return false
       }
-      //税率
-      if(!slv){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '税率不能为空';
-        this.isDone = false;
-        return false
-      }
-      //金额
-      if(!this.price){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '金额不能为空';
-        this.isDone = false;
-        return false
-      }
-
       //判断格式
       if(nameVal>100){
         this.popupsStatus = true;
@@ -795,36 +694,25 @@ export default {
       }
       return this.isDone = true;
     },
+    //点击每个商品可编辑
+    changeItem(data,index){
+      this.$router.push({path:'/add_goods',query:{itemChangeData: data, changeStatus: 'true', index:index}});
+    },
+    //返回上一页
+    goback(){
+      this.$router.push({path:'/entrust'});
+    },
     //重新登录
     goLogin(){
       this.$router.push({path:'/login'});
-    },
-    //增加一条商品明细
-    addGoodsList(){
-      var add =
-        {
-          spmc: '',
-          ggxh: '',
-          jldw: '',
-          spsl: '',
-          spdj: '',
-          slv: '13%',
-          je: ''
-        };
-      var obj = {};
-      this.spxx.push(Object.assign(obj, add));
     },
     //跳转抬头列表
     jumpTitleList(){
       this.$router.push({path:'/my_title_list'});
     },
-    //跳转商品列表
-    jumpGoodsList(){
-      this.$router.push({path:'/goods_list'});
-    },
-    //请重试
-    tryAgain(){
-      this.reload();
+    //点击录入商品
+    jumpAddGoods(){
+      this.$router.push({path:'/add_goods'});
     }
   },
   mounted () {
@@ -855,7 +743,7 @@ export default {
     margin-top: 46px;
     border-bottom: 0.01rem solid #f2f2f2;
   }
-  .itemBillingFirst{
+  .billing .itemBillingFirst{
     text-align: center;
   }
   .itemBillingFirst p{
@@ -866,49 +754,12 @@ export default {
   .listBilling{
     margin-top: 0.32rem;
   }
-  .rightSelect{
-    font-size: 0.28rem;
-    color: #333;
-    border: 0.012rem solid #e0e0e0;
-    background: none;
-    border-radius: 0.08rem;
-    line-height: 0.5rem;
-    width: 3rem;
-    height: 0.5rem;
-    padding: 0 0.12rem;
-    outline: none;
-    /*去掉默认的下拉三角*/
-    appearance:none;
-    -moz-appearance:none;
-    -webkit-appearance:none;
-    background: url("../assets/icon_task.png") no-repeat right center transparent;
-  }
-  .itemBillingName .rightInput{
-    width: 2.6rem;
-  }
   .chooseGoods{
     font-size: 0.3rem;
     color: #ff9900;
     display: block;
     width: 2rem;
     text-align: right;
-  }
-  .addGoods{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 0.6rem;
-    line-height: 0.6rem;
-    padding-top: 0.6rem;
-  }
-  .addGoods img{
-    width:0.4rem;
-    height:0.4rem;
-  }
-  .addGoodsCon{
-    font-size: 0.28rem;
-    color: #333;
-    padding-left: 0.12rem;
   }
   .rightLabel{
     color: #999;
@@ -978,7 +829,54 @@ export default {
     color: #fff;
     font-size: 0.32rem;
   }
-
+  .addGoodsTitle{
+    display: flex;
+    border-bottom: 0.01rem solid #f2f2f2;
+  }
+  .addGoodsTitle p:first-child{
+    width: 28%;
+  }
+  .addGoodsTitle p{
+    font-size: 0.3rem;
+    color: #333;
+    width: 24%;
+    padding: 0.24rem 0;
+    line-height: 0.6rem;
+    text-align: center;
+  }
+  .addCon{
+    font-size: 0.28rem;
+    color: #ff9900;
+    text-align: center;
+    line-height: 0.6rem;
+    padding: 0.24rem 0;
+  }
+  .commonList .addGoodsList li{
+    border-bottom: 0.01rem solid #f2f2f2;
+  }
+  .addGoodsList .goodsItem{
+    font-size: 0.28rem;
+    color: #999;
+    line-height: 0.6rem;
+    width: 24%;
+    text-align: center;
+  }
+  .addGoodsList .spmcItem{
+    width: 28%;
+    font-size: 0.26rem;
+    text-align: left;
+    line-height: 0.4rem;
+  }
+  .spmcItem span{
+    display: block;
+    color: #999;
+  }
+  .spmcItem b{
+    font-weight: normal;
+  }
+  .spmc{
+    width: 100%;
+  }
   /*back icon*/
   .header_left{
     position: absolute;

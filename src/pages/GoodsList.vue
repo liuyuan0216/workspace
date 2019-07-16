@@ -166,7 +166,7 @@ export default {
     },
     //选择商品
     jumpBilling(item,index){
-      this.$router.push({path:'/billing',query:{itemGoodsData:item,itemGoodsIndex:index}});
+      this.$router.push({path:'/add_goods',query:{itemGoodsData:item,itemGoodsIndex:index}});
     },
     //下拉加载更多
     loadBottom(){

@@ -67,7 +67,7 @@
       <p>还没有订单</p>
       <button class="emptyBtn" @click="setBilling">立即添加</button>
     </div>
-    <confirm
+    <!--<confirm
       v-model="showInvalid"
       title="温馨提醒"
       confirm-text="去重新登录"
@@ -75,7 +75,7 @@
       @on-confirm="goLogin"
     >
       {{text}}
-    </confirm>
+    </confirm>-->
 
     <confirm
       v-model="showAlertLogin"
@@ -86,8 +86,13 @@
     >
       {{text}}
     </confirm>
-    <p v-show="backtop">backtop</p>
-    <div class="orderListEmpty marginTop" v-if="timeOut">
+    <div class="orderListEmpty" v-if="showInvalid">
+      <img src="../assets/img_list_empty.png" />
+      <p>登录用户失效，请重新登录</p>
+      <button class="emptyBtn" @click="goLogin">重新登录</button>
+    </div>
+
+    <div class="orderListEmpty" v-if="timeOut">
       <img src="../assets/img_list_empty.png" />
       <p>网络异常</p>
       <button class="emptyBtn" @click="tryAgain">请重试</button>
@@ -149,8 +154,7 @@ export default {
       count: 0,
       page: 0,
       limit: 10,
-      scrollTop: 0,
-      backtop: false
+      scrollTop: 0
     }
   },
   components:{
@@ -205,7 +209,6 @@ export default {
   methods:{
     //发票列表
     listData(){
-      alert('这是v1.0')
       if(!this.token){
         this.empty = true;
         return
@@ -231,12 +234,16 @@ export default {
           }else{
             this.empty = true;
           }
+          return false
         }
-        if(response.errcode==1003){   //登录用户失效
+        if(response.errcode==103){   //登录用户失效
           this.showLoading = false;
           this.showInvalid = true;
-          this.text = '登录用户失效，请重新登录';
-          return;
+          return
+        }else{
+          this.showLoading = false;
+          this.timeOut = true;
+          return
         }
       },function (error) {
         _this.showLoading = false;

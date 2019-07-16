@@ -26,6 +26,7 @@ import ExpressList from '@/pages/ExpressList'
 import TitleEdit from '@/pages/TitleEdit'
 import TitleInfor from '@/pages/TitleInfor'
 import CodeInfor from '@/pages/CodeInfor'
+import AddGoods from '@/pages/AddGoods'
 
 Vue.use(Router)
 
@@ -162,6 +163,11 @@ export default new Router({
       path: '/code_infor',
       name: 'CodeInfor',
       component: CodeInfor
+    },
+    {  //开票-选择商品
+      path: '/add_goods',
+      name: 'AddGoods',
+      component: AddGoods
     }
   ]
 })

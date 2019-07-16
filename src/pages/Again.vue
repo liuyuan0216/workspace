@@ -56,6 +56,7 @@ export default {
       popupsStatus: false,
       show: false,
       showLoading: false,
+      timer: null,
       text: '',
       showUpdate: false,
       showInvalid: false,
@@ -98,7 +99,7 @@ export default {
             this.showLoading = false;
             this.showToast = true;  //成功的提示
             this.timer = setTimeout(() => {
-              this.$router.push({path:'/'});
+              this.$router.go(-1);
             }, 500)
             return;
           }
@@ -169,6 +170,9 @@ export default {
   },
   mounted () {
     this.locationData();  //local
+  },
+  beforeDestroy () {
+    clearInterval(this.timer)
   }
 }
 </script>
