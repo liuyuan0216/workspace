@@ -33,7 +33,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {  //发票列表
-      path: '/',
+      path: '/list',
       name: 'OrderList',
       component: OrderList,
       meta: {
@@ -56,7 +56,7 @@ export default new Router({
       component: ForgetPassword
     },
     {  //委托开票
-      path: '/entrust',
+      path: '/',
       name: 'Entrust',
       component: Entrust
     },
