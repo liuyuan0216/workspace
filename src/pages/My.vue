@@ -20,43 +20,33 @@
         <img src="../assets/icon_my_wdfp.png" />
         <p class="leftCon">我的发票<b class="icon_arrow"></b></p>
       </li>
-      <li @click="wait">
-        <img src="../assets/icon_my_wdfw.png" />
-        <p class="leftCon">我的服务<b class="icon_arrow"></b></p>
-      </li>
-      <li @click="jumpSwitchMode">
-        <img src="../assets/icon_my_kpms.png" />
-        <p class="leftCon">开票模式<b class="icon_arrow"></b></p>
-      </li>
-    </ul>
-    <ul class="passwordList">
-      <li @click="wait">
-        <img src="../assets/icon_my_kdxx.png" />
-        <p class="leftCon">快递信息<b class="icon_arrow"></b></p>
-      </li>
       <li @click="jumpMyTitle">
         <img src="../assets/icon_my_ttxx.png" />
         <p class="leftCon">我的抬头信息<b class="icon_arrow"></b></p>
       </li>
     </ul>
     <ul class="passwordList">
-      <li @click="wait">
-        <img src="../assets/icon_my_lxwm.png" />
-        <p class="leftCon">联系我们<b class="icon_arrow"></b></p>
+      <li @click="jumpPrivacy">
+        <img src="../assets/icon_my_yszc.png" />
+        <p class="leftCon">隐私政策<b class="icon_arrow"></b></p>
+      </li>
+      <li class="versionItem" @click="jumpAbout">
+        <img src="../assets/icon_my_gy.png" />
+        <p class="leftCon">关于<span class="versionNum">版本&nbsp;1.0<b class="icon_arrow"></b></span></p>
       </li>
     </ul>
 
     <tabbar
       slot="bottom">
       <tabbar-item link="/">
-        <img slot="icon" src="../assets/icon_tabbar_list.png" v-if="!tabbarList">
-        <img slot="icon" src="../assets/icon_tabbar_list_active.png" v-if="tabbarList">
-        <span slot="label" :class="tabbarList? 'activeCon':''">发票列表</span>
-      </tabbar-item>
-      <tabbar-item link="entrust">
         <img slot="icon" src="../assets/icon_tabbar_edit.png" v-if="!tabbarEdit">
         <img slot="icon" src="../assets/icon_tabbar_edit_active.png" v-if="tabbarEdit">
         <span slot="label" :class="tabbarEdit? 'activeCon':''">委托开票</span>
+      </tabbar-item>
+      <tabbar-item link="/list">
+        <img slot="icon" src="../assets/icon_tabbar_list.png" v-if="!tabbarList">
+        <img slot="icon" src="../assets/icon_tabbar_list_active.png" v-if="tabbarList">
+        <span slot="label" :class="tabbarList? 'activeCon':''">发票列表</span>
       </tabbar-item>
       <tabbar-item selected>
         <img slot="icon" src="../assets/icon_tabbar_my.png" v-if="!tabbarMy">
@@ -116,16 +106,6 @@ export default {
     Confirm
   },
   methods:{
-    //开发中！！
-    wait(){
-      if(!this.name){
-        this.showAlertLogin = true;
-        this.text = '请先登录';
-        return false;
-      }
-      this.show = true;
-      this.text = '开发中，敬请期待...';
-    },
     jumpPerson(){  //个人信息
       if(!this.name){
         this.showAlertLogin = true;
@@ -146,6 +126,32 @@ export default {
       }
       this.$router.push({path:'/my_list'});
     },
+    jumpMyTitle(){  //我的抬头信息
+      if(!this.name){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/my_title_list', query:{isMy:"true"}});
+    },
+    jumpPrivacy(){  //隐私政策
+      if(!this.name){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/privacy'})
+    },
+    jumpAbout(){  //关于
+      if(!this.name){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/about'})
+    },
+
+    /* ~~ */
     jumpMyService(){  //我的服务
       if(!this.name){
         this.showAlertLogin = true;
@@ -162,14 +168,6 @@ export default {
       }
       this.$router.push({path:'/express_list'});
     },
-    jumpMyTitle(){  //我的抬头信息
-      if(!this.name){
-        this.showAlertLogin = true;
-        this.text = '请先登录';
-        return false;
-      }
-      this.$router.push({path:'/my_title_list', query:{isMy:"true"}});
-    },
     jumpContactUs(){  //联系我们
       if(!this.name){
         this.showAlertLogin = true;
@@ -177,14 +175,6 @@ export default {
         return false;
       }
       this.$router.push({path:'/contact'});
-    },
-    jumpSwitchMode(){  //开票模式
-      if(!this.name){
-        this.showAlertLogin = true;
-        this.text = '请先登录';
-        return false;
-      }
-      this.$router.push({path:'/switch_mode', query:{fromMy:"true"}});
     }
   }
 }
@@ -248,5 +238,10 @@ export default {
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
+  }
+  .versionItem .versionNum{
+    line-height: 0.6rem;
+    display: flex;
+    align-items: center;
   }
 </style>

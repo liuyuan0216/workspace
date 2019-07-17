@@ -27,11 +27,18 @@ import TitleEdit from '@/pages/TitleEdit'
 import TitleInfor from '@/pages/TitleInfor'
 import CodeInfor from '@/pages/CodeInfor'
 import AddGoods from '@/pages/AddGoods'
+import Privacy from '@/pages/Privacy'
+import About from '@/pages/About'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {  //委托开票
+      path: '/',
+      name: 'Entrust',
+      component: Entrust
+    },
     {  //发票列表
       path: '/list',
       name: 'OrderList',
@@ -54,11 +61,6 @@ export default new Router({
       path: '/forget',
       name: 'ForgetPassword',
       component: ForgetPassword
-    },
-    {  //委托开票
-      path: '/',
-      name: 'Entrust',
-      component: Entrust
     },
     {  //我的
       path: '/my',
@@ -168,6 +170,16 @@ export default new Router({
       path: '/add_goods',
       name: 'AddGoods',
       component: AddGoods
+    },
+    {  //隐私政策
+      path: '/privacy',
+      name: 'Privacy',
+      component: Privacy
+    },
+    {  //关于
+      path: '/about',
+      name: 'About',
+      component: About
     }
   ]
 })

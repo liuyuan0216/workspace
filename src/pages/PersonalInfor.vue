@@ -70,16 +70,16 @@
       <input type="file" hidden accept="image/*" id="myImg" name="myImg" @change="getObjectURL">
     </form>
 
-    <div class="actionSheet" :class="showActionsheet?'show_actionSheet':''">
+    <!--<div class="actionSheet" :class="showActionsheet?'show_actionSheet':''">
       <div class="actionSheet_mark" v-show="showActionsheet" @click="hide_actionSheet"></div>
       <div class="actionSheet_content" :class="showActionsheet?'show_options':''">
         <div class="item_box">
-          <div class="item" @click="clickMenu1">从手机相册选择</div>
-          <div class="item" @click="clickMenu2">拍照</div>
+          <div class="item">从手机相册选择</div>
+          <div class="item">拍照</div>
         </div>
         <div class="cancel_action" @click="hide_actionSheet">取消</div>
       </div>
-    </div>
+    </div>-->
   </view-box>
 </template>
 
@@ -128,18 +128,7 @@ export default {
     },
     //点击头像
     clickPhoto(){
-      this.showActionsheet = true;
-      // this.show = true;
-      // this.text = '开发中，敬请期待...';
-    },
-    //相册
-    clickMenu1(){
       document.getElementById("myImg").click();
-    },
-    //拍照
-    clickMenu2(){
-      this.show = true;
-      this.text = '开发中，敬请期待...';
     },
     //取消
     hide_actionSheet() {
@@ -284,8 +273,6 @@ export default {
     width: 1rem;
   }
   .personal_infor .personName{
-    font-size: 0.3rem;
-    color: #333;
     line-height: 0.6rem;
     padding-right: 0.32rem;
   }

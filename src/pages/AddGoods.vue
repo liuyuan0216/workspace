@@ -26,7 +26,7 @@
           <option>4%</option>
           <option>3%</option>
           <option>1.5%</option>
-          <option>0</option>
+          <option>0%</option>
         </select>
       </li>
       <li>
@@ -389,9 +389,11 @@ export default {
   }
   .deleteBtn{
     display: flex;
+    padding: 0 0.32rem;
   }
   .deleteBtn .commonBtn{
-    width: 3rem;
+    width: 44%;
+    margin: 0.72rem 3% 0;
   }
   .deleteBtn .deleteItem{
     background: #ccc;

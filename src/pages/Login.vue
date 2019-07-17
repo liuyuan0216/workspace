@@ -159,7 +159,7 @@ export default {
           localStorage.setItem("company", info.company);  //发票名称
           localStorage.setItem("invoice", info.invoice);  //税号
           //var isDropOut = sessionStorage.getItem("isDropOut");  //是否是退出登录状态/修改密码成功后
-          this.$router.push({path:'/switch_mode'});
+          this.$router.push({path:'/'});
         }
         if(response.errcode==1003){   //登录用户失效
           this.showInvalid = true;

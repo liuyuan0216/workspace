@@ -52,7 +52,7 @@ export default {
       this.qrcode = this.data.url;
     },
     close(){
-      this.$router.push({path:'/'});
+      this.$router.push({path:'/list'});
     }
   },
   mounted(){
@@ -70,7 +70,7 @@ export default {
     text-align: center;
   }
   .qrcode_con{
-    color: #5F88FF;
+    color: #5db6fa;
     font-size: 0.32rem;
     line-height: 0.5rem;
     text-align: center;

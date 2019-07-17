@@ -54,7 +54,7 @@
       </div>
     </v-loadmore>
 
-    <div class="orderListEmpty marginTop" v-if="empty">
+    <div class="orderListEmpty" v-if="empty">
       <img src="../assets/img_list_empty.png" />
       <p>还没有发票</p>
     </div>

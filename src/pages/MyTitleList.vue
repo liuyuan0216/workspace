@@ -41,7 +41,7 @@
       </div>
     </v-loadmore>
 
-    <div class="listEmpty marginTop" v-if="empty">
+    <div class="listEmpty" v-if="empty">
       <img src="../assets/img_list_empty.png" />
       <p>还没有抬头</p>
     </div>

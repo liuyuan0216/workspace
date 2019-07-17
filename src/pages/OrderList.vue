@@ -100,15 +100,15 @@
     <loading v-model="showLoading" text=""></loading>
     <tabbar
       slot="bottom">
+      <tabbar-item link="/">
+        <img slot="icon" src="../assets/icon_tabbar_edit.png" v-if="!tabbarEdit">
+        <img slot="icon" src="../assets/icon_tabbar_edit_active.png" v-if="tabbarEdit">
+        <span slot="label" :class="tabbarEdit? 'activeCon':''">委托开票</span>
+      </tabbar-item>
       <tabbar-item selected>
         <img slot="icon" src="../assets/icon_tabbar_list.png" v-if="!tabbarList">
         <img slot="icon" src="../assets/icon_tabbar_list_active.png" v-if="tabbarList">
         <span slot="label" :class="tabbarList? 'activeCon':''">发票列表</span>
-      </tabbar-item>
-      <tabbar-item link="entrust">
-        <img slot="icon" src="../assets/icon_tabbar_edit.png" v-if="!tabbarEdit">
-        <img slot="icon" src="../assets/icon_tabbar_edit_active.png" v-if="tabbarEdit">
-        <span slot="label" :class="tabbarEdit? 'activeCon':''">委托开票</span>
       </tabbar-item>
       <tabbar-item link="my">
         <img slot="icon" src="../assets/icon_tabbar_my.png" v-if="!tabbarMy">
@@ -230,6 +230,7 @@ export default {
           this.showLoading = false;
           this.count = response.count;
           if(response.fp_list.length>0){
+            this.empty = false;
             this.list = response.fp_list;
           }else{
             this.empty = true;
@@ -290,7 +291,7 @@ export default {
         this.text = '请先登录';
         return false;
       }
-      this.$router.push({path:'/billing'});
+      this.$router.push({path:'/'});
     },
     //请重试
     tryAgain(){

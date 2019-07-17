@@ -1,40 +1,48 @@
 <template>
-  <view-box ref="viewBox">
+  <view-box ref="viewBox" class="entrust">
     <x-header
       slot="header"
       class="header"
       :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
-      <h2 class="header_title">委托开票</h2>
+      <h2 class="header_title">首页</h2>
     </x-header>
-    <ul class="entrustList marginTop">
-      <li @click="wait">
+    <img class="entrustBg" src="../assets/entrust_bg.png"/>
+    <ul class="entrustList">
+      <!--<li @click="wait">
         <img class="entrustIcon" src="../assets/icon_verb_camera.png" />
         <div class="entrustInfor">
           <h3 class="entrustType">拍照委托</h3>
           <p class="entrustTypeCon">直接拍照发给业务员开票</p>
         </div>
-      </li>
+      </li>-->
       <li @click="jumpBilling">
         <img class="entrustIcon" src="../assets/icon_verb_edit.png" />
         <div class="entrustInfor">
-          <h3 class="entrustType">开票委托</h3>
+          <h3 class="entrustType">手工填写</h3>
           <p class="entrustTypeCon">自己填写开票信息更精准</p>
+        </div>
+      </li>
+      <li @click="jumpScanCode">
+        <img class="entrustIcon" src="../assets/icon_verb_code.png" />
+        <div class="entrustInfor">
+          <h3 class="entrustType">扫码自开</h3>
+          <p class="entrustTypeCon">消费者扫码自助开票</p>
         </div>
       </li>
     </ul>
 
     <tabbar
       slot="bottom">
-      <tabbar-item link="/">
-        <img slot="icon" src="../assets/icon_tabbar_list.png" v-if="!tabbarList">
-        <img slot="icon" src="../assets/icon_tabbar_list_active.png" v-if="tabbarList">
-        <span slot="label" :class="tabbarList? 'activeCon':''">发票列表</span>
-      </tabbar-item>
       <tabbar-item selected>
         <img slot="icon" src="../assets/icon_tabbar_edit.png" v-if="!tabbarEdit">
         <img slot="icon" src="../assets/icon_tabbar_edit_active.png" v-if="tabbarEdit">
         <span slot="label" :class="tabbarEdit? 'activeCon':''">委托开票</span>
+      </tabbar-item>
+      <tabbar-item link="/list">
+        <img slot="icon" src="../assets/icon_tabbar_list.png" v-if="!tabbarList">
+        <img slot="icon" src="../assets/icon_tabbar_list_active.png" v-if="tabbarList">
+        <span slot="label" :class="tabbarList? 'activeCon':''">发票列表</span>
       </tabbar-item>
       <tabbar-item link="my">
         <img slot="icon" src="../assets/icon_tabbar_my.png" v-if="!tabbarMy">
@@ -53,9 +61,6 @@
         <div class="cancel_action" @click="hide_actionSheet">取消</div>
       </div>
     </div>
-    <form id="form" method="post" enctype="multipart/form-data">
-      <input type="file" hidden accept="image/*" id="myImg" name="myImg" @change="getObjectURL">
-    </form>
 
     <confirm
       v-model="show"
@@ -108,18 +113,6 @@ export default {
     Confirm
   },
   methods:{
-    //开发中！！
-    wait(){
-      //this.showActionsheet = true;
-      if(!this.token){
-        this.showAlertLogin = true;
-        this.text = '请先登录';
-        return false;
-      }else{
-        this.show = true;
-        this.text = '开发中，敬请期待...';
-      }
-    },
     //点击委托拍照
     clickPhoto(){
       this.showActionsheet = true;
@@ -136,32 +129,27 @@ export default {
     goLogin(){
       this.$router.push({path:'/login'});
     },
-    //点击开票委托
+    //手填开票模式
     jumpBilling(){
       if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
       }else{
+        localStorage.setItem("modeType", "1");
         this.$router.push({path:'/billing'});
       }
     },
-    //获取图片路径
-    getObjectURL() {
-      this.showActionsheet = false;
-      let file = document.getElementById('myImg').files[0];
-      let url = null ;
-      if(!file){
-        return
+    //扫码开票模式
+    jumpScanCode(){
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }else{
+        localStorage.setItem("modeType", "0");
+        this.$router.push({path:'/billing'});
       }
-      if (window.createObjectURL!=undefined) { // basic
-        url = window.createObjectURL(file) ;
-      }else if (window.webkitURL!=undefined) { // webkit or chrome
-        url = window.webkitURL.createObjectURL(file) ;
-      }else if (window.URL!=undefined) { // mozilla(firefox)
-        url = window.URL.createObjectURL(file) ;
-      }
-      console.log(url)
     }
   }
 }
@@ -169,30 +157,47 @@ export default {
 
 <style lang="less">
   @import "~vux/src/styles/reset.less";
+  .entrustBg{
+    width: 100%;
+    min-height: 6rem;
+    margin-top: 44px;
+  }
   .entrustList{
-    padding: 0 0.32rem;
+    margin-top:  -0.98rem;
+    padding: 0 0.6rem;
   }
   .entrustList li{
     background: #fff;
-    padding: 0.42rem 0.32rem;
-    border-radius: 0.12rem;
+    padding: 0.22rem 0 0.22rem 0.6rem ;
+    border-radius: 0.2rem;
     display: flex;
     align-items: center;
     margin-bottom: 0.32rem;
+    -moz-box-shadow:0px 1px 8px #ddd;/*firefox*/
+    -webkit-box-shadow:0px 1px 8px #ddd;/*webkit*/
+    box-shadow:0px 1px 8px #ddd;
   }
   .entrustIcon{
-    width:0.6rem;
-    height:0.6rem;
+    width: 1.16rem;
+    height: 1.16rem;
   }
   .entrustInfor{
-    padding-left: 0.42rem;
+    padding-left: 0.5rem;
+  }
+  .entrustList li:first-child .entrustType{
+    color: #5db6fa;
+  }
+  .entrustList li:last-child .entrustType{
+    color: #febb84;
   }
   .entrustType{
-    color: #333;
-    font-size: 0.3rem;
+    font-size: 0.34rem;
+    line-height: 0.65rem;
+    font-weight: normal;
   }
   .entrustTypeCon{
     font-size: 0.28rem;
+    line-height: 0.4rem;
     color: #999;
   }
   .actionSheet{

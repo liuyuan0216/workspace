@@ -261,6 +261,7 @@ export default {
       }else{
         next(vm => {
           vm.price = 0;
+          //如果是删除操作
           vm.deleteStatus = vm.$route.query.deleteStatus;
           if(vm.deleteStatus){
             vm.spxx.splice(vm.index,1);
@@ -289,7 +290,7 @@ export default {
           }
         var obj = {};
         vm.price = 0;
-        //判断是不是修改过来的
+        //如果是修改操作
         if(vm.changeStatus){
           vm.spxx.splice(vm.index,1,add);
         }else{
@@ -338,6 +339,7 @@ export default {
     $route(to, from){
       if(to.name==='Billing'){
         if(from.name=='AddGoods'){
+          //如果是需要记住位置的
           this.return = this.$route.query.return;
           if(this.return){
             this.$nextTick(() => {
@@ -465,7 +467,7 @@ export default {
             this.showLoading = false;
             this.showToast = true;
             this.timer = setTimeout(() => {
-              this.$router.push({path:'/'});
+              this.$router.push({path:'/list'});
             }, 500)
             return false
           }
@@ -700,7 +702,7 @@ export default {
     },
     //返回上一页
     goback(){
-      this.$router.push({path:'/entrust'});
+      this.$router.push({path:'/'});
     },
     //重新登录
     goLogin(){
@@ -835,6 +837,7 @@ export default {
   }
   .addGoodsTitle p:first-child{
     width: 28%;
+    text-align: left;
   }
   .addGoodsTitle p{
     font-size: 0.3rem;
@@ -843,6 +846,9 @@ export default {
     padding: 0.24rem 0;
     line-height: 0.6rem;
     text-align: center;
+  }
+  .addGoodsList .goodsItem.je{
+    color: #5db6fa;
   }
   .addCon{
     font-size: 0.28rem;

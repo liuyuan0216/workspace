@@ -159,8 +159,8 @@ export default {
           gfdzdh: this.$refs.gfdzdh.value,
           gfyhzh: this.$refs.gfyhzh.value,
           email: this.$refs.email.value,
-          receipt_address: this.$refs.receipt_address.value,
-          receiver: this.$refs.receiver.value,
+          /*receipt_address: this.$refs.receipt_address.value,
+          receiver: this.$refs.receiver.value,*/
           phone: this.$refs.phone.value
         }
         this.$ajaxjp(url, data, true, (response) => {
