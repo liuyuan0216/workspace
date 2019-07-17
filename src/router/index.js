@@ -164,7 +164,10 @@ export default new Router({
     {  //二维码页面
       path: '/code_infor',
       name: 'CodeInfor',
-      component: CodeInfor
+      component: CodeInfor,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
     },
     {  //开票-选择商品
       path: '/add_goods',

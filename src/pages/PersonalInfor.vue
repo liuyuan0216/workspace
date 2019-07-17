@@ -93,6 +93,7 @@ export default {
   name: 'PersonalInfor',
   data(){
     return{
+      token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
       img: localStorage.getItem("img"),
       company: localStorage.getItem("company"),
@@ -116,10 +117,13 @@ export default {
   methods:{
     //初始化显示
     getData(){
-      if(this.name){
+      if(this.token){
         this.fplx = '电子发票';
       }else{
         this.$router.push({path:'/my'});
+      }
+      if(this.name==''||this.name=='undefined'||this.name=='null'){
+        this.name = '昵称';
       }
     },
     //修改密码

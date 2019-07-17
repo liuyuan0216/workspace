@@ -224,6 +224,18 @@ export default {
         this.isDone = false;
         return false
       }
+      //手机号格式判断
+      if(this.$refs.phone.value){
+        this.isPhoneAvailable(this.$refs.phone.value);
+        if(this.phoneFormat){
+          this.popupsStatus = true;
+          this.showPopups();
+          this.title = '温馨提示';
+          this.text = this.phoneText;
+          this.isDone = false;
+          return false
+        }
+      }
       //判断格式
       if(gfnameVal>100){
         this.popupsStatus = true;

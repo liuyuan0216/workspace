@@ -7,7 +7,7 @@
     >
       <h2 class="header_title">发票列表</h2>
     </x-header>
-    <div v-if="!empty">
+    <div>
       <v-loadmore
         :top-method="loadTop"
         :bottom-method="loadBottom"
@@ -154,7 +154,8 @@ export default {
       count: 0,
       page: 0,
       limit: 10,
-      scrollTop: 0
+      scrollTop: 0,
+      came: false
     }
   },
   components:{
@@ -175,8 +176,10 @@ export default {
       next(vm => {
         vm.token = localStorage.getItem("token");
         if(vm.token){
+          vm.empty = false;
           return
         }else{
+          vm.list = [];
           vm.listData();
         }
       });
@@ -227,13 +230,14 @@ export default {
       }
       this.$ajaxjp(url, this.data, true, (response) =>{
         if(response.errcode==0){
-          this.showLoading = false;
-          this.count = response.count;
+          _this.showLoading = false;
+          _this.count = response.count;
           if(response.fp_list.length>0){
-            this.empty = false;
-            this.list = response.fp_list;
+            _this.timeOut = false;
+            _this.empty = false;
+            _this.list = response.fp_list;
           }else{
-            this.empty = true;
+            _this.empty = true;
           }
           return false
         }
@@ -255,6 +259,7 @@ export default {
     //more
     moreList(){
       this.page++;
+      var _this = this;
       var url = this.local+'/api/user/fp_list';
       var data = {
         userid: this.token,
@@ -268,6 +273,9 @@ export default {
           }
         }
       },function (error) {
+        _this.showLoading = false;
+        _this.timeOut = true;
+        _this.list = [];
         console.log(error);
       });
     },
@@ -295,7 +303,8 @@ export default {
     },
     //请重试
     tryAgain(){
-      this.reload();
+      //this.reload();
+      this.$router.go(0);
     },
     //上拉加载更多
     loadBottom(){
@@ -331,7 +340,6 @@ export default {
   .orderList{
     /*margin-top: 62px;*/
     background: #fff;
-    border-bottom: 0.01rem solid #f2f2f2;
     position: relative;
     top: 0;
   }

@@ -13,7 +13,8 @@
         <img src="../assets/img_my.png" v-if="!img" />
         <img :src="img" v-if="img" />
       </div>
-      <p class="personName">{{name||'未登录'}}<b class="icon_arrow"></b></p>
+      <p class="personName" v-if="!token">未登录<b class="icon_arrow"></b></p>
+      <p class="personName" v-if="token">{{name}}<b class="icon_arrow"></b></p>
     </div>
     <ul class="passwordList">
       <li @click="jumpMyList">
@@ -87,6 +88,7 @@ export default {
   name: 'My',
   data(){
     return {
+      token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
       img: localStorage.getItem("img"),
       tabbarList: false,
@@ -106,8 +108,13 @@ export default {
     Confirm
   },
   methods:{
+    getData(){
+      if(this.name==''||this.name=='undefined'||this.name=='null'){
+        this.name = '昵称';
+      }
+    },
     jumpPerson(){  //个人信息
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -119,7 +126,7 @@ export default {
       this.$router.push({path:'/login'});
     },
     jumpMyList(){  //我的发票列表
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -127,7 +134,7 @@ export default {
       this.$router.push({path:'/my_list'});
     },
     jumpMyTitle(){  //我的抬头信息
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -135,7 +142,7 @@ export default {
       this.$router.push({path:'/my_title_list', query:{isMy:"true"}});
     },
     jumpPrivacy(){  //隐私政策
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -143,7 +150,7 @@ export default {
       this.$router.push({path:'/privacy'})
     },
     jumpAbout(){  //关于
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -153,7 +160,7 @@ export default {
 
     /* ~~ */
     jumpMyService(){  //我的服务
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -161,7 +168,7 @@ export default {
       this.$router.push({path:'/my_service'});
     },
     jumpMyExpressList(){  //我的快递信息
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
@@ -169,13 +176,16 @@ export default {
       this.$router.push({path:'/express_list'});
     },
     jumpContactUs(){  //联系我们
-      if(!this.name){
+      if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
       }
       this.$router.push({path:'/contact'});
     }
+  },
+  mounted () {
+    this.getData();
   }
 }
 </script>
