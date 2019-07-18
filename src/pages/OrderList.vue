@@ -7,7 +7,7 @@
     >
       <h2 class="header_title">发票列表</h2>
     </x-header>
-    <div>
+    <div v-if="!empty">
       <v-loadmore
         :top-method="loadTop"
         :bottom-method="loadBottom"
@@ -176,10 +176,14 @@ export default {
       next(vm => {
         vm.token = localStorage.getItem("token");
         if(vm.token){
-          vm.empty = false;
+          vm.came = sessionStorage.getItem("came");
+          if(!vm.came){
+            vm.empty = false;
+            vm.list = [];
+            vm.listData();
+          }
           return
         }else{
-          vm.list = [];
           vm.listData();
         }
       });
@@ -194,6 +198,10 @@ export default {
   beforeRouteLeave(to, from, next){
     this.scrollTop = this.$refs.viewBox.getScrollTop();
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
+    this.token = localStorage.getItem("token");
+    if(this.token){
+      sessionStorage.setItem("came", "true");
+    }
     next();
   },
   watch:{
@@ -214,6 +222,8 @@ export default {
     listData(){
       if(!this.token){
         this.empty = true;
+        this.timeOut = false;
+        this.showInvalid = false;
         return
       }
       //from
@@ -234,24 +244,32 @@ export default {
           _this.count = response.count;
           if(response.fp_list.length>0){
             _this.timeOut = false;
-            _this.empty = false;
             _this.list = response.fp_list;
           }else{
             _this.empty = true;
           }
           return false
         }
-        if(response.errcode==103){   //登录用户失效
+        if(response.errcode==1003){   //登录用户失效
           this.showLoading = false;
+          this.empty = false;
+          this.timeOut = false;
           this.showInvalid = true;
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
           return
         }else{
           this.showLoading = false;
+          this.empty = false;
           this.timeOut = true;
           return
         }
       },function (error) {
         _this.showLoading = false;
+        _this.empty = false;
         _this.timeOut = true;
         console.log(error);
       });
@@ -274,6 +292,7 @@ export default {
         }
       },function (error) {
         _this.showLoading = false;
+        _this.empty = false;
         _this.timeOut = true;
         _this.list = [];
         console.log(error);
@@ -304,7 +323,7 @@ export default {
     //请重试
     tryAgain(){
       //this.reload();
-      this.$router.go(0);
+      this.listData();
     },
     //上拉加载更多
     loadBottom(){
@@ -336,21 +355,19 @@ export default {
 
 <style lang="less">
   @import "~vux/src/styles/reset.less";
-  /*@import "~element-ui/lib/theme-chalk/index.css";*/
-  .orderList{
-    /*margin-top: 62px;*/
+  .all_list .orderList{
     background: #fff;
     position: relative;
     top: 0;
   }
-  .orderList li{
+  .all_list .orderList li{
     padding: 0.12rem 0.3rem 0.1rem 0.32rem;
     display: flex;
   }
-  .orderList li:first-child{
+  .all_list .orderList li:first-child{
     padding: 0.22rem 0.3rem 0.1rem 0.32rem;
   }
-  .orderList li:last-child{
+  .all_list .orderList li:last-child{
     margin-bottom: 0.32rem;
   }
   .orderListIcon{
@@ -371,7 +388,7 @@ export default {
     width: 5.8rem;
     padding-bottom: 0.16rem;
   }
-  .orderList li:last-child .orderListRight{
+  .all_list .orderList li:last-child .orderListRight{
     border-bottom:none;
   }
   .orderListCon{

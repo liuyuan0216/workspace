@@ -3,8 +3,9 @@
     <x-header
       slot="header"
       class="header"
-      :left-options= "{showBack:true, backText:''}"
+      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
+      <p slot="left" class="header_left" @click="goback"></p>
       <h2 class="header_title">抬头信息</h2>
     </x-header>
     <div class="titleInforWrap">
@@ -73,14 +74,22 @@ export default {
     XHeader
   },
   beforeRouteEnter(to, from, next){
-    var fromparams = [];
+    var fromparams_list = [];
+    var fromparams_edit = [];
     if(from.name=='MyTitleList'){
       if(to.query.itemData){
-        fromparams = to.query.itemData;
+        fromparams_list = to.query.itemData;
       }
       next(vm => {
-        vm.data = fromparams;
-        vm.itemId = fromparams.id;
+        vm.data = fromparams_list;
+        vm.itemId = fromparams_list.id;
+      });
+    }else if(from.name=='TitleEdit'){
+      if(to.query.itemData){
+        fromparams_edit = to.query.itemData;
+      }
+      next(vm => {
+        vm.data = fromparams_edit;
       });
     }else{
       next();
@@ -94,6 +103,9 @@ export default {
     //编辑
     jumpTitleEdit(item){
       this.$router.push({path:'/title_edit',query:{itemData:item,id:this.itemId}});
+    },
+    goback(){
+      this.$router.push({path:'/my_title_list?isMy=true'});
     }
   },
   mounted () {
@@ -146,5 +158,25 @@ export default {
   }
   .titleInforWrap .commonInfor:last-child .titleList{
     border:none;
+  }
+  /*back icon*/
+  .header_left{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -5px;
+    left: -5px;
+  }
+  .header_left:before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #fff;
+    border-width: 1px 0 0 1px;
+    -webkit-transform: rotate(315deg);
+    transform: rotate(315deg);
+    top: 8px;
+    left: 7px;
   }
 </style>

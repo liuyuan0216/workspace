@@ -9,8 +9,8 @@
       <h2 class="header_title">开票</h2>
     </x-header>
 
-    <p class="billingTitle">{{company}}</p>
-    <ul class="commonList listBilling">
+    <!--<p class="billingTitle">{{company}}</p>-->
+    <ul class="commonList listBilling BillingTop">
       <li>
         <p class="leftCon">发票类型</p>
         <div class="rightLabel">
@@ -43,7 +43,8 @@
               v-model="radioType"
               :value="item.value"
               :checked='item.isChecked'
-              @click="checkTt(index)"/>{{item.label}}
+              @click="checkTt(index)"/>
+            <span>{{item.label}}</span>
           </div>
         </div>
       </li>
@@ -271,6 +272,11 @@ export default {
             var val = Number(vm.spxx[i].je);
             vm.price += val;
           }
+          if(vm.spxx.length==0){
+            vm.price = 0;
+          }else{
+            vm.price = vm.price.toFixed(2);
+          }
         });
         return
       }
@@ -301,6 +307,7 @@ export default {
           var val = Number(vm.spxx[i].je);
           vm.price += val;
         }
+        vm.price = vm.price.toFixed(2);
       });
     }else{
       next(vm => {
@@ -475,6 +482,12 @@ export default {
             this.showLoading = false;
             this.showInvalid = true;
             this.text = '登录用户失效，请重新登录';
+            //登录失效 重置
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
+
           }else{
             this.showLoading = false;
             this.popupsStatus = true;
@@ -540,6 +553,11 @@ export default {
             this.showLoading = false;
             this.showInvalid = true;
             this.text = '登录用户失效，请重新登录';
+            //登录失效 重置
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
           }else{
             this.showLoading = false;
             this.popupsStatus = true;
@@ -731,6 +749,10 @@ export default {
   @import "~vux/src/styles/reset.less";
   .billing .leftCon{
     width:2rem;
+    font-size: 0.28rem;
+  }
+  .BillingTop{
+    margin-top: 58px;
   }
   .listBilling .rightInput{
     width:4.5rem;
@@ -741,7 +763,7 @@ export default {
     background: #fff;
     text-align: center;
     line-height: 0.6rem;
-    padding: 0.24rem 0;
+    padding: 0.12rem 0;
     margin-top: 46px;
     border-bottom: 0.01rem solid #f2f2f2;
   }
@@ -750,18 +772,14 @@ export default {
   }
   .itemBillingFirst p{
     width: 100%;
-    font-size: 0.3rem;
+    font-size: 0.28rem;
     color: #ff9900;
   }
   .listBilling{
-    margin-top: 0.32rem;
+    margin-bottom: 0.17rem;
   }
-  .chooseGoods{
-    font-size: 0.3rem;
-    color: #ff9900;
-    display: block;
-    width: 2rem;
-    text-align: right;
+  .listBilling li{
+    padding: 0.18rem 0;
   }
   .rightLabel{
     color: #999;
@@ -797,14 +815,17 @@ export default {
     width: 100%;
     height:0.6rem;
   }
+  .rightLabel span{
+    padding-left: 0.06rem;
+  }
   .billing .commonBtn{
     margin: 0.5rem auto 1rem;
   }
   .ftWrap{
     width:100%;
     background: #fff;
-    height: 1.1rem;
-    line-height: 1.1rem;
+    height: 1rem;
+    line-height: 1rem;
     position: absolute;
     bottom: 0;
     left:0;
@@ -840,10 +861,10 @@ export default {
     text-align: left;
   }
   .addGoodsTitle p{
-    font-size: 0.3rem;
+    font-size: 0.28rem;
     color: #333;
     width: 24%;
-    padding: 0.24rem 0;
+    padding: 0.18rem 0;
     line-height: 0.6rem;
     text-align: center;
   }
@@ -855,7 +876,7 @@ export default {
     color: #ff9900;
     text-align: center;
     line-height: 0.6rem;
-    padding: 0.24rem 0;
+    padding: 0.16rem 0;
   }
   .commonList .addGoodsList li{
     border-bottom: 0.01rem solid #f2f2f2;

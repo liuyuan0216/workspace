@@ -3,8 +3,9 @@
     <x-header
       slot="header"
       class="header"
-      :left-options= "{showBack:true, backText:''}"
+      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
+      <p slot="left" class="header_left" @click="goback"></p>
       <h2 class="header_title">我的发票抬头</h2>
     </x-header>
     <v-loadmore
@@ -124,11 +125,22 @@ export default {
           }else{
             this.empty = true;
           }
+          return false
         }
         if(response.errcode==1003){   //登录用户失效
           this.showLoading = false;
           this.showInvalid = true;
           this.text = '登录用户失效，请重新登录';
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return
+        }else{
+          this.showLoading = false;
+          this.timeOut = true;
+          return
         }
       },function (error) {
         _this.showLoading = false;
@@ -195,6 +207,10 @@ export default {
     },
     handleTopChange(status){
       this.topStatus = status;
+    },
+    //返回到我到页面
+    goback(){
+      this.$router.push({path:'/my'});
     }
   },
   mounted () {
@@ -269,5 +285,26 @@ export default {
   }
   .titleListStyle li .titleName{
     width: auto;
+  }
+
+  /*back icon*/
+  .header_left{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -5px;
+    left: -5px;
+  }
+  .header_left:before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #fff;
+    border-width: 1px 0 0 1px;
+    -webkit-transform: rotate(315deg);
+    transform: rotate(315deg);
+    top: 8px;
+    left: 7px;
   }
 </style>

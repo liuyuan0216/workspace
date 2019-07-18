@@ -87,7 +87,7 @@ export default {
   .detailMag{
     font-size: 0.3rem;
     color: #333;
-    line-height: 1rem;
+    line-height: 0.85rem;
     padding-left: 0.32rem;
     font-weight: bold;
   }
@@ -135,6 +135,6 @@ export default {
     line-height: 0.6rem;
   }
   .detailMagMt{
-    margin-top: 46px;
+    margin-top: 48px;
   }
 </style>

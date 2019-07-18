@@ -95,7 +95,7 @@ export default {
     return{
       token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
-      img: localStorage.getItem("img"),
+      img: '',
       company: localStorage.getItem("company"),
       invoice: localStorage.getItem("invoice"),
       show: false,
@@ -125,6 +125,7 @@ export default {
       if(this.name==''||this.name=='undefined'||this.name=='null'){
         this.name = '昵称';
       }
+      this.img = localStorage.getItem("img");
     },
     //修改密码
     changePassword(){
@@ -165,9 +166,10 @@ export default {
       }
       this.$ajaxjp(url, data, true, (response) =>{
         if(response.errcode==0){
-          var storage = window.localStorage;
-          storage.clear();  //清除localStorage
-          //sessionStorage.setItem("isDropOut",true)
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
           //退出后跳转到登录页
           this.$router.push({path: '/login'});
         }
@@ -194,6 +196,7 @@ export default {
         url = window.URL.createObjectURL(file) ;
       }
       this.img = url;
+      localStorage.setItem("img", url);
       this.uploadImg();
     },
     //上传修改后的头像
@@ -207,11 +210,16 @@ export default {
       this.$axios.post(url, form)
         .then(response => {
           if(response.data.errcode==0){
-            localStorage.setItem("img", response.data.imgUrl);
+            //localStorage.setItem("img", response.data.imgUrl);
           }
           if(response.data.errcode==1003){   //登录用户失效
             _this.showInvalid = true;
             _this.text = '登录用户失效，请重新登录';
+            //登录失效 重置
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
           }
         }).catch(error=>{
           _this.popupsStatus = true;

@@ -9,7 +9,9 @@ html,body {
 }
 body * {
   -webkit-text-size-adjust: 100%;
+
   -webkit-user-select: none;
+  user-select: none;
 }
 *:not(input,textarea) {
  -webkit-touch-callout: none;
@@ -28,13 +30,18 @@ a, input, button{
 }
 input, button {
   border-radius: 0;
-  user-select: text;
-	-webkit-user-select: text;
   outline: none;
-
   border: none;
   background: none;
   color: #999;
+}
+input{
+  user-select: text;
+  -webkit-user-select: text;
+}
+button{
+  -webkit-user-select: none;
+  user-select: none;
 }
 h1,h2,h3,h4{
   font-weight: 600;
@@ -242,7 +249,7 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
   color: #333;
 }
 .billing .weui-tab__panel{
-  padding-bottom: 1.5rem;
+  padding-bottom: 1rem;
 }
 .goodsList .weui-tab__panel{
   padding-bottom: 0rem;

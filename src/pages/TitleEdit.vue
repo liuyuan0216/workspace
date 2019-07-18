@@ -3,33 +3,34 @@
     <x-header
       slot="header"
       class="header"
-      :left-options= "{showBack:true, backText:''}"
+      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
+      <p slot="left" class="header_left" @click="goback"></p>
       <h2 class="header_title">编辑抬头</h2>
     </x-header>
 
     <ul class="commonList marginTop">
       <li>
         <p class="leftCon">公司名称</p>
-        <input class="rightInput" placeholder="请输入公司名称" v-model="list.gfname" ref="gfname" />
+        <input type="text" class="rightInput" placeholder="请输入公司名称" v-model="data.gfname" ref="gfname" />
       </li>
       <li>
         <p class="leftCon">税号</p>
-        <input class="rightInput" placeholder="请输入税号" v-model="list.gfsh" ref="gfsh" />
+        <input type="text" class="rightInput" placeholder="请输入税号" v-model="data.gfsh" ref="gfsh" />
       </li>
       <li>
         <p class="leftCon">地址电话</p>
-        <input class="rightInput" placeholder="请输入地址电话" v-model="list.gfdzdh" ref="gfdzdh">
+        <input type="text" class="rightInput" placeholder="请输入地址电话" v-model="data.gfdzdh" ref="gfdzdh">
       </li>
       <li>
         <p class="leftCon">开户行及账号</p>
-        <input class="rightInput" placeholder="请输入开户行及账号" v-model="list.gfyhzh" ref="gfyhzh" />
+        <input type="text" class="rightInput" placeholder="请输入开户行及账号" v-model="data.gfyhzh" ref="gfyhzh" />
       </li>
     </ul>
     <ul class="titleList commonList">
       <li>
         <p class="leftCon">邮箱</p>
-        <input class="rightInput" placeholder="请输入邮箱" v-model="list.email" ref="email" />
+        <input type="text" class="rightInput" placeholder="请输入邮箱" v-model="data.email" ref="email" />
       </li>
       <!--<li>
         <p class="leftCon">收货地址</p>
@@ -41,7 +42,7 @@
       </li>-->
       <li>
         <p class="leftCon">联系电话</p>
-        <input class="rightInput" placeholder="请输入联系电话" v-model="list.phone" ref="phone" />
+        <input type="number" class="rightInput" placeholder="请输入联系电话" v-model="data.phone" ref="phone" />
       </li>
     </ul>
     <button class="commonBtn" @click="save">保存</button>
@@ -88,17 +89,6 @@ export default {
   data() {
     return {
       data: [],
-      list:{
-        gfname: '',
-        gfsh: '',
-        gfdzdh: '',
-        gfyhzh: '',
-
-        email: '',
-        receipt_address: '',
-        receiver: '',
-        phone: ''
-      },
       itemData: this.$route.query.itemData,
       itemId: this.$route.query.id,
       isDone: false,
@@ -109,7 +99,8 @@ export default {
       text: '',
       showUpdate: false,
       showInvalid: false,
-      timer: null
+      timer: null,
+      fromList: false
     }
   },
   components:{
@@ -119,6 +110,15 @@ export default {
     Confirm,
     Loading,
     Toast
+  },
+  beforeRouteEnter(to, from, next){
+    if(from.name=='MyTitleList'){
+      next(vm => {
+        vm.fromList = true;
+      });
+    }else{
+      next();
+    }
   },
   methods:{
     //弹窗显示
@@ -133,16 +133,6 @@ export default {
     //获取数据
     getData(){
       this.data = this.itemData;
-      //赋值
-      this.list.gfname = this.data.gfname;
-      this.list.gfsh = this.data.gfsh;
-      this.list.gfdzdh = this.data.gfdzdh;
-      this.list.gfyhzh = this.data.gfyhzh;
-
-      this.list.email = this.data.email;
-      this.list.receipt_address = this.data.receipt_address;
-      this.list.receiver = this.data.receiver;
-      this.list.phone = this.data.phone;
     },
     //点击保存
     save(){
@@ -168,7 +158,11 @@ export default {
             this.showLoading = false;
             this.showToast = true;
             this.timer = setTimeout(() => {
-              this.$router.go(-1);
+              if(this.fromList){
+                this.$router.push({path:'/my_title_list?isMy=true'});
+              }else{
+                this.$router.push({path:'/title_infor',query:{'itemData': this.data}});
+              }
             }, 500)
             return false
           }
@@ -176,6 +170,11 @@ export default {
             this.showLoading = false;
             this.showInvalid = true;
             this.text = '登录用户失效，请重新登录';
+            //登录失效 重置
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
           }else{
             this.showLoading = false;
             this.popupsStatus = true;
@@ -276,6 +275,13 @@ export default {
         return false
       }
       return this.isDone = true;
+    },
+    goback(){
+      if(this.fromList){
+        this.$router.push({path:'/my_title_list?isMy=true'});
+      }else{
+        this.$router.push({path:'/title_infor',query:{'itemData': this.data}});
+      }
     }
   },
   mounted () {
@@ -303,5 +309,25 @@ export default {
   }
   .title_edit .commonList .rightCon{
     height: auto;
+  }
+  /*back icon*/
+  .header_left{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -5px;
+    left: -5px;
+  }
+  .header_left:before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #fff;
+    border-width: 1px 0 0 1px;
+    -webkit-transform: rotate(315deg);
+    transform: rotate(315deg);
+    top: 8px;
+    left: 7px;
   }
 </style>

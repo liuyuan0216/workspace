@@ -124,11 +124,18 @@ export default {
           }else{
             this.empty = true;
           }
+          return false
         }
         if(response.errcode==1003){   //登录用户失效
           this.showLoading = false;
           this.showInvalid = true;
           this.text = '登录用户失效，请重新登录';
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return
         }
       }, function (error) {
         _this.showLoading = false;

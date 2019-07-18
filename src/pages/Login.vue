@@ -119,7 +119,8 @@ export default {
       var url = this.local+'/api/user/login';
       var data = {
         login_name: this.login_name,
-        login_password: this.login_password
+        login_password: this.login_password,
+        version: this.version
       }
       this.$ajaxjp(url, data, true, (response) =>{
         if(response.errcode==0){
@@ -164,6 +165,11 @@ export default {
         if(response.errcode==1003){   //登录用户失效
           this.showInvalid = true;
           this.text = '登录用户失效，请重新登录';
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
         }
       }, function (error) {
         console.log(error);
@@ -171,7 +177,7 @@ export default {
     },
     //关闭登录 返回上一页
     closePage(){
-      this.$router.go(-1);
+      this.$router.push({path:'/'});
     }
   },
   mounted () {

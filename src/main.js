@@ -15,11 +15,12 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$qs = qs;
 import '../static/css/common.css'
 
-import { locationData, local, phoneText, phoneNull, phoneFormat, passwordText, passwordFormat,shText, shFormat, $ajaxjp, isPhoneAvailable, isPssword, isEmail, isSh } from './components/common.js';
+import { locationData, local, version, phoneText, phoneNull, phoneFormat, passwordText, passwordFormat,shText, shFormat, $ajaxjp, isPhoneAvailable, isPssword, isEmail, isSh } from './components/common.js';
 Vue.config.productionTip = false
 
 Vue.prototype.locationData = locationData;
 Vue.prototype.local = local;
+Vue.prototype.version = version;
 
 Vue.prototype.phoneText = phoneText;
 Vue.prototype.phoneNull = phoneNull;

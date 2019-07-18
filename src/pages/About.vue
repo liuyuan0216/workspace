@@ -17,7 +17,7 @@
     <ul class="commonList aboutList">
       <li>
         <p class="leftCon">版本号</p>
-        <p class="rightCon">V1.0</p>
+        <p class="rightCon">{{this.version}}</p>
       </li>
     </ul>
     <div class="aboutBtCon">
@@ -33,9 +33,17 @@ import XHeader from 'vux/src/components/x-header'
 
 export default {
   name: 'About',
+  data(){
+    return{
+      version: ''
+    }
+  },
   components:{
     ViewBox,
     XHeader
+  },
+  mounted(){
+    this.locationData();  //local
   }
 }
 </script>

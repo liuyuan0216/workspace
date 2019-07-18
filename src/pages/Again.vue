@@ -107,6 +107,11 @@ export default {
             this.showLoading = false;
             this.showInvalid = true;
             this.text = '登录用户失效，请重新登录';
+            //登录失效 重置
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
           }
           if(response.errcode==2006){   //交付数据不存在
             this.showLoading = false;

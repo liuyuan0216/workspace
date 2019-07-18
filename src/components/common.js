@@ -2,6 +2,8 @@ import axios from 'axios'
 import qs from 'qs'
 
 export var local = '';
+//版本号
+export var version = '';
 //手机号
 export var phoneText = '';
 export var phoneNull = false;
@@ -20,6 +22,7 @@ export function locationData() {
   //this.local = 'http://192.168.0.15:8087';
   //this.local = 'http://192.168.0.15:8083';
   this.local = 'http://app.caikaixin.cn';
+  this.version = 'V1.0';
 }
 
 //手机号格式

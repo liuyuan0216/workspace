@@ -138,11 +138,22 @@ export default {
           }else{
             this.empty = true;
           }
+          return false
         }
         if(response.errcode==1003){   //登录用户失效
           this.showLoading = false;
           this.showInvalid = true;
           this.text = '登录用户失效，请重新登录';
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return
+        }else{
+          this.showLoading = false;
+          this.timeOut = true;
+          return
         }
       },function (error) {
         _this.showLoading = false;
@@ -216,16 +227,15 @@ export default {
 
 <style lang="less">
   @import "~vux/src/styles/reset.less";
-  .orderList{
+  .my_list .orderList{
     /*margin-top: 62px;*/
     background: #fff;
-    border-bottom: 0.01rem solid #f2f2f2;
   }
-  .orderList li{
+  .my_list .orderList li{
     padding: 0.12rem 0.3rem 0.1rem 0.32rem;
     display: flex;
   }
-  .orderList li:first-child{
+  .my_list .orderList li:first-child{
     padding: 0.22rem 0.3rem 0.1rem 0.32rem;
   }
   .orderListIcon{
@@ -247,7 +257,7 @@ export default {
     width: 5.8rem;
     padding-bottom: 0.16rem;
   }
-  .orderList li:last-child .orderListRight{
+  .my_list .orderList li:last-child .orderListRight{
     border-bottom:none;
   }
   .orderListCon{

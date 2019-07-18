@@ -33,7 +33,7 @@
       </li>
       <li class="versionItem" @click="jumpAbout">
         <img src="../assets/icon_my_gy.png" />
-        <p class="leftCon">关于<span class="versionNum">版本&nbsp;1.0<b class="icon_arrow"></b></span></p>
+        <p class="leftCon">关于<span class="versionNum">版本&nbsp;{{this.version}}<b class="icon_arrow"></b></span></p>
       </li>
     </ul>
 
@@ -90,7 +90,7 @@ export default {
     return {
       token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
-      img: localStorage.getItem("img"),
+      img: '',
       tabbarList: false,
       tabbarEdit: false,
       tabbarMy: true,
@@ -112,6 +112,7 @@ export default {
       if(this.name==''||this.name=='undefined'||this.name=='null'){
         this.name = '昵称';
       }
+      this.img = localStorage.getItem("img");
     },
     jumpPerson(){  //个人信息
       if(!this.token){
@@ -185,6 +186,7 @@ export default {
     }
   },
   mounted () {
+    this.locationData();  //local
     this.getData();
   }
 }

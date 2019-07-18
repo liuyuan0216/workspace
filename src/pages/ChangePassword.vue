@@ -118,6 +118,11 @@ export default {
             this.showLoading = false;
             this.showInvalid = true;
             this.text = '登录用户失效，请重新登录';
+            //登录失效 重置
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
           }
           if(response.errcode==1004){   //原密码不正确
             this.showLoading = false;
@@ -217,7 +222,7 @@ export default {
 <style scoped>
   .passwordList{
     background: #fff;
-    margin-bottom: 0.32rem;
+    margin-bottom: 0.24rem;
   }
   .passwordList li{
     padding: 0.24rem 0.45rem;

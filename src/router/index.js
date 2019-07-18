@@ -70,10 +70,7 @@ export default new Router({
     {  //电子详情
       path: '/electronic_detail',
       name: 'ElectronicDetail',
-      component: ElectronicDetail,
-      meta: {
-        keepAlive: true // 需要被缓存
-      }
+      component: ElectronicDetail
     },
     {  //纸质详情
       path: '/paper_detail',
