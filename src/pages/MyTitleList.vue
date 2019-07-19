@@ -210,7 +210,11 @@ export default {
     },
     //返回到我到页面
     goback(){
-      this.$router.push({path:'/my'});
+      if(this.isMy=="true"){
+        this.$router.push({path:'/my'});
+      }else{
+        this.$router.go(-1);
+      }
     }
   },
   mounted () {

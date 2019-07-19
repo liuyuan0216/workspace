@@ -5,6 +5,7 @@
       class="header"
       :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
+      <p slot="right" class="header_right" @click="tryAgain">刷新</p>
       <h2 class="header_title">发票列表</h2>
     </x-header>
     <div v-if="!empty">
@@ -324,6 +325,7 @@ export default {
     tryAgain(){
       //this.reload();
       this.listData();
+      this.$refs.viewBox.scrollTo(0);
     },
     //上拉加载更多
     loadBottom(){

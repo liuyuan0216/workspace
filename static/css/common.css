@@ -319,6 +319,9 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
 .mui-android header{
   padding-top: 10px !important;
 }
+.header_right{
+  color: #fff;
+}
 
 /*icon*/
 #app .weui-toast{
