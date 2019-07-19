@@ -210,7 +210,7 @@ export default {
       this.$axios.post(url, form)
         .then(response => {
           if(response.data.errcode==0){
-            //localStorage.setItem("img", response.data.imgUrl);
+            localStorage.setItem("img", response.data.imgUrl);
           }
           if(response.data.errcode==1003){   //登录用户失效
             _this.showInvalid = true;

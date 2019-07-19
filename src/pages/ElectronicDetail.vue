@@ -18,6 +18,7 @@
     <ul class="commonList">
       <li>
         <p class="leftCon">抬头信息</p>
+        <input hidden ref="pdf_id" v-model="data.pdf_id" />
         <p class="rightCon overflowCon">{{data.gfmc||'暂无'}}</p>
       </li>
       <li>
@@ -168,7 +169,8 @@ export default {
           userid: localStorage.getItem("token"),
           fphm: this.$refs.fphm.innerHTML,  //号码
           fpdm: this.$refs.fpdm.innerHTML,  //代码
-          email: this.$refs.email.value
+          email: this.$refs.email.value,
+          pdf_id: this.$refs.pdf_id.value
         }
         this.$ajaxjp(url, data, true, (response) =>{
           if(response.errcode==0){
