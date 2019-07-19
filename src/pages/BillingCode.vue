@@ -1,5 +1,5 @@
 <template>
-  <view-box ref="viewBox" class="billing">
+  <view-box ref="viewBox" class="billing_code">
     <x-header
       slot="header"
       class="header"
@@ -8,8 +8,6 @@
       <p slot="left" class="header_left" @click="goback"></p>
       <h2 class="header_title">开票</h2>
     </x-header>
-
-    <!--<p class="billingTitle">{{company}}</p>-->
     <ul class="commonList listBilling BillingTop">
       <li>
         <p class="leftCon">发票类型</p>
@@ -32,62 +30,6 @@
             <span>电子发票</span>
           </div>
         </div>
-      </li>
-      <li>
-        <p class="leftCon">抬头类型</p>
-        <div class="rightLabel">
-          <div class="lxRadio" v-for="(item,index) in radios" :key="item.id">
-            <label :class="{'onClick':item.isChecked}"></label>
-            <input
-              type="radio"
-              v-model="radioType"
-              :value="item.value"
-              :checked='item.isChecked'
-              @click="checkTt(index)"/>
-            <span>{{item.label}}</span>
-          </div>
-        </div>
-      </li>
-    </ul>
-    <ul class="commonList listBilling">
-      <li class="itemBillingFirst" @click="jumpTitleList">
-        <p>+ 选择抬头</p>
-      </li>
-      <li>
-        <p class="leftCon">名称</p>
-        <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-      </li>
-      <li v-show="type_enterprises">
-        <p class="leftCon">税号</p>
-        <input type="text" class="rightInput" placeholder="请输入税号" ref="sh" v-model="titleData.gfsh"/>
-      </li>
-      <li v-show="type_enterprises">
-        <p class="leftCon">地址电话</p>
-        <input type="text" class="rightInput" placeholder="请输入地址电话" ref="dzdh" v-model="titleData.gfdzdh"/>
-      </li>
-      <li v-show="type_enterprises">
-        <p class="leftCon">开户行及账号</p>
-        <input type="text" class="rightInput" placeholder="请输入开户行及账号" ref="yhzh" v-model="titleData.gfyhzh"/>
-      </li>
-      <li v-show="type_t">
-        <p class="leftCon">手机号</p>
-        <input type="number" class="rightInput" placeholder="请输入手机号码" ref="phone" v-model="titleData.phone"/>
-      </li>
-      <li v-show="type_t">
-        <p class="leftCon">邮箱地址</p>
-        <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
-      </li>
-      <li v-show="type_c">
-        <p class="leftCon">邮寄地址</p>
-        <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
-      </li>
-      <li v-show="type_c">
-        <p class="leftCon">联系人</p>
-        <input type="text" class="rightInput" placeholder="请输入联系人" ref="receiver" v-model="titleData.receiver"/>
-      </li>
-      <li v-show="type_c">
-        <p class="leftCon">联系方式</p>
-        <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
       </li>
     </ul>
     <div class="commonList listBilling">
@@ -120,7 +62,7 @@
         <p>合计金额：</p>
         <span class="jeNum">{{price}}</span>
       </div>
-      <button class="submitBtn" @click="submitEdit">提交开票</button>
+      <button class="submitBtn" @click="submitCode">生成二维码</button>
     </div>
     <confirm
       v-model="show"
@@ -161,7 +103,7 @@ import Loading from 'vux/src/components/Loading'
 import Toast from 'vux/src/components/toast'
 
 export default {
-  name: 'Billing',
+  name: 'BillingCode',
   data(){
     return {
       fpzl_list_data: [],
@@ -170,19 +112,6 @@ export default {
       //发票
       answer:[],
       checkedValue: '',
-      radioType: '企业',
-      radios:[
-        {
-          label: '企业',
-          value:'企业',
-          isChecked: true,
-        },
-        {
-          label: '个人/其他',
-          value:'个人/其他',
-          isChecked: false,
-        }
-      ],
       //alert
       title: '温馨提示',
       popupsStatus: false,
@@ -204,7 +133,6 @@ export default {
       type_enterprises: true,
       //专票个人隐藏
       type_personal_show: false,
-      radioStatus: '',  //抬头类型状态
       //选择的数据
       titleData: [],
       goodsData: [],
@@ -233,9 +161,6 @@ export default {
     Toast
   },
   watch:{
-    radioStatus: function(newval, oldval){
-      console.log(newval, oldval);
-    },
     checkedValue:function(){
       this.answer=[];
       this.answer.push(this.checkedValue);
@@ -317,18 +242,6 @@ export default {
         //清空商品列表
         vm.spxx = [];
         //重置抬头类型
-        vm.radios = [
-          {
-            label: '企业',
-            value:'企业',
-            isChecked: true,
-          },
-          {
-            label: '个人/其他',
-            value:'个人/其他',
-            isChecked: false,
-          }
-        ]
         vm.type_enterprises = true;
         vm.price = 0;
       });
@@ -341,7 +254,7 @@ export default {
   },
   watch:{
     $route(to, from){
-      if(to.name==='Billing'){
+      if(to.name==='BillingCode'){
         if(from.name=='AddGoods'){
           //如果是需要记住位置的
           this.return = this.$route.query.return;
@@ -388,22 +301,6 @@ export default {
         }
       }
     },
-    //抬头类型
-    checkTt(index){
-      this.radios.forEach((item) => {
-        item.isChecked = false;
-      });
-      this.radioType = this.radios[index].value;
-      this.radios[index].isChecked = true;
-      //显示的判断
-      if(index==0){
-        this.title_type = '1';
-        this.type_enterprises = true;
-      }else{
-        this.title_type = '0';
-        this.type_enterprises = false;
-      }
-    },
     //弹窗显示
     showPopups(){
       if(this.popupsStatus){
@@ -413,8 +310,8 @@ export default {
         }, 3000)
       }
     },
-    //手填模式 提交开票
-    submitEdit(){
+    //扫码模式 商品开票
+    submitCode(){
       this.submit();
       var _this = this;
       if(this.isDone){ //通过了
@@ -442,35 +339,19 @@ export default {
           }
           this.dataArr.push(itemData);
         }
-        var url = this.local+'/api/user/submitFpInfo';
+        var url = this.local+'/api/user/submitFpSp';
         var listData = JSON.stringify(this.dataArr);
-
-        //企业类型才有税号
-        if(this.title_type==0){
-          this.$refs.sh.value = '';
-          this.$refs.dzdh.value = '';
-          this.$refs.yhzh.value = '';
-        }
         var data = {
           userid: localStorage.getItem("token"),
-          spxx: listData,
-          name: this.$refs.name.value,
-          title_type: this.title_type,  //抬头类型
-          fpzl: this.fpzl,  //发票类型
-          sh: this.$refs.sh.value,
-          dzdh: this.$refs.dzdh.value,
-          yhzh: this.$refs.yhzh.value,
-          email: this.$refs.email.value,
-          phone: this.$refs.phone.value,
-          receipt_address: this.$refs.receipt_address.value,
-          receiver: this.$refs.receiver.value
+          fpzl: 't',
+          spxx: listData
         }
         this.$ajaxjp(url, data, true,(response) =>{
           if(response.errcode==0){
             this.showLoading = false;
-            this.showToast = true;
+            this.showToast = true;  //成功的提示
             this.timer = setTimeout(() => {
-              this.$router.push({path:'/list'});
+              this.$router.push({path:'/code_infor',query:{data:response}});
             }, 500)
             return false
           }
@@ -483,7 +364,6 @@ export default {
             var session_storage = window.sessionStorage;
             local_storage.clear();  //清除localStorage
             session_storage.clear();  //清除sessionStorage
-
           }else{
             this.showLoading = false;
             this.popupsStatus = true;
@@ -502,14 +382,6 @@ export default {
     },
     //表单验证
     submit(){
-      var name = this.$refs.name.value;
-      var nameVal = name.replace(/[^\x00-\xff]/g, "**").length;
-      var sh = this.$refs.sh.value;
-      var dzdh = this.$refs.dzdh.value;
-      var dzdhVal = dzdh.replace(/[^\x00-\xff]/g, "**").length;
-      var yhzhVal = this.$refs.yhzh.value.replace(/[^\x00-\xff]/g, "**").length;
-      var phone = this.$refs.phone.value;
-      var email = this.$refs.email.value;
       //发票类型
       if(!this.fpzl){
         this.popupsStatus = true;
@@ -519,47 +391,6 @@ export default {
         this.isDone = false;
         return false
       }
-      //抬头类型
-      if(!this.title_type){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '抬头类型不能为空';
-        this.isDone = false;
-        return false
-      }
-      //手填开票模式下 判断抬头模块
-      //抬头名称
-      if(!name){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '抬头名称不能为空';
-        this.isDone = false;
-        return false
-      }
-      //税号
-      if(!sh){
-        if(this.title_type==1){
-          this.popupsStatus = true;
-          this.showPopups();
-          this.title = '温馨提示';
-          this.text = '税号不能为空';
-          this.isDone = false;
-          return false
-        }
-      }
-      //邮箱
-      if(this.fpzl=='t'){
-        if(!email){
-          this.popupsStatus = true;
-          this.showPopups();
-          this.title = '温馨提示';
-          this.text = '邮箱不能为空';
-          this.isDone = false;
-          return false
-        }
-      }
       //商品不能为空
       if(this.spxx.length<1){
         this.popupsStatus = true;
@@ -568,71 +399,6 @@ export default {
         this.text = '商品不能为空';
         this.isDone = false;
         return false
-      }
-      //判断格式
-      if(nameVal>100){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '输入名称超过最大限制';
-        this.isDone = false;
-        return false
-      }
-      //税号格式判断
-      if(sh){
-        if(this.title_type==1){
-          this.isSh(sh);
-          if(this.shFormat){
-            this.popupsStatus = true;
-            this.showPopups();
-            this.title = '温馨提示';
-            this.text = this.shText;
-            this.isDone = false;
-            return false
-          }
-        }
-      }
-      //银行账号长度
-      if(yhzhVal>100){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '输入开户行及账号超过最大限制';
-        this.isDone = false;
-        return false
-      }
-      //地址电话长度
-      if(dzdhVal>100){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '输入地址电话超过最大限制';
-        this.isDone = false;
-        return false
-      }
-      //手机号格式判断
-      if(phone){
-        this.isPhoneAvailable(phone);
-        if(this.phoneFormat){
-          this.popupsStatus = true;
-          this.showPopups();
-          this.title = '温馨提示';
-          this.text = this.phoneText;
-          this.isDone = false;
-          return false
-        }
-      }
-      //邮箱格式判断
-      if(email){
-        this.isEmail(email);
-        if(this.emailFormat){
-          this.popupsStatus = true;
-          this.showPopups();
-          this.title = '温馨提示';
-          this.text = this.emailText;
-          this.isDone = false;
-          return false
-        }
       }
       return this.isDone = true;
     },
@@ -647,10 +413,6 @@ export default {
     //重新登录
     goLogin(){
       this.$router.push({path:'/login'});
-    },
-    //跳转抬头列表
-    jumpTitleList(){
-      this.$router.push({path:'/my_title_list'});
     },
     //点击录入商品
     jumpAddGoods(){
@@ -669,17 +431,17 @@ export default {
 
 <style lang="less">
   @import "~vux/src/styles/reset.less";
-  .billing .leftCon{
+  .billing_code .leftCon{
     width:2rem;
     font-size: 0.28rem;
   }
-  .billing .BillingTop{
-    margin-top: 58px;
+  .billing_code .BillingTop{
+    margin-top: 62px;
   }
-  .billing .listBilling .rightInput{
+  .billing_code .listBilling .rightInput{
     width:4.5rem;
   }
-  .billing .billingTitle{
+  .billing_code .billingTitle{
     font-size: 0.3rem;
     color: #333;
     background: #fff;
@@ -689,19 +451,19 @@ export default {
     margin-top: 46px;
     border-bottom: 0.01rem solid #f2f2f2;
   }
-  .billing .itemBillingFirst{
+  .billing_code .itemBillingFirst{
     text-align: center;
   }
-  .itemBillingFirst p{
+  .billing_code .itemBillingFirst p{
     width: 100%;
     font-size: 0.28rem;
     color: #ff9900;
   }
-  .billing .listBilling{
-    margin-bottom: 0.17rem;
+  .billing_code .listBilling{
+    margin-bottom: 0.32rem;
   }
-  .billing .listBilling li{
-    padding: 0.18rem 0;
+  .billing_code .listBilling li{
+    padding: 0.24rem 0;
   }
   .rightLabel{
     color: #999;
@@ -740,7 +502,7 @@ export default {
   .rightLabel span{
     padding-left: 0.06rem;
   }
-  .billing .commonBtn{
+  .billing_code .commonBtn{
     margin: 0.5rem auto 1rem;
   }
   .ftWrap{
@@ -774,43 +536,43 @@ export default {
     color: #fff;
     font-size: 0.32rem;
   }
-  .billing .addGoodsTitle{
+  .billing_code .addGoodsTitle{
     display: flex;
     border-bottom: 0.01rem solid #f2f2f2;
   }
-  .billing .addGoodsTitle p:first-child{
+  .billing_code .addGoodsTitle p:first-child{
     width: 28%;
     text-align: left;
   }
-  .billing .addGoodsTitle p{
+  .billing_code .addGoodsTitle p{
     font-size: 0.28rem;
     color: #333;
     width: 24%;
-    padding: 0.18rem 0;
+    padding: 0.24rem 0;
     line-height: 0.6rem;
     text-align: center;
   }
-  .billing .addGoodsList .goodsItem.je{
+  .billing_code .addGoodsList .goodsItem.je{
     color: #5db6fa;
   }
-  .billing .addCon{
+  .billing_code .addCon{
     font-size: 0.28rem;
     color: #ff9900;
     text-align: center;
     line-height: 0.6rem;
-    padding: 0.16rem 0;
+    padding: 0.24rem 0;
   }
-  .billing .addGoodsList li{
+  .billing_code .addGoodsList li{
     border-bottom: 0.01rem solid #f2f2f2;
   }
-  .billing .addGoodsList .goodsItem{
+  .billing_code .addGoodsList .goodsItem{
     font-size: 0.28rem;
     color: #999;
     line-height: 0.6rem;
     width: 24%;
     text-align: center;
   }
-  .billing .addGoodsList .spmcItem{
+  .billing_code .addGoodsList .spmcItem{
     width: 28%;
     font-size: 0.26rem;
     text-align: left;

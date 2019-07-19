@@ -148,7 +148,7 @@ export default {
         return false;
       }else{
         localStorage.setItem("modeType", "0");
-        this.$router.push({path:'/billing'});
+        this.$router.push({path:'/billing_code'});
       }
     }
   }

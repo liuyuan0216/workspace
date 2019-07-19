@@ -96,6 +96,7 @@ export default {
   name: 'AddGoods',
   data(){
     return{
+      modeType: localStorage.getItem("modeType"),
       show: false,
       showLoading: false,
       showToast: false,
@@ -141,7 +142,7 @@ export default {
         vm.spsl = '';
         vm.price = '';
       });
-    }else if(from.name=='Billing'){
+    }else if(from.name=='Billing'||from.name=='BillingCode'){
       if(typeof(to.query.itemChangeData)=='object'){
         fromparams_change = to.query.itemChangeData;
       }else{
@@ -149,6 +150,7 @@ export default {
         return
       }
       next(vm => {
+        vm.modeType = localStorage.getItem("modeType");
         vm.goodsData = fromparams_change;
         vm.slv = vm.goodsData.slv;
         vm.spdj = vm.goodsData.spdj;
@@ -280,10 +282,18 @@ export default {
         ]
         this.showToast = true;
         this.timer = setTimeout(() => {
-          if(this.changeStatus){
-            this.$router.push({path:'/billing',query:{itemGoodsData: this.data,changeStatus:'true',index:this.index,return:'true'}});
-          }else{
-            this.$router.push({path:'/billing',query:{itemGoodsData: this.data,return:'true'}});
+          if(this.modeType=='1'){  //手填
+            if(this.changeStatus){
+              this.$router.push({path:'/billing',query:{itemGoodsData: this.data,changeStatus:'true',index:this.index,return:'true'}});
+            }else{
+              this.$router.push({path:'/billing',query:{itemGoodsData: this.data,return:'true'}});
+            }
+          }else if(this.modeType=='0'){  //开票
+            if(this.changeStatus){
+              this.$router.push({path:'/billing_code',query:{itemGoodsData: this.data,changeStatus:'true',index:this.index,return:'true'}});
+            }else{
+              this.$router.push({path:'/billing_code',query:{itemGoodsData: this.data,return:'true'}});
+            }
           }
         }, 500)
       }
@@ -293,7 +303,11 @@ export default {
       this.showToast = true;
       this.toastText = '删除成功';
       this.timer = setTimeout(() => {
-        this.$router.push({path:'/billing',query:{deleteStatus:'true',index:this.index}});
+        if(this.modeType=='1'){  //手填
+          this.$router.push({path:'/billing',query:{deleteStatus:'true',index:this.index}});
+        }else if(this.modeType=='0'){  //开票
+          this.$router.push({path:'/billing_code',query:{deleteStatus:'true',index:this.index}});
+        }
       }, 500)
     },
     //表单验证
@@ -333,7 +347,11 @@ export default {
     },
     //返回上一页
     goback(){
-      this.$router.push({path:'/billing'});
+      if(this.modeType=='1'){  //手填
+        this.$router.push({path: '/billing'});
+      }else if(this.modeType=='0'){  //开票
+        this.$router.push({path: '/billing_code'});
+      }
     }
   },
   mounted(){

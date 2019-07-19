@@ -6,6 +6,7 @@ import SwitchMode from '@/pages/SwitchMode'
 import OrderList from '@/pages/OrderList'
 import Entrust from '@/pages/Entrust'
 import Billing from '@/pages/Billing'
+import BillingCode from '@/pages/BillingCode'
 import My from '@/pages/My'
 
 import ForgetPassword from '@/pages/ForgetPassword'
@@ -81,6 +82,14 @@ export default new Router({
       path: '/billing',
       name: 'Billing',
       component: Billing,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {  //二维码开票
+      path: '/billing_code',
+      name: 'BillingCode',
+      component: BillingCode,
       meta: {
         keepAlive: true // 需要被缓存
       }
