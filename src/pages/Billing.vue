@@ -701,7 +701,7 @@ export default {
     margin-bottom: 0.17rem;
   }
   .billing .listBilling li{
-    padding: 0.18rem 0;
+    padding: 0.16rem 0;
   }
   .rightLabel{
     color: #999;
@@ -786,7 +786,7 @@ export default {
     font-size: 0.28rem;
     color: #333;
     width: 24%;
-    padding: 0.18rem 0;
+    padding: 0.16rem 0;
     line-height: 0.6rem;
     text-align: center;
   }
