@@ -77,7 +77,7 @@
         <p class="leftCon">邮箱地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
       </li>
-      <!--<li v-show="type_c">
+      <li v-show="type_c">
         <p class="leftCon">邮寄地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
       </li>
@@ -88,7 +88,7 @@
       <li v-show="type_c">
         <p class="leftCon">联系方式</p>
         <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
-      </li>-->
+      </li>
     </ul>
     <div class="commonList listBilling">
       <div class="addGoodsTitle">
@@ -420,6 +420,7 @@ export default {
     //手填模式 提交开票
     submitFpInfo(){
       this.submit();
+      this.showLoading = false;
       var _this = this;
       if(this.isDone){ //通过了
         this.showLoading = true;  //loading
@@ -507,6 +508,7 @@ export default {
     //扫码模式 商品开票
     submitFpSp(){
       this.submit();
+      this.showLoading = false;
       var _this = this;
       if(this.isDone){ //通过了
         this.showLoading = true;  //loading
@@ -779,8 +781,8 @@ export default {
     margin-bottom: 0.16rem;
   }
   .listBilling li{
-    height:0.58rem;
-    padding: 0.16rem 0;
+    height:0.58rem !important;
+    padding: 0.16rem 0 !important;
   }
   .rightLabel{
     color: #999;
@@ -881,6 +883,7 @@ export default {
     padding: 0.16rem 0;
   }
   .commonList .addGoodsList li{
+    height: auto;
     border-bottom: 0.01rem solid #f2f2f2;
   }
   .addGoodsList .goodsItem{
