@@ -883,8 +883,8 @@ export default {
     padding: 0.16rem 0;
   }
   .commonList .addGoodsList li{
-    height: auto;
-    border-bottom: 0.01rem solid #f2f2f2;
+    height: auto !important;
+    border-bottom: 0.01rem solid #f2f2f2 !important;
   }
   .addGoodsList .goodsItem{
     font-size: 0.28rem;
