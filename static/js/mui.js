@@ -2862,7 +2862,8 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
         wobj.canBack(function(e) {
           //by chb 暂时注释，在碰到类似popover之类的锚点的时候，需多次点击才能返回；
           if (e.canBack) { //webview history back
-            window.history.back();
+            //window.history.back();
+            wobj.back();
           } else { //webview close or hide
             //fixed by fxy 此处不应该用opener判断，因为用户有可能自己close掉当前窗口的opener。这样的话。opener就为空了，导致不能执行close
             if (wobj.id === plus.runtime.appid) { //首页

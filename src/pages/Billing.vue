@@ -701,8 +701,8 @@ export default {
     margin-bottom: 0.17rem;
   }
   .billing .listBilling li{
-    height: 0.58rem;
-    padding: 0.16rem 0;
+    height: 0.6rem !important;
+    padding: 0.16rem 0 !important;
   }
   .rightLabel{
     color: #999;
@@ -802,8 +802,9 @@ export default {
     line-height: 0.6rem;
     padding: 0.16rem 0;
   }
-  .billing .addGoodsList li{
-    border-bottom: 0.01rem solid #f2f2f2;
+  #app .billing .addGoodsList li{
+    height: auto !important;
+    border-bottom: 0.01rem solid #f2f2f2 !important;
   }
   .billing .addGoodsList .goodsItem{
     font-size: 0.28rem;
