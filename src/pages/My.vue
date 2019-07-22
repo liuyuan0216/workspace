@@ -90,7 +90,7 @@ export default {
     return {
       token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
-      img: '',
+      img: localStorage.getItem("img"),
       tabbarList: false,
       tabbarEdit: false,
       tabbarMy: true,
@@ -112,7 +112,6 @@ export default {
       if(this.name==''||this.name=='undefined'||this.name=='null'){
         this.name = '昵称';
       }
-      this.img = localStorage.getItem("img");
     },
     jumpPerson(){  //个人信息
       if(!this.token){

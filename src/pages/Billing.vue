@@ -33,7 +33,7 @@
           </div>
         </div>
       </li>
-      <li v-show="modeType==1">
+      <li v-if="modeType==1">
         <p class="leftCon">抬头类型</p>
         <div class="rightLabel">
           <div class="lxRadio" v-for="(item,index) in radios" :key="item.id">
@@ -77,7 +77,7 @@
         <p class="leftCon">邮箱地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
       </li>
-      <li v-show="type_c">
+      <!--<li v-show="type_c">
         <p class="leftCon">邮寄地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
       </li>
@@ -88,7 +88,7 @@
       <li v-show="type_c">
         <p class="leftCon">联系方式</p>
         <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
-      </li>
+      </li>-->
     </ul>
     <div class="commonList listBilling">
       <div class="addGoodsTitle">
@@ -779,6 +779,7 @@ export default {
     margin-bottom: 0.16rem;
   }
   .listBilling li{
+    height:0.58rem;
     padding: 0.16rem 0;
   }
   .rightLabel{
@@ -861,6 +862,7 @@ export default {
     text-align: left;
   }
   .addGoodsTitle p{
+    height:0.6rem;
     font-size: 0.28rem;
     color: #333;
     width: 24%;

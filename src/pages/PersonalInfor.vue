@@ -95,7 +95,7 @@ export default {
     return{
       token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
-      img: '',
+      img: localStorage.getItem("img"),
       company: localStorage.getItem("company"),
       invoice: localStorage.getItem("invoice"),
       show: false,
@@ -125,7 +125,6 @@ export default {
       if(this.name==''||this.name=='undefined'||this.name=='null'){
         this.name = '昵称';
       }
-      this.img = localStorage.getItem("img");
     },
     //修改密码
     changePassword(){
