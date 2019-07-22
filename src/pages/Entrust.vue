@@ -165,6 +165,8 @@ export default {
   .entrustList{
     margin-top:  -0.98rem;
     padding: 0 0.6rem;
+    position: relative;
+    z-index: 9;
   }
   .entrustList li{
     background: #fff;

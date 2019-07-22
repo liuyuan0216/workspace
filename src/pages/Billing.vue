@@ -701,6 +701,7 @@ export default {
     margin-bottom: 0.17rem;
   }
   .billing .listBilling li{
+    height: 0.58rem;
     padding: 0.16rem 0;
   }
   .rightLabel{
@@ -783,6 +784,7 @@ export default {
     text-align: left;
   }
   .billing .addGoodsTitle p{
+    height: 0.6rem;
     font-size: 0.28rem;
     color: #333;
     width: 24%;

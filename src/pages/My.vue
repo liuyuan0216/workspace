@@ -90,7 +90,7 @@ export default {
     return {
       token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
-      img: '',
+      img: localStorage.getItem("img"),
       tabbarList: false,
       tabbarEdit: false,
       tabbarMy: true,

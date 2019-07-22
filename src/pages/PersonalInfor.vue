@@ -95,7 +95,7 @@ export default {
     return{
       token: localStorage.getItem("token"),
       name: localStorage.getItem("name"),
-      img: '',
+      img: localStorage.getItem("img"),
       company: localStorage.getItem("company"),
       invoice: localStorage.getItem("invoice"),
       show: false,
