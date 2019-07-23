@@ -269,6 +269,7 @@ export default {
         _this.showLoading = false;
         _this.empty = false;
         _this.timeOut = true;
+        _this.list = [];
         console.log(error);
       });
     },
