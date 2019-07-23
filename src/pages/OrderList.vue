@@ -191,6 +191,7 @@ export default {
       next(vm => {
         vm.token = localStorage.getItem("token");
         vm.empty = false;
+        vm.showLoading = true;
         vm.listData();
       })
     }
@@ -228,7 +229,6 @@ export default {
       }
       var _this = this;
       this.page = 0;
-      this.showLoading = true;  //显示loading
       var url = this.local+'/api/user/fp_list';
       this.data = {
         userid: this.token,
@@ -320,6 +320,7 @@ export default {
     //请重试
     tryAgain(){
       //this.reload();
+      this.showLoading = true;
       this.listData();
       this.$refs.viewBox.scrollTo(0);
     },

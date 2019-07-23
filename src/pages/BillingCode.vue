@@ -164,6 +164,19 @@ export default {
     checkedValue:function(){
       this.answer=[];
       this.answer.push(this.checkedValue);
+    },
+    $route(to, from){
+      if(to.name==='BillingCode'){
+        if(from.name=='AddGoods'){
+          //如果是需要记住位置的
+          this.return = this.$route.query.return;
+          if(this.return){
+            this.$nextTick(() => {
+              this.$refs.viewBox.scrollTo(this.$store.getters.recruitScrollY);
+            })
+          }
+        }
+      }
     }
   },
   beforeRouteEnter(to, from, next){
@@ -251,21 +264,6 @@ export default {
     this.scrollTop = this.$refs.viewBox.getScrollTop();
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
     next();
-  },
-  watch:{
-    $route(to, from){
-      if(to.name==='BillingCode'){
-        if(from.name=='AddGoods'){
-          //如果是需要记住位置的
-          this.return = this.$route.query.return;
-          if(this.return){
-            this.$nextTick(() => {
-              this.$refs.viewBox.scrollTo(this.$store.getters.recruitScrollY);
-            })
-          }
-        }
-      }
-    }
   },
   methods:{
     //初始化请求数据
