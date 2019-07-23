@@ -184,8 +184,24 @@ export default {
     getObjectURL() {
       let file = document.getElementById('myImg').files[0];
       let url = null ;
+      var fileTypes = [".jpg", ".png", ".jpeg", ".bmp", ".gif", ".webp", ".tiff"];
       if(!file){
         return
+      }
+      //选择图片以后
+      var isNext = false;
+      var fileEnd = file.name.substring(file.name.lastIndexOf("."));
+      for(var i = 0; i < fileTypes.length; i++){
+        if(fileTypes[i] == fileEnd){
+          isNext = true;
+          break;
+        }
+      }
+      if(!isNext){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = "暂不支持后缀名为"+fileEnd+"的图片";
+        return false;
       }
       if (window.createObjectURL!=undefined) { // basic
         url = window.createObjectURL(file) ;
@@ -209,7 +225,8 @@ export default {
       this.$axios.post(url, form)
         .then(response => {
           if(response.data.errcode==0){
-            //localStorage.setItem("img", response.data.imgUrl);
+            localStorage.setItem("img", response.data.imgUrl);
+            return false
           }
           if(response.data.errcode==1003){   //登录用户失效
             _this.showInvalid = true;
@@ -219,13 +236,17 @@ export default {
             var session_storage = window.sessionStorage;
             local_storage.clear();  //清除localStorage
             session_storage.clear();  //清除sessionStorage
+          }else{
+            this.popupsStatus = true;
+            this.showPopups();
+            this.text = response.data.errmsg;
           }
         }).catch(error=>{
-          _this.popupsStatus = true;
-          _this.showPopups();
-          _this.title = '温馨提示';
-          _this.text = '网络异常';
-          console.log(error);
+        _this.popupsStatus = true;
+        _this.showPopups();
+        _this.title = '温馨提示';
+        _this.text = '网络异常';
+        console.log(error);
       })
     }
   },
