@@ -180,6 +180,7 @@ export default {
           if(!vm.came){
             vm.empty = false;
             vm.list = [];
+            vm.showLoading = true;
             vm.listData();
           }
           return
