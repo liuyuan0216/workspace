@@ -488,7 +488,6 @@ export default {
             var session_storage = window.sessionStorage;
             local_storage.clear();  //清除localStorage
             session_storage.clear();  //清除sessionStorage
-
           }else{
             this.showLoading = false;
             this.popupsStatus = true;
