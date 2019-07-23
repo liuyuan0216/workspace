@@ -137,7 +137,6 @@ export default {
   data(){
     return {
       token: localStorage.getItem("token"),
-      fromLogin: this.$route.query.fromLogin,
       tabbarList: true,
       tabbarEdit: false,
       tabbarMy: false,
@@ -227,12 +226,9 @@ export default {
         this.showInvalid = false;
         return
       }
-      //from
-      if(this.fromLogin){
-        this.showLoading = true;
-      }
       var _this = this;
       this.page = 0;
+      this.showLoading = true;  //显示loading
       var url = this.local+'/api/user/fp_list';
       this.data = {
         userid: this.token,

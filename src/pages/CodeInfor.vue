@@ -46,6 +46,24 @@ export default {
     XHeader,
     Qrcode
   },
+  beforeRouteEnter(to, from, next){
+    var fromparams = [];
+    if(from.name=='Billing'||from.name=='BillingCode'){
+      if(typeof(to.query.data)=='object'){
+        fromparams = to.query.data;
+      }else{
+        next();
+        return
+      }
+      next(vm => {
+        vm.data = fromparams;
+        vm.je = Number(vm.data.je).toFixed(2);
+        vm.qrcode = vm.data.url;
+      });
+    }else{
+      next();
+    }
+  },
   methods:{
     getData(){
       this.je = Number(this.data.je).toFixed(2);

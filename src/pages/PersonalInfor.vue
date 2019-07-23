@@ -182,7 +182,6 @@ export default {
     },
     //获取图片路径
     getObjectURL() {
-      this.showActionsheet = false;
       let file = document.getElementById('myImg').files[0];
       let url = null ;
       if(!file){

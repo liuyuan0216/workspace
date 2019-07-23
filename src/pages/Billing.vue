@@ -161,6 +161,7 @@ import Alert from 'vux/src/components/alert'
 import Confirm from 'vux/src/components/Confirm'
 import Loading from 'vux/src/components/Loading'
 import Toast from 'vux/src/components/toast'
+import wx from 'weixin-js-sdk'
 
 export default {
   name: 'Billing',
@@ -232,7 +233,8 @@ export default {
     Alert,
     Confirm,
     Loading,
-    Toast
+    Toast,
+    wx
   },
   watch:{
     radioStatus: function(newval, oldval){
