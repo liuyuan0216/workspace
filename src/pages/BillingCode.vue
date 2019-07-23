@@ -451,14 +451,6 @@ export default {
     margin-top: 46px;
     border-bottom: 0.01rem solid #f2f2f2;
   }
-  .billing_code .itemBillingFirst{
-    text-align: center;
-  }
-  .billing_code .itemBillingFirst p{
-    width: 100%;
-    font-size: 0.28rem;
-    color: #ff9900;
-  }
   .billing_code .listBilling{
     margin-bottom: 0.32rem;
   }
@@ -567,7 +559,7 @@ export default {
   }
   .billing_code .addGoodsList .goodsItem{
     font-size: 0.28rem;
-    color: #999;
+    color: #333;
     line-height: 0.6rem;
     width: 24%;
     text-align: center;

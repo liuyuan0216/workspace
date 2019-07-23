@@ -34,8 +34,8 @@
         <input type="text" class="rightInput" ref="ggxh" placeholder="请输入规格型号" v-model="goodsData.ggxh"/>
       </li>
       <li>
-        <p class="leftCon">计算单位</p>
-        <input type="text" class="rightInput" ref="jldw" placeholder="请输入计算单位" v-model="goodsData.jldw"/>
+        <p class="leftCon">计量单位</p>
+        <input type="text" class="rightInput" ref="jldw" placeholder="请输入计量单位" v-model="goodsData.jldw"/>
       </li>
     </ul>
     <ul class="commonList addUl">

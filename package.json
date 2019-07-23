@@ -22,7 +22,8 @@
     "vue-jsonp": "^0.1.8",
     "vue-router": "^3.0.1",
     "vuex": "^3.1.1",
-    "vux": "^2.9.4"
+    "vux": "^2.9.4",
+    "weixin-js-sdk": "^1.4.0-test"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -94,5 +95,19 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liuyuan0216/workspace.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liuyuan0216/workspace/issues"
+  },
+  "homepage": "https://github.com/liuyuan0216/workspace#readme"
 }

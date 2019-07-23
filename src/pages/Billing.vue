@@ -49,13 +49,15 @@
         </div>
       </li>
     </ul>
+    <div class="itemBillingFirst" @click="jumpTitleList">
+      <p>购方信息</p>
+      <span>+ 选择抬头</span>
+    </div>
     <ul class="commonList listBilling">
-      <li class="itemBillingFirst" @click="jumpTitleList">
-        <p>+ 选择抬头</p>
-      </li>
-      <li>
+      <li class="itemName">
         <p class="leftCon">名称</p>
         <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
+        <span class="iconCode" @click=""><img src="../assets/icon_code.png" /></span>
       </li>
       <li v-show="type_enterprises">
         <p class="leftCon">税号</p>
@@ -655,7 +657,7 @@ export default {
     //点击录入商品
     jumpAddGoods(){
       this.$router.push({path:'/add_goods'});
-    }
+    },
   },
   mounted () {
     this.locationData();  //local
@@ -677,7 +679,7 @@ export default {
     margin-top: 58px;
   }
   .billing .listBilling .rightInput{
-    width:4.5rem;
+    width:4.8rem;
   }
   .billing .billingTitle{
     font-size: 0.3rem;
@@ -690,19 +692,28 @@ export default {
     border-bottom: 0.01rem solid #f2f2f2;
   }
   .billing .itemBillingFirst{
-    text-align: center;
+    padding: 0.16rem 0.32rem;
+    display: flex;
   }
-  .itemBillingFirst p{
-    width: 100%;
-    font-size: 0.28rem;
+  .billing .itemBillingFirst p{
+    color: #333;
+    font-size: 0.3rem;
+    width: 2rem;
+  }
+  .billing .itemBillingFirst span{
     color: #ff9900;
+    font-size: 0.28rem;
   }
   .billing .listBilling{
     margin-bottom: 0.17rem;
   }
   .billing .listBilling li{
+    position: relative;
     height: 0.6rem !important;
     padding: 0.16rem 0 !important;
+  }
+  .billing .itemName .rightInput{
+    width: 4.2rem;
   }
   .rightLabel{
     color: #999;
@@ -718,7 +729,6 @@ export default {
     background: url("../assets/icon_radio.png") no-repeat;
     background-size: contain;
   }
-
   .rightLabel label.onClick{
     background: url("../assets/icon_radio_active.png") no-repeat;
     background-size: contain;
@@ -808,7 +818,7 @@ export default {
   }
   .billing .addGoodsList .goodsItem{
     font-size: 0.28rem;
-    color: #999;
+    color: #333;
     line-height: 0.6rem;
     width: 24%;
     text-align: center;
@@ -828,6 +838,13 @@ export default {
   }
   .spmc{
     width: 100%;
+  }
+  .iconCode{
+    position: absolute;
+    right:-0.1rem;
+  }
+  .iconCode img{
+    width:0.7rem;
   }
   /*back icon*/
   .header_left{
