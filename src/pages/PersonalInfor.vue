@@ -37,17 +37,7 @@
         <p class="leftCon">修改密码<b class="icon_arrow"></b></p>
       </li>
     </ul>
-    <button class="commonBtn" @click="clickOut">退出登录</button>
-
-    <confirm
-      v-model="showAlert"
-      title="提示"
-      confirm-text="确定"
-      cancel-text="取消"
-      @on-confirm="logout"
-    >
-      {{text}}
-    </confirm>
+    <button class="commonBtn" @click="uploadImg">保存</button>
     <confirm
       v-model="showInvalid"
       title="温馨提醒"
@@ -58,28 +48,18 @@
       {{text}}
     </confirm>
     <confirm
-      v-model="show"
-      :title="title"
-      confirm-text="确定"
+      v-model="showNoChange"
+      title="温馨提醒"
       :show-cancel-button="false"
+      :show-confirm-button="false"
     >
       {{text}}
     </confirm>
-
+    <loading v-model="showLoading" text=""></loading>
+    <toast v-model="showToast" type="text">保存成功</toast>
     <form id="form" method="post" enctype="multipart/form-data">
       <input type="file" hidden accept="image/*" id="myImg" name="myImg" @change="getObjectURL">
     </form>
-
-    <!--<div class="actionSheet" :class="showActionsheet?'show_actionSheet':''">
-      <div class="actionSheet_mark" v-show="showActionsheet" @click="hide_actionSheet"></div>
-      <div class="actionSheet_content" :class="showActionsheet?'show_options':''">
-        <div class="item_box">
-          <div class="item">从手机相册选择</div>
-          <div class="item">拍照</div>
-        </div>
-        <div class="cancel_action" @click="hide_actionSheet">取消</div>
-      </div>
-    </div>-->
   </view-box>
 </template>
 
@@ -88,6 +68,8 @@ import ViewBox from 'vux/src/components/view-box'
 import XHeader from 'vux/src/components/x-header'
 import Alert from 'vux/src/components/alert/index'
 import Confirm from 'vux/src/components/Confirm'
+import Loading from 'vux/src/components/Loading'
+import Toast from 'vux/src/components/toast'
 
 export default {
   name: 'PersonalInfor',
@@ -99,12 +81,12 @@ export default {
       company: localStorage.getItem("company"),
       invoice: localStorage.getItem("invoice"),
       show: false,
-      showAlert: false,
-      showActionsheet: false,
       showInvalid: false,
       popupsStatus: false,
+      showLoading: false,
+      showToast: false,
+      showNoChange: false,
       text: '',
-      title: '提示',
       fplx: ''
     }
   },
@@ -112,7 +94,9 @@ export default {
     ViewBox,
     XHeader,
     Alert,
-    Confirm
+    Confirm,
+    Loading,
+    Toast
   },
   methods:{
     //初始化显示
@@ -135,18 +119,9 @@ export default {
     clickPhoto(){
       document.getElementById("myImg").click();
     },
-    //取消
-    hide_actionSheet() {
-      this.showActionsheet = false;
-    },
     //重新登录
     goLogin(){
       this.$router.push({path:'/login'});
-    },
-    //点击退出
-    clickOut(){
-      this.showAlert = true;
-      this.text = '确定要退出登录吗？';
     },
     //弹窗显示
     showPopups(){
@@ -156,29 +131,13 @@ export default {
           this.show = false;
         }, 3000)
       }
-    },
-    //退出登录
-    logout(){
-      var _this = this;
-      var url = this.local+'/api/user/logout';
-      var data = {
-        userid: localStorage.getItem("token")
+      //没有操作的提示框
+      if(this.noChangeStatus){
+        this.showNoChange = true;
+        this.timer = setTimeout(() => {
+          this.showNoChange = false;
+        }, 1000)
       }
-      this.$ajaxjp(url, data, true, (response) =>{
-        if(response.errcode==0){
-          var local_storage = window.localStorage;
-          var session_storage = window.sessionStorage;
-          local_storage.clear();  //清除localStorage
-          session_storage.clear();  //清除sessionStorage
-          //退出后跳转到登录页
-          this.$router.push({path: '/login'});
-        }
-      },function (error) {
-        _this.popupsStatus = true;
-        _this.showPopups();
-        _this.title = '温馨提示';
-        _this.text = '网络异常';
-      });
     },
     //获取图片路径
     getObjectURL() {
@@ -211,13 +170,21 @@ export default {
         url = window.URL.createObjectURL(file) ;
       }
       this.img = url;
-      localStorage.setItem("img", url);
-      this.uploadImg();
+      //localStorage.setItem("img", url);
+      //this.uploadImg();
     },
     //上传修改后的头像
     uploadImg() {
       var _this = this;
       let file = document.getElementById('myImg').files[0];
+      if(!file){
+        this.noChangeStatus = true;
+        this.showPopups();
+        this.text = '还没做任何修改哦~';
+        return false
+      }else{
+        this.showLoading = true;
+      }
       var form = new FormData()
       var url = this.local + '/api/user/uploadImg';
       form.append("userid", localStorage.getItem("token"))
@@ -225,10 +192,16 @@ export default {
       this.$axios.post(url, form)
         .then(response => {
           if(response.data.errcode==0){
+            _this.showLoading = false;
+            _this.showToast = true;
             localStorage.setItem("img", response.data.imgUrl);
+            this.timer = setTimeout(() => {
+              this.$router.push({path:'/my'});
+            }, 800)
             return false
           }
           if(response.data.errcode==1003){   //登录用户失效
+            _this.showLoading = false;
             _this.showInvalid = true;
             _this.text = '登录用户失效，请重新登录';
             //登录失效 重置
@@ -237,14 +210,15 @@ export default {
             local_storage.clear();  //清除localStorage
             session_storage.clear();  //清除sessionStorage
           }else{
+            this.showLoading = false;
             this.popupsStatus = true;
             this.showPopups();
             this.text = response.data.errmsg;
           }
         }).catch(error=>{
+        _this.showLoading = false;
         _this.popupsStatus = true;
         _this.showPopups();
-        _this.title = '温馨提示';
         _this.text = '网络异常';
         console.log(error);
       })
@@ -316,57 +290,5 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-  .actionSheet{
-    visibility: hidden;
-    transition-delay: 0.2s;
-    text-align: center;
-    transition: .3s ease;
-  }
-  .actionSheet_mark{
-    background: rgba(0, 0, 0, 0.6);
-    width:100%;
-    height:100%;
-    position: fixed;
-    top: 0;
-    z-index: 2000;
-  }
-  .show_actionSheet{
-    visibility: visible;
-  }
-  .actionSheet_content{
-    width:100%;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 2001;
-    background-color: #EFEFF4;
-    visibility: hidden;
-    transform: translate(0,100%);
-    transition: .3s ease;
-    font-size: 0.34rem;
-    color: #333;
-  }
-  .show_options{
-    visibility: visible;
-    transform: translate(0,0%);
-  }
-  .actionSheet .item_box{
-    margin-bottom: 5px;
-  }
-  .actionSheet .cancel_action{
-    background: #fff;
-    padding: 10px 0;
-  }
-  .actionSheet .item:active,.actionSheet .cancel_action:active{
-    opacity: 0.7;
-  }
-  .actionSheet .item{
-    border-bottom: 0.01rem solid #f2f2f2;
-    padding: 10px 0;
-    background: #fff;
-  }
-  .actionSheet .item:last-child{
-    border: 0px;
   }
 </style>

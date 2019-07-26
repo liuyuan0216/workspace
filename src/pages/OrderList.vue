@@ -52,7 +52,7 @@
                   <span class="orderListConType">专用发票<b>{{item.create_time}}</b></span>
                 </p>
               </div>
-              <p class="orderListNoun">{{item.jshj}}</p>
+              <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
             </div>
           </li>
         </ul>
@@ -155,7 +155,8 @@ export default {
       page: 0,
       limit: 10,
       scrollTop: 0,
-      came: false
+      came: false,
+      readFlag: ''
     }
   },
   components:{
@@ -182,6 +183,10 @@ export default {
             vm.list = [];
             vm.showLoading = true;
             vm.listData();
+          }else{
+            var listIndex = sessionStorage.getItem("listIndex");
+            console.log(listIndex)
+            vm.list[listIndex].readFlag = '1';
           }
           return
         }else{
@@ -269,6 +274,7 @@ export default {
         _this.showLoading = false;
         _this.empty = false;
         _this.timeOut = true;
+        _this.list = [];
         console.log(error);
       });
     },
@@ -296,6 +302,24 @@ export default {
         console.log(error);
       });
     },
+    //更新已读列表
+    updateReadFlag(item,index){
+      var _this = this;
+      var url = this.local+'/api/user/updateReadFlag';
+      var data = {
+        userid: this.token,
+        id: item.id,
+        readFlag: '1'
+      }
+      this.$ajaxjp(url, data, true, (response) =>{
+        if(response.errcode==0){
+          this.$router.push({path:'/electronic_detail',query:{itemData:item,index:index}});
+        }
+      },function (error) {
+        _this.showLoading = false;
+        console.log(error);
+      });
+    },
     //重新登录
     goLogin(){
       this.$router.push({path:'/login'});
@@ -303,8 +327,9 @@ export default {
     //点击li查看详情
     jumpDetail(e,item,index){
       var type = e.currentTarget.getAttribute("data-type");
+      sessionStorage.setItem("listIndex",index);
       if(type=="t"){
-        this.$router.push({path:'/electronic_detail',query:{itemData:item,index:index}});
+        this.updateReadFlag(item,index);
       }else{
         this.$router.push({path:'/paper_detail',query:{itemData:item,index:index}});
       }
@@ -321,6 +346,11 @@ export default {
     //请重试
     tryAgain(){
       //this.reload();
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
       this.showLoading = true;
       this.listData();
       this.$refs.viewBox.scrollTo(0);
@@ -387,6 +417,7 @@ export default {
     border-bottom: 0.01rem solid #f2f2f2;
     width: 5.8rem;
     padding-bottom: 0.16rem;
+    position: relative;
   }
   .all_list .orderList li:last-child .orderListRight{
     border-bottom:none;
@@ -397,7 +428,7 @@ export default {
   .orderListConTitle{
     font-size: 0.3rem;
     line-height: 0.6rem;
-    font-weight: 600;
+    font-weight: 500;
     color: #000;
   }
   .orderListConName{
@@ -418,9 +449,9 @@ export default {
     padding-left: 0.1rem;
   }
   .orderListNoun{
-    font-size: 0.36rem;
+    font-size: 0.38rem;
     line-height: 0.6rem;
-    font-weight: 800;
+    font-weight: 600;
     width:30%;
     text-align: right;
   }
@@ -447,5 +478,15 @@ export default {
   .loadmore{
     position: relative;
     top: 0;
+  }
+  .redMark{
+    display: block;
+    background: #ff0000;
+    width: 0.145rem;
+    height: 0.145rem;
+    border-radius: 50%;
+    position: absolute;
+    top: -0.05rem;
+    right: -0.18rem;
   }
 </style>

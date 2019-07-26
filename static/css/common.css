@@ -124,6 +124,7 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
   width:1.6rem;
   font-size: 0.3rem;
   color: #333;
+  position: relative;
 }
 .rightCon{
   width: 5.5rem;
@@ -166,6 +167,13 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
   display: inline-block;
   vertical-align: top;
   margin-left: 0.1rem;
+}
+.leftLabel{
+  color: red;
+  font-size: 0.28rem;
+  position: absolute;
+  left: -0.18rem;
+  top: 0.04rem;
 }
 /*
   * express

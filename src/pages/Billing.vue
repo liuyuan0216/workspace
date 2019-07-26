@@ -55,12 +55,12 @@
     </div>
     <ul class="commonList listBilling">
       <li class="itemName">
-        <p class="leftCon">名称</p>
+        <p class="leftCon"><span class="leftLabel">*</span>名称</p>
         <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-        <span class="iconCode" @click=""><img src="../assets/icon_code.png" /></span>
+        <!--<span class="iconCode" @click=""><img src="../assets/icon_code.png" /></span>-->
       </li>
       <li v-show="type_enterprises">
-        <p class="leftCon">税号</p>
+        <p class="leftCon"><span class="leftLabel">*</span>税号</p>
         <input type="text" class="rightInput" placeholder="请输入税号" ref="sh" v-model="titleData.gfsh"/>
       </li>
       <li v-show="type_enterprises">
@@ -76,7 +76,7 @@
         <input type="number" class="rightInput" placeholder="请输入手机号码" ref="phone" v-model="titleData.phone"/>
       </li>
       <li v-show="type_t">
-        <p class="leftCon">邮箱地址</p>
+        <p class="leftCon"><span class="leftLabel">*</span>邮箱地址</p>
         <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
       </li>
       <li v-show="type_c">
@@ -94,7 +94,7 @@
     </ul>
     <div class="commonList listBilling">
       <div class="addGoodsTitle">
-        <p>商品</p>
+        <p><span class="leftLabel">*</span>商品</p>
         <p>数量</p>
         <p>含税单价</p>
         <p>含税金额</p>
@@ -113,8 +113,13 @@
           <p class="goodsItem je">{{item.je}}</p>
         </li>
       </ul>
-      <p class="addCon" @click="jumpAddGoods">点击录入商品</p>
+      <p class="addCon" @click="jumpEditGoods">点击录入商品</p>
     </div>
+    <ul class="commonList listBilling">
+      <li>
+        <input type="text" class="rightInput bzInput" ref="bz" placeholder="添加备注（选填）"/>
+      </li>
+    </ul>
     <div
       class="ftWrap"
       slot="bottom">
@@ -126,7 +131,7 @@
     </div>
     <confirm
       v-model="show"
-      :title="title"
+      title="温馨提醒"
       confirm-text="确定"
       :show-cancel-button="false"
     >
@@ -187,7 +192,7 @@ export default {
         }
       ],
       //alert
-      title: '温馨提示',
+      title: '',
       popupsStatus: false,
       show: false,
       text: '',
@@ -246,7 +251,7 @@ export default {
     },
     $route(to, from){
       if(to.name==='Billing'){
-        if(from.name=='AddGoods'){
+        if(from.name=='EditGoods'){
           //如果是需要记住位置的
           this.return = this.$route.query.return;
           if(this.return){
@@ -271,7 +276,7 @@ export default {
       next(vm => {
         vm.titleData = fromparams_title;
       });
-    }else if(from.name=='AddGoods'){
+    }else if(from.name=='EditGoods'){
       if(typeof(to.query.itemGoodsData)=='object'){
         fromparams_goods = to.query.itemGoodsData;
       }else{
@@ -279,6 +284,7 @@ export default {
           vm.price = 0;
           //如果是删除操作
           vm.deleteStatus = vm.$route.query.deleteStatus;
+          vm.index = vm.$route.query.index;
           if(vm.deleteStatus){
             vm.spxx.splice(vm.index,1);
           }
@@ -348,6 +354,7 @@ export default {
         ]
         vm.type_enterprises = true;
         vm.price = 0;
+        vm.$refs.bz.value = '';
       });
     }
   },
@@ -465,14 +472,15 @@ export default {
           email: this.$refs.email.value,
           phone: this.$refs.phone.value,
           receipt_address: this.$refs.receipt_address.value,
-          receiver: this.$refs.receiver.value
+          receiver: this.$refs.receiver.value,
+          bz: this.$refs.bz.value
         }
         this.$ajaxjp(url, data, true,(response) =>{
           if(response.errcode==0){
             this.showLoading = false;
             this.showToast = true;
             this.timer = setTimeout(() => {
-              this.$router.push({path:'/list'});
+              this.$router.push({path:'/success'});
             }, 500)
             return false
           }
@@ -495,7 +503,6 @@ export default {
           _this.showLoading = false;
           _this.popupsStatus = true;
           _this.showPopups();
-          _this.title = '温馨提示';
           _this.text = '网络异常';
           console.log(error);
         });
@@ -515,7 +522,6 @@ export default {
       if(!this.fpzl){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '发票类型不能为空';
         this.isDone = false;
         return false
@@ -524,7 +530,6 @@ export default {
       if(!this.title_type){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '抬头类型不能为空';
         this.isDone = false;
         return false
@@ -534,7 +539,6 @@ export default {
       if(!name){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '抬头名称不能为空';
         this.isDone = false;
         return false
@@ -544,7 +548,6 @@ export default {
         if(this.title_type==1){
           this.popupsStatus = true;
           this.showPopups();
-          this.title = '温馨提示';
           this.text = '税号不能为空';
           this.isDone = false;
           return false
@@ -555,7 +558,6 @@ export default {
         if(!email){
           this.popupsStatus = true;
           this.showPopups();
-          this.title = '温馨提示';
           this.text = '邮箱不能为空';
           this.isDone = false;
           return false
@@ -565,7 +567,6 @@ export default {
       if(this.spxx.length<1){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '商品不能为空';
         this.isDone = false;
         return false
@@ -574,7 +575,6 @@ export default {
       if(nameVal>100){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '输入名称超过最大限制';
         this.isDone = false;
         return false
@@ -586,28 +586,25 @@ export default {
           if(this.shFormat){
             this.popupsStatus = true;
             this.showPopups();
-            this.title = '温馨提示';
             this.text = this.shText;
             this.isDone = false;
             return false
           }
         }
       }
-      //银行账号长度
-      if(yhzhVal>100){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.title = '温馨提示';
-        this.text = '输入开户行及账号超过最大限制';
-        this.isDone = false;
-        return false
-      }
       //地址电话长度
       if(dzdhVal>100){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '输入地址电话超过最大限制';
+        this.isDone = false;
+        return false
+      }
+      //银行账号长度
+      if(yhzhVal>100){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '输入开户行及账号超过最大限制';
         this.isDone = false;
         return false
       }
@@ -617,7 +614,6 @@ export default {
         if(this.phoneFormat){
           this.popupsStatus = true;
           this.showPopups();
-          this.title = '温馨提示';
           this.text = this.phoneText;
           this.isDone = false;
           return false
@@ -629,7 +625,6 @@ export default {
         if(this.emailFormat){
           this.popupsStatus = true;
           this.showPopups();
-          this.title = '温馨提示';
           this.text = this.emailText;
           this.isDone = false;
           return false
@@ -639,7 +634,7 @@ export default {
     },
     //点击每个商品可编辑
     changeItem(data,index){
-      this.$router.push({path:'/add_goods',query:{itemChangeData: data, changeStatus: 'true', index:index}});
+      this.$router.push({path:'/edit_goods',query:{itemChangeData: data, changeStatus: 'true', index:index}});
     },
     //返回上一页
     goback(){
@@ -654,8 +649,8 @@ export default {
       this.$router.push({path:'/my_title_list'});
     },
     //点击录入商品
-    jumpAddGoods(){
-      this.$router.push({path:'/add_goods'});
+    jumpEditGoods(){
+      this.$router.push({path:'/edit_goods'});
     },
   },
   mounted () {
@@ -785,19 +780,20 @@ export default {
     font-size: 0.32rem;
   }
   .billing .addGoodsTitle{
+    padding: 0.16rem 0;
     display: flex;
     border-bottom: 0.01rem solid #f2f2f2;
   }
   .billing .addGoodsTitle p:first-child{
     width: 28%;
     text-align: left;
+    position: relative;
   }
   .billing .addGoodsTitle p{
     height: 0.6rem;
     font-size: 0.28rem;
     color: #333;
     width: 24%;
-    padding: 0.16rem 0;
     line-height: 0.6rem;
     text-align: center;
   }
@@ -844,6 +840,10 @@ export default {
   }
   .iconCode img{
     width:0.7rem;
+  }
+  .billing .bzInput{
+    width: 100% !important;
+    color: #333;
   }
   /*back icon*/
   .header_left{

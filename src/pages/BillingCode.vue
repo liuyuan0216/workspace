@@ -6,6 +6,7 @@
       :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
       <p slot="left" class="header_left" @click="goback"></p>
+      <p slot="right" class="header_right" @click="jumpAlone">单明细开票</p>
       <h2 class="header_title">开票</h2>
     </x-header>
     <ul class="commonList listBilling BillingTop">
@@ -34,7 +35,7 @@
     </ul>
     <div class="commonList listBilling">
       <div class="addGoodsTitle">
-        <p>商品</p>
+        <p><span class="leftLabel">*</span>商品</p>
         <p>数量</p>
         <p>含税单价</p>
         <p>含税金额</p>
@@ -55,6 +56,11 @@
       </ul>
       <p class="addCon" @click="jumpAddGoods">点击录入商品</p>
     </div>
+    <ul class="commonList listBilling">
+      <li>
+        <input type="text" class="rightInput bzInput" ref="bz" placeholder="添加备注（选填）"/>
+      </li>
+    </ul>
     <div
       class="ftWrap"
       slot="bottom">
@@ -66,7 +72,7 @@
     </div>
     <confirm
       v-model="show"
-      :title="title"
+      title="温馨提醒"
       confirm-text="确定"
       :show-cancel-button="false"
     >
@@ -180,19 +186,8 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next){
-    var fromparams_title = [];
     var fromparams_goods = [];
-    if(from.name=='MyTitleList'){
-      if(typeof(to.query.itemTitleData)=='object'){
-        fromparams_title = to.query.itemTitleData;
-      }else{
-        next();
-        return
-      }
-      next(vm => {
-        vm.titleData = fromparams_title;
-      });
-    }else if(from.name=='AddGoods'){
+    if(from.name=='EditGoods'){
       if(typeof(to.query.itemGoodsData)=='object'){
         fromparams_goods = to.query.itemGoodsData;
       }else{
@@ -257,6 +252,7 @@ export default {
         //重置抬头类型
         vm.type_enterprises = true;
         vm.price = 0;
+        vm.$refs.bz.value = '';
       });
     }
   },
@@ -269,6 +265,8 @@ export default {
     //初始化请求数据
     getData(){
       this.showLoading = false;
+      //标记所操作的页面
+      sessionStorage.setItem("codeModeType","more");
     },
     //发票类型
     checkFp(item){
@@ -342,7 +340,8 @@ export default {
         var data = {
           userid: localStorage.getItem("token"),
           fpzl: 't',
-          spxx: listData
+          spxx: listData,
+          bz: this.$refs.bz.value
         }
         this.$ajaxjp(url, data, true,(response) =>{
           if(response.errcode==0){
@@ -372,7 +371,6 @@ export default {
           _this.showLoading = false;
           _this.popupsStatus = true;
           _this.showPopups();
-          _this.title = '温馨提示';
           _this.text = '网络异常';
           console.log(error);
         });
@@ -384,7 +382,6 @@ export default {
       if(!this.fpzl){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '发票类型不能为空';
         this.isDone = false;
         return false
@@ -393,7 +390,6 @@ export default {
       if(this.spxx.length<1){
         this.popupsStatus = true;
         this.showPopups();
-        this.title = '温馨提示';
         this.text = '商品不能为空';
         this.isDone = false;
         return false
@@ -402,7 +398,7 @@ export default {
     },
     //点击每个商品可编辑
     changeItem(data,index){
-      this.$router.push({path:'/add_goods',query:{itemChangeData: data, changeStatus: 'true', index:index}});
+      this.$router.push({path:'/edit_goods',query:{itemChangeData: data, changeStatus: 'true', index:index}});
     },
     //返回上一页
     goback(){
@@ -414,7 +410,11 @@ export default {
     },
     //点击录入商品
     jumpAddGoods(){
-      this.$router.push({path:'/add_goods'});
+      this.$router.push({path:'/edit_goods'});
+    },
+    //跳转单明细开票
+    jumpAlone(){
+      this.$router.push({path:'/billing_code_alone'});
     }
   },
   mounted () {
@@ -451,9 +451,6 @@ export default {
   }
   .billing_code .listBilling{
     margin-bottom: 0.32rem;
-  }
-  .billing_code .listBilling li{
-    padding: 0.24rem 0;
   }
   .rightLabel{
     color: #999;
@@ -527,18 +524,19 @@ export default {
     font-size: 0.32rem;
   }
   .billing_code .addGoodsTitle{
+    padding: 0.24rem 0;
     display: flex;
     border-bottom: 0.01rem solid #f2f2f2;
   }
   .billing_code .addGoodsTitle p:first-child{
     width: 28%;
     text-align: left;
+    position: relative;
   }
   .billing_code .addGoodsTitle p{
     font-size: 0.28rem;
     color: #333;
     width: 24%;
-    padding: 0.24rem 0;
     line-height: 0.6rem;
     text-align: center;
   }
@@ -577,6 +575,10 @@ export default {
   }
   .spmc{
     width: 100%;
+  }
+  .billing_code .bzInput{
+    width: 100% !important;
+    color: #333;
   }
   /*back icon*/
   .header_left{

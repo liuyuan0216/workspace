@@ -264,7 +264,6 @@ export default {
       },function (error) {
         _this.popupsStatus = true;
         _this.showPopups();
-        _this.title = '温馨提示';
         _this.text = '网络异常';
         console.log(error);
       });

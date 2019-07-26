@@ -11,7 +11,7 @@
 
     <ul class="commonList marginTop">
       <li>
-        <p class="leftCon">公司名称</p>
+        <p class="leftCon"><span class="leftLabel">*</span>公司名称</p>
         <input type="text" class="rightInput" placeholder="请输入公司名称" v-model="data.gfname" ref="gfname" />
       </li>
       <li>
@@ -29,7 +29,7 @@
     </ul>
     <ul class="titleList commonList">
       <li>
-        <p class="leftCon">邮箱</p>
+        <p class="leftCon"><span class="leftLabel">*</span>邮箱</p>
         <input type="text" class="rightInput" placeholder="请输入邮箱" v-model="data.email" ref="email" />
       </li>
       <!--<li>

@@ -7,6 +7,7 @@ import OrderList from '@/pages/OrderList'
 import Entrust from '@/pages/Entrust'
 import Billing from '@/pages/Billing'
 import BillingCode from '@/pages/BillingCode'
+import BillingCodeAlone from '@/pages/BillingCodeAlone'
 import My from '@/pages/My'
 
 import ForgetPassword from '@/pages/ForgetPassword'
@@ -27,9 +28,12 @@ import ExpressList from '@/pages/ExpressList'
 import TitleEdit from '@/pages/TitleEdit'
 import TitleInfor from '@/pages/TitleInfor'
 import CodeInfor from '@/pages/CodeInfor'
+import EditGoods from '@/pages/EditGoods'
 import AddGoods from '@/pages/AddGoods'
+import AddTitle from '@/pages/AddTitle'
 import Privacy from '@/pages/Privacy'
 import About from '@/pages/About'
+import Success from '@/pages/Success'
 
 Vue.use(Router)
 
@@ -93,6 +97,11 @@ export default new Router({
       meta: {
         keepAlive: true // 需要被缓存
       }
+    },
+    {  //二维码开票 单条
+      path: '/billing_code_alone',
+      name: 'BillingCodeAlone',
+      component: BillingCodeAlone
     },
     {  //抬头列表
       path: '/title_list',
@@ -176,9 +185,19 @@ export default new Router({
       }
     },
     {  //开票-选择商品
+      path: '/edit_goods',
+      name: 'EditGoods',
+      component: EditGoods
+    },
+    {  //添加商品
       path: '/add_goods',
       name: 'AddGoods',
       component: AddGoods
+    },
+    {  //添加抬头
+      path: '/add_title',
+      name: 'AddTitle',
+      component: AddTitle
     },
     {  //隐私政策
       path: '/privacy',
@@ -189,6 +208,11 @@ export default new Router({
       path: '/about',
       name: 'About',
       component: About
+    },
+    {  //开票成功
+      path: '/success',
+      name: 'Success',
+      component: Success
     }
   ]
 })

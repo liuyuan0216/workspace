@@ -23,7 +23,11 @@
       </li>
       <li @click="jumpMyTitle">
         <img src="../assets/icon_my_ttxx.png" />
-        <p class="leftCon">我的抬头信息<b class="icon_arrow"></b></p>
+        <p class="leftCon">抬头信息<b class="icon_arrow"></b></p>
+      </li>
+      <li @click="jumpGoodsTitle">
+        <img src="../assets/icon_my_spxx.png" />
+        <p class="leftCon">商品信息<b class="icon_arrow"></b></p>
       </li>
     </ul>
     <ul class="passwordList">
@@ -35,6 +39,11 @@
         <img src="../assets/icon_my_gy.png" />
         <p class="leftCon">关于<span class="versionNum">版本&nbsp;{{this.version}}<b class="icon_arrow"></b></span></p>
       </li>
+    </ul>
+    <ul class="passwordList">
+        <li>
+          <p class="signoutCon" @click="clickOut">退出登录</p>
+        </li>
     </ul>
 
     <tabbar
@@ -73,6 +82,15 @@
     >
       {{text}}
     </confirm>
+    <confirm
+      v-model="showAlert"
+      title="提示"
+      confirm-text="确定"
+      cancel-text="取消"
+      @on-confirm="logout"
+    >
+      {{text}}
+    </confirm>
   </view-box>
 </template>
 
@@ -95,7 +113,9 @@ export default {
       tabbarEdit: false,
       tabbarMy: true,
       show: false,
+      showAlert: false,
       showAlertLogin: false,
+      popupsStatus: false,
       text: ''
     }
   },
@@ -158,7 +178,55 @@ export default {
       }
       this.$router.push({path:'/about'})
     },
-
+    jumpGoodsTitle(){  //商品信息
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/goods_list',query:{isMy:"true"}})
+    },
+    //弹窗显示
+    showPopups(){
+      if(this.popupsStatus){
+        this.show = true;
+        this.timer = setTimeout(() => {
+          this.show = false;
+        }, 3000)
+      }
+    },
+    //点击退出
+    clickOut(){
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.showAlert = true;
+      this.text = '确定要退出登录吗？';
+    },
+    //退出登录
+    logout(){
+      var _this = this;
+      var url = this.local+'/api/user/logout';
+      var data = {
+        userid: localStorage.getItem("token")
+      }
+      this.$ajaxjp(url, data, true, (response) =>{
+        if(response.errcode==0){
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          //退出后跳转到登录页
+          this.$router.push({path: '/login'});
+        }
+      },function (error) {
+        _this.popupsStatus = true;
+        _this.showPopups();
+        _this.text = '网络异常';
+      });
+    },
     /* ~~ */
     jumpMyService(){  //我的服务
       if(!this.token){
@@ -255,5 +323,10 @@ export default {
     line-height: 0.6rem;
     display: flex;
     align-items: center;
+  }
+  .signoutCon{
+    text-align: center;
+    font-size: 0.3rem;
+    width: 100%;
   }
 </style>

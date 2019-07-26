@@ -6,7 +6,9 @@
       :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
       <p slot="left" class="header_left" @click="goback"></p>
-      <h2 class="header_title">我的发票抬头</h2>
+      <p slot="right" class="header_right" v-if="isMy=='true'" @click="jumpAddTitle">添加抬头</p>
+      <h2 class="header_title" v-if="!isMy">选择抬头</h2>
+      <h2 class="header_title" v-if="isMy=='true'">我的发票抬头</h2>
     </x-header>
     <v-loadmore
       :top-method="loadTop"
@@ -215,6 +217,10 @@ export default {
       }else{
         this.$router.go(-1);
       }
+    },
+    //添加抬头
+    jumpAddTitle(){
+      this.$router.push({path:'/add_title'});
     }
   },
   mounted () {

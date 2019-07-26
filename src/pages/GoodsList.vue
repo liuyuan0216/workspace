@@ -5,7 +5,9 @@
       class="header"
       :left-options= "{showBack:true, backText:''}"
     >
-      <h2 class="header_title">选择商品</h2>
+      <p slot="right" class="header_right" v-if="isMy=='true'" @click="jumpAddGoods">添加商品</p>
+      <h2 class="header_title" v-if="!isMy">选择商品</h2>
+      <h2 class="header_title" v-if="isMy=='true'">我的商品信息</h2>
     </x-header>
     <v-loadmore
       :top-method="loadTop"
@@ -76,6 +78,7 @@ export default {
   name: 'GoodsList',
   data(){
     return{
+      isMy: this.$route.query.isMy,
       list: [],
       showInvalid: false,
       text: '',
@@ -104,7 +107,7 @@ export default {
   inject: ['reload'],
   methods:{
     //列表数据
-    listData() {
+    listData(){
       this.showLoading = true;
       var _this = this;
       this.page = 0;
@@ -173,7 +176,11 @@ export default {
     },
     //选择商品
     jumpBilling(item,index){
-      this.$router.push({path:'/add_goods',query:{itemGoodsData:item,itemGoodsIndex:index}});
+      if(!this.isMy){
+        this.$router.push({path:'/edit_goods',query:{itemGoodsData:item,itemGoodsIndex:index}});
+      }else{
+        this.$router.push({path:'/add_goods',query:{itemGoodsData:item}});
+      }
     },
     //下拉加载更多
     loadBottom(){
@@ -194,6 +201,10 @@ export default {
     },
     handleTopChange(status){
       this.topStatus = status;
+    },
+    //跳转添加商品
+    jumpAddGoods(){
+      this.$router.push({path:'/add_goods'});
     }
   },
   mounted () {

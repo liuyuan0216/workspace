@@ -36,6 +36,10 @@
         <p class="leftCon">发票代码</p>
         <p class="rightCon" ref="fpdm">{{data.fpdm||'无'}}</p>
       </li>
+      <li>
+        <p class="leftCon">备注</p>
+        <p class="rightCon" ref="bz">{{data.bz||'暂无'}}</p>
+      </li>
     </ul>
     <div v-if="data.qrcode_url">
       <p class="detailMag qrcodeCon">扫描二维码</p>
@@ -45,7 +49,7 @@
       <p class="detailMag">接收信息</p>
       <ul class="commonList">
         <li>
-          <p class="leftCon">电子邮箱</p>
+          <p class="leftCon"><span class="leftLabel">*</span>电子邮箱</p>
           <input type="text" class="rightInput" placeholder="请输入邮箱地址" v-model="data.email" ref="email" />
         </li>
       </ul>

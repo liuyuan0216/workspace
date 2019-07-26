@@ -19,7 +19,7 @@
       <li @click="jumpBilling">
         <img class="entrustIcon" src="../assets/icon_verb_edit.png" />
         <div class="entrustInfor">
-          <h3 class="entrustType">手工填写</h3>
+          <h3 class="entrustType">手工填开</h3>
           <p class="entrustTypeCon">自己填写开票信息更精准</p>
         </div>
       </li>
@@ -148,7 +148,7 @@ export default {
         return false;
       }else{
         localStorage.setItem("modeType", "0");
-        this.$router.push({path:'/billing_code'});
+        this.$router.push({path:'/billing_code_alone'});
       }
     }
   }
