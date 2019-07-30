@@ -12,37 +12,37 @@
     <ul class="commonList marginTop">
       <li>
         <p class="leftCon"><span class="leftLabel">*</span>公司名称</p>
-        <input type="text" class="rightInput" placeholder="请输入公司名称" v-model="data.gfname" ref="gfname" />
+        <input type="text" class="rightInput" placeholder="请输入公司名称" v-model="titleData.gfname" ref="gfname" />
       </li>
       <li>
         <p class="leftCon">税号</p>
-        <input type="text" class="rightInput" placeholder="请输入税号" v-model="data.gfsh" ref="gfsh" />
+        <input type="text" class="rightInput" placeholder="请输入税号" v-model="titleData.gfsh" ref="gfsh" />
       </li>
       <li>
         <p class="leftCon">地址电话</p>
-        <input type="text" class="rightInput" placeholder="请输入地址电话" v-model="data.gfdzdh" ref="gfdzdh">
+        <input type="text" class="rightInput" placeholder="请输入地址电话" v-model="titleData.gfdzdh" ref="gfdzdh">
       </li>
       <li>
         <p class="leftCon">开户行及账号</p>
-        <input type="text" class="rightInput" placeholder="请输入开户行及账号" v-model="data.gfyhzh" ref="gfyhzh" />
+        <input type="text" class="rightInput" placeholder="请输入开户行及账号" v-model="titleData.gfyhzh" ref="gfyhzh" />
       </li>
     </ul>
     <ul class="titleList commonList">
       <li>
         <p class="leftCon"><span class="leftLabel">*</span>邮箱</p>
-        <input type="text" class="rightInput" placeholder="请输入邮箱" v-model="data.email" ref="email" />
+        <input type="text" class="rightInput" placeholder="请输入邮箱" v-model="titleData.email" ref="email" />
       </li>
       <!--<li>
         <p class="leftCon">收货地址</p>
-        <input class="rightInput" placeholder="请输入收货地址" v-model="list.receipt_address" ref="receipt_address">
+        <input class="rightInput" placeholder="请输入收货地址" v-model="titleData.receipt_address" ref="receipt_address">
       </li>
       <li>
         <p class="leftCon">收货人</p>
-        <input class="rightInput" placeholder="请输入收货人" v-model="list.receiver" ref="receiver" />
+        <input class="rightInput" placeholder="请输入收货人" v-model="titleData.receiver" ref="receiver" />
       </li>-->
       <li>
         <p class="leftCon">联系电话</p>
-        <input type="number" class="rightInput" placeholder="请输入联系电话" v-model="data.phone" ref="phone" />
+        <input type="number" class="rightInput" placeholder="请输入联系电话" v-model="titleData.phone" ref="phone" />
       </li>
     </ul>
     <button class="commonBtn" @click="save">保存</button>
@@ -88,7 +88,7 @@ export default {
   name: 'TitleEdit',
   data() {
     return {
-      data: [],
+      titleData: [],
       itemData: this.$route.query.itemData,
       itemId: this.$route.query.id,
       isDone: false,
@@ -132,7 +132,7 @@ export default {
     },
     //获取数据
     getData(){
-      this.data = this.itemData;
+      this.titleData = this.itemData;
     },
     //点击保存
     save(){
@@ -161,7 +161,7 @@ export default {
               if(this.fromList){
                 this.$router.push({path:'/my_title_list?isMy=true'});
               }else{
-                this.$router.push({path:'/title_infor',query:{'itemData': this.data}});
+                this.$router.push({path:'/title_infor',query:{'itemData': data}});
               }
             }, 500)
             return false
@@ -280,7 +280,7 @@ export default {
       if(this.fromList){
         this.$router.push({path:'/my_title_list?isMy=true'});
       }else{
-        this.$router.push({path:'/title_infor',query:{'itemData': this.data}});
+        this.$router.push({path:'/title_infor',query:{'itemData': this.titleData}});
       }
     }
   },

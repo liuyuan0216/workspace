@@ -13,12 +13,12 @@
         <div class="addBtns">
           <button
             class="addBtnItem"
-            :class="title_type==1?'activeBtn':''"
+            :class="title_type==2?'activeBtn':''"
             @click="checkedEnterprises"
           >企业</button>
           <button
             class="addBtnItem"
-            :class="title_type==0?'activeBtn':''"
+            :class="title_type==1?'activeBtn':''"
             @click="checkedPersonal"
           >个人</button>
         </div>
@@ -80,7 +80,7 @@ export default {
       showToast: false,
       popupsStatus: false,
       timer: null,
-      title_type: 1,
+      title_type: 2,
       type_personal_show: true
     }
   },
@@ -103,11 +103,11 @@ export default {
     },
     //切换类型
     checkedEnterprises(){
-      this.title_type = 1;
+      this.title_type = 2;
       this.type_personal_show = true;
     },
     checkedPersonal(){
-      this.title_type = 0;
+      this.title_type = 1;
       this.type_personal_show = false;
     },
     //保存
@@ -177,7 +177,7 @@ export default {
       }
       //税率
       if(!sh){
-        if(this.title_type==1){
+        if(this.title_type==2){
           this.popupsStatus = true;
           this.showPopups();
           this.text = '税号不能为空';
@@ -195,7 +195,7 @@ export default {
       }
       //税号格式判断
       if(sh){
-        if(this.title_type == 1){
+        if(this.title_type == 2){
           this.isSh(sh);
           if (this.shFormat) {
             this.popupsStatus = true;

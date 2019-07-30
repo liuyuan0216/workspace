@@ -39,6 +39,14 @@
     </ul>
     <button class="commonBtn" @click="uploadImg">保存</button>
     <confirm
+      v-model="show"
+      title="温馨提醒"
+      confirm-text="确定"
+      :show-cancel-button="false"
+    >
+      {{text}}
+    </confirm>
+    <confirm
       v-model="showInvalid"
       title="温馨提醒"
       confirm-text="去重新登录"

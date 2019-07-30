@@ -52,6 +52,7 @@ export default {
       fphm: this.$route.query.fphm,
       fpdm: this.$route.query.fpdm,
       email: this.$route.query.email,
+      pdf_id: this.$route.query.pdf_id,
       isDone: false,
       popupsStatus: false,
       show: false,
@@ -92,7 +93,8 @@ export default {
           userid: localStorage.getItem("token"),
           fphm: this.fphm,  //号码
           fpdm: this.fpdm,  //代码
-          email: this.$refs.email.value
+          email: this.$refs.email.value,
+          pdf_id: this.pdf_id
         }
         this.$ajaxjp(url, data, true, (response) =>{
           if(response.errcode==0){
@@ -118,6 +120,12 @@ export default {
             this.popupsStatus = true;
             this.showPopups();
             this.text = '交付数据不存在';
+          }
+          if(response.errcode==2015){   //pdf_id不能为空
+            this.showLoading = false;
+            this.popupsStatus = true;
+            this.showPopups();
+            this.text = '';
           }else{
             this.showLoading = false;
             this.popupsStatus = true;
@@ -139,21 +147,6 @@ export default {
     },
     //表单验证
     submit(){
-      //发票号码
-      if(!this.fphm){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.text = '发票号码不能为空';
-        return false
-      }
-      //发票代码
-      if(!this.fpdm){
-        this.popupsStatus = true;
-        this.showPopups();
-        this.text = '发票代码不能为空';
-        this.isDone = false;
-        return false
-      }
       //邮箱
       if(!this.$refs.email.value){
         this.popupsStatus = true;
@@ -167,6 +160,14 @@ export default {
         this.popupsStatus = true;
         this.showPopups();
         this.text = this.emailText;
+        this.isDone = false;
+        return false
+      }
+      //pdf_id为空的话
+      if(!this.pdf_id){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = 'PDF文件没有生成';
         this.isDone = false;
         return false
       }

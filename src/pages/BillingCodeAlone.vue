@@ -26,7 +26,7 @@
       <p class="codeAloneTitle">金额<span class="leftLabel">*</span></p>
       <div class="codeAloneNum">
         <p class="leftCon">¥</p>
-        <input type="number" class="rightInput" ref="spje" @change="spjeNum($event)"/>
+        <input type="number" class="rightInput" placeholder="请输入商品金额" ref="spje" @change="spjeNum($event)"/>
       </div>
     </div>
     <ul class="commonList listBilling">
@@ -230,6 +230,13 @@ export default {
         this.isDone = false;
         return false
       }
+      if(this.$refs.spje.value=="0.00"){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '请正确填写含税金额';
+        this.isDone = false;
+        return false
+      }
       return this.isDone = true;
     },
     //返回上一页
@@ -304,7 +311,7 @@ export default {
     background: url("../assets/icon_task.png") no-repeat right center transparent;
   }
   .codeAloneJe{
-    padding-top: 0.32rem;
+    padding: 0.32rem 0.32rem;
     margin-bottom: 0.32rem;
   }
   .codeAloneNum{

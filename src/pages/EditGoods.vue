@@ -137,7 +137,10 @@ export default {
       next(vm => {
         vm.goodsData = fromparams_goods;
         vm.slv = Number(vm.goodsData.slv)*100+'%';
-        vm.spdj = vm.goodsData.spdj;
+        vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
+        if(vm.spdj=='0.00'){
+          vm.spdj = '';
+        }
         vm.spsl = '';
         vm.price = '';
       });
@@ -152,7 +155,7 @@ export default {
         vm.modeType = localStorage.getItem("modeType");
         vm.goodsData = fromparams_change;
         vm.slv = vm.goodsData.slv;
-        vm.spdj = vm.goodsData.spdj;
+        vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
         vm.spsl = vm.goodsData.spsl;
         vm.price = vm.goodsData.je;
       });
@@ -169,56 +172,76 @@ export default {
     //change单价和数量
     spdjNum(e){
       if(e.currentTarget.value){
-        this.spdj = Number(e.currentTarget.value).toFixed(2);
+        this.spdj = Number(e.currentTarget.value).toFixed(2).toString();
         //如果有单价和数量 计算总额
         if(this.spsl){
-          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2);
+          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2).toString();
           return false
         }
         //如果有总额 计算数量
         if(this.price){
-          this.spsl = (Number(this.price)/Number(this.spdj));
+          //任何数除以0 报错的情况下
+          if(this.spdj=='0.00'||this.spdj=='0'){
+            this.spsl = '0.00';
+            return
+          }
+          this.spsl = (Number(this.price)/Number(this.spdj)).toString();
           //如果存在小数
           if((this.spsl).toString().split(".")[1]){
             if((this.spsl).toString().split(".")[1].length>6){
-              this.spsl = (this.spsl).toFixed(6);
+              this.spsl = Number(this.spsl).toFixed(6).toString();
             }
           }
         }
       }else{
-        this.spdj = (Number(this.price)/Number(this.spsl));
+        //任何数除以0 报错的情况下
+        if(this.spsl=='0.00'||this.spsl=='0'){
+          this.spdj = '0.00';
+          return
+        }
+        this.spdj = (Number(this.price)/Number(this.spsl)).toString();
         //如果存在小数
         if((this.spdj).toString().split(".")[1]){
           if((this.spdj).toString().split(".")[1].length>6){
-            this.spdj = (this.spdj).toFixed(6);
+            this.spdj = Number(this.spdj).toFixed(6).toString();
           }
         }
       }
     },
     spslNum(e){
       if(e.currentTarget.value){
-        this.spsl = Number(e.currentTarget.value).toFixed(2);
+        this.spsl = Number(e.currentTarget.value).toFixed(2).toString();
         //如果有单价和数量 计算总额
-        if(this.spdj){
-          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2);
+        if(this.spsl){
+          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2).toString();
           return false
         }
         //如果有总额 计算单价
         if(this.price){
-          this.spdj = (Number(this.price)/Number(this.spsl));
+          //任何数除以0 报错的情况下
+          if(this.spsl=='0.00'||this.spsl=='0'){
+            this.spdj = '0.00';
+            return
+          }
+          this.spdj = (Number(this.price)/Number(this.spsl)).toString();
           //如果存在小数
           if((this.spdj).toString().split(".")[1]){
             if((this.spdj).toString().split(".")[1].length>6){
-              this.spdj = (this.spdj).toFixed(6);
+              this.spdj = Number(this.spdj).toFixed(6).toString();
             }
           }
         }
       }else{
-        this.spsl = (Number(this.price)/Number(this.spdj));
+        //任何数除以0 报错的情况下
+        if(this.spdj=='0.00'||this.spdj=='0'){
+          this.spsl = '0.00';
+          return
+        }
+        this.spsl = (Number(this.price)/Number(this.spdj)).toString();
         //如果存在小数
         if((this.spsl).toString().split(".")[1]){
           if((this.spsl).toString().split(".")[1].length>6){
-            this.spsl = (this.spsl).toFixed(6);
+            this.spsl = Number(this.spsl).toFixed(6).toString();
           }
         }
       }
@@ -226,31 +249,40 @@ export default {
     //金额控制数量
     jeNum(e){
       if(e.currentTarget.value){
-        this.price = Number(e.currentTarget.value).toFixed(2);
+        this.price = Number(e.currentTarget.value).toFixed(2).toString();
         //如果有总额和数量 计算单价
-        if(this.spsl){
-          this.spdj = Number(this.price)/Number(this.spsl);
+        if(Number(this.spsl)){
+          //任何数除以0 报错的情况下
+          if(this.spsl.toString()=='0.00'||this.spsl.toString()=='0'){
+            this.spdj = '0.00';
+            return
+          }
+          this.spdj = (Number(this.price)/Number(this.spsl)).toString();
           //如果存在小数
           if((this.spdj).toString().split(".")[1]){
             if((this.spdj).toString().split(".")[1].length>6){
-              this.spdj = (this.spdj).toFixed(6);
+              this.spdj = Number(this.spdj).toFixed(6).toString();
             }
           }
-          return false
         }
         //如果有总额和单价 计算数量
-        if(this.spdj){
-          this.spsl = Number(this.price)/Number(this.spdj);
+        if(Number(this.spdj)){
+          //任何数除以0 报错的情况下
+          if(this.spdj.toString()=='0.00'||this.spdj.toString()=='0'){
+            this.spsl = '0.00';
+            return
+          }
+          this.spsl = (Number(this.price)/Number(this.spdj)).toString();
           //如果存在小数
           if((this.spsl).toString().split(".")[1]){
             if((this.spsl).toString().split(".")[1].length>6){
-              this.spsl = (this.spsl).toFixed(6);
+              this.spsl = Number(this.spsl).toFixed(6).toString();
             }
           }
         }
       }else{
-        if(this.spdj&&this.spsl){
-          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2);
+        if(this.spdj!=''&&this.spsl!=''){
+          this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2).toString();
         }
       }
     },
@@ -332,6 +364,20 @@ export default {
         this.popupsStatus = true;
         this.showPopups();
         this.text = '含税金额不能为空';
+        this.isDone = false;
+        return false
+      }
+      if(this.price=="0.00"){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '请正确填写含税金额';
+        this.isDone = false;
+        return false
+      }
+      if(this.spdj=="0.00"||this.spdj=="0"){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '请正确填写含税单价';
         this.isDone = false;
         return false
       }

@@ -9,7 +9,7 @@
     </x-header>
     <div class="detailStatus marginTop">
       <p class="detailStatusCon" v-if="data.sign==1">电子发票已开具<span>{{data.kprq}}</span></p>
-      <span class="detailChakan" v-if="data.sign==1" @click="toView">查看<b class="icon_arrow"></b></span>
+      <span class="detailChakan" v-if="data.sign==1" @click="toView">查看发票<b class="icon_arrow"></b></span>
 
       <p class="detailStatusCon detailStatusNull" v-if="data.sign==0">发票未开具</p>
     </div>
@@ -18,6 +18,7 @@
     <ul class="commonList">
       <li>
         <p class="leftCon">抬头信息</p>
+        <input hidden v-model="data.pdf_id" ref="pdf_id" />
         <p class="rightCon overflowCon">{{data.gfmc||'暂无'}}</p>
       </li>
       <li>
@@ -155,6 +156,13 @@ export default {
     },
     //查看开具
     toView(){
+      if(!this.data.url){  //pdf为空的话
+        this.showLoading = false;
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '版式文件未生成，请稍后重试';
+        return false
+      }
       this.viewStatus = true;
     },
     //关闭开具弹窗
@@ -172,7 +180,8 @@ export default {
           userid: localStorage.getItem("token"),
           fphm: this.$refs.fphm.innerHTML,  //号码
           fpdm: this.$refs.fpdm.innerHTML,  //代码
-          email: this.$refs.email.value
+          email: this.$refs.email.value,
+          pdf_id: this.$refs.pdf_id.value
         }
         this.$ajaxjp(url, data, true, (response) =>{
           if(response.errcode==0){
@@ -243,6 +252,14 @@ export default {
         this.popupsStatus = true;
         this.showPopups();
         this.text = this.emailText;
+        this.isDone = false;
+        return false
+      }
+      //pdf_id为空的话
+      if(!this.$refs.pdf_id.value){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '版式文件未生成，请稍后重试';
         this.isDone = false;
         return false
       }

@@ -37,7 +37,7 @@
       </li>
       <li>
         <p class="leftCon">商品单价</p>
-        <input type="number" class="rightInput" ref="spdj" placeholder="请输入商品单价" v-model="goodsData.spdj" />
+        <input type="number" class="rightInput" ref="spdj" placeholder="请输入商品单价" v-model="spdj" @change="spdjNum($event)" />
       </li>
     </ul>
     <button class="commonBtn" @click="conserve">保存</button>
@@ -74,7 +74,8 @@ export default {
       timer: null,
       goodsData: [],
       itemGoodsData: this.$route.query.itemGoodsData,
-      slv: '13%'
+      slv: '13%',
+      spdj: ''
     }
   },
   components:{
@@ -84,7 +85,32 @@ export default {
     Loading,
     Toast
   },
+  beforeRouteEnter(to, from, next){
+    var fromparams_goods = [];
+    if(from.name=='GoodsList'){
+      if(typeof(to.query.itemGoodsData)=='object'){
+        fromparams_goods = to.query.itemGoodsData;
+      }else{
+        next();
+        return
+      }
+      next(vm => {
+        vm.goodsData = fromparams_goods;
+        vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
+        if(vm.spdj=='0.00'){
+          vm.spdj = '';
+        }
+      });
+    }else{
+      next();
+    }
+  },
   methods:{
+    spdjNum(e){
+      if(e.currentTarget.value) {
+        this.spdj = Number(e.currentTarget.value).toFixed(2).toString();
+      }
+    },
     getData(){
       if(this.itemGoodsData){
         this.goodsData = this.itemGoodsData;
@@ -164,6 +190,13 @@ export default {
         this.popupsStatus = true;
         this.showPopups();
         this.text = '税率不能为空';
+        this.isDone = false;
+        return false
+      }
+      if(this.$refs.spdj.value=="0.00"){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '请正确填写含税单价';
         this.isDone = false;
         return false
       }

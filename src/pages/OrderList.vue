@@ -117,6 +117,28 @@
         <span slot="label" :class="tabbarMy? 'activeCon':''">我的</span>
       </tabbar-item>
     </tabbar>
+    <!--<ul class="mint-tab">
+      <li class="mint-button" @click="activeTab1">tab1</li>
+      <li class="mint-button" @click="activeTab2">tab2</li>
+      <li class="mint-button" @click="activeTab3">tab3</li>
+    </ul>
+    <mt-tab-container v-model="active" swipeable>
+      <mt-tab-container-item id="tab-container1">
+        <ul title="tab-container 1">
+          <li class="mint-cell" v-for="n in 10">这是第一条</li>
+        </ul>
+      </mt-tab-container-item>
+      <mt-tab-container-item id="tab-container2">
+        <ul title="tab-container 2">
+          <li class="mint-cell" v-for="n in 4">这是第二条</li>
+        </ul>
+      </mt-tab-container-item>
+      <mt-tab-container-item id="tab-container3">
+        <ul title="tab-container 3">
+          <li class="mint-cell" v-for="n in 7">这是第三条</li>
+        </ul>
+      </mt-tab-container-item>
+    </mt-tab-container>-->
   </view-box>
 </template>
 
@@ -131,6 +153,8 @@ import Loading from 'vux/src/components/Loading'
 import {Loadmore} from 'mint-ui'
 import Divider from 'vux/src/components/divider'
 import InlineLoading from 'vux/src/components/inline-loading'
+import { TabContainer, TabContainerItem } from 'mint-ui';
+
 
 export default {
   name: 'OrderList',
@@ -156,7 +180,8 @@ export default {
       limit: 10,
       scrollTop: 0,
       came: false,
-      readFlag: ''
+      readFlag: '',
+      active: 'tab-container1'
     }
   },
   components:{
@@ -169,7 +194,9 @@ export default {
     Loading,
     Divider,
     InlineLoading,
-    'v-loadmore':Loadmore
+    'v-loadmore':Loadmore,
+    'mt-tab-container':TabContainer,
+    'mt-tab-container-item':TabContainerItem
   },
   inject: ['reload'],
   beforeRouteEnter(to, from, next){
@@ -185,8 +212,11 @@ export default {
             vm.listData();
           }else{
             var listIndex = sessionStorage.getItem("listIndex");
-            console.log(listIndex)
-            vm.list[listIndex].readFlag = '1';
+            if(listIndex){
+              if(vm.list[listIndex].sign=='1'){
+                vm.list[listIndex].readFlag = '1';
+              }
+            }
           }
           return
         }else{
@@ -225,6 +255,15 @@ export default {
     }
   },
   methods:{
+    activeTab1(){
+      this.active = 'tab-container1';
+    },
+    activeTab2(){
+      this.active = 'tab-container2';
+    },
+    activeTab3(){
+      this.active = 'tab-container3';
+    },
     //发票列表
     listData(){
       if(!this.token){
@@ -488,5 +527,70 @@ export default {
     position: absolute;
     top: -0.05rem;
     right: -0.18rem;
+  }
+
+
+  /* mint-tab */
+  .mint-tab{
+    display: flex;
+  }
+  .mint-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 4px;
+    border: 0;
+    box-sizing: border-box;
+    color: inherit;
+    display: block;
+    font-size: 18px;
+    height: 41px;
+    outline: 0;
+    overflow: hidden;
+    position: relative;
+    text-align: center
+  }
+  .mint-button::after {
+    background-color: #000;
+    content: " ";
+    opacity: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute
+  }
+  .mint-button:not(.is-disabled):active::after {
+    opacity: .4
+  }
+  .mint-tab-container {
+    overflow: hidden;
+    position: relative;
+  }
+  .mint-tab-container-wrap {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .mint-tab-container-item {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    width: 100%
+  }
+  .mint-cell {
+    background-color:#fff;
+    box-sizing:border-box;
+    color:inherit;
+    min-height:48px;
+    display:block;
+    overflow:hidden;
+    position:relative;
+    text-decoration:none;
+  }
+  .mint-tab-container .swipe-transition {
+    -webkit-transition: -webkit-transform 150ms ease-in-out;
+    transition: -webkit-transform 150ms ease-in-out;
+    transition: transform 150ms ease-in-out;
+    transition: transform 150ms ease-in-out, -webkit-transform 150ms ease-in-out;
   }
 </style>
