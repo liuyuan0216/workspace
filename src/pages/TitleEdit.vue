@@ -32,14 +32,6 @@
         <p class="leftCon"><span class="leftLabel">*</span>邮箱</p>
         <input type="text" class="rightInput" placeholder="请输入邮箱" v-model="titleData.email" ref="email" />
       </li>
-      <!--<li>
-        <p class="leftCon">收货地址</p>
-        <input class="rightInput" placeholder="请输入收货地址" v-model="titleData.receipt_address" ref="receipt_address">
-      </li>
-      <li>
-        <p class="leftCon">收货人</p>
-        <input class="rightInput" placeholder="请输入收货人" v-model="titleData.receiver" ref="receiver" />
-      </li>-->
       <li>
         <p class="leftCon">联系电话</p>
         <input type="number" class="rightInput" placeholder="请输入联系电话" v-model="titleData.phone" ref="phone" />
