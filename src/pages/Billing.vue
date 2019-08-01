@@ -57,7 +57,6 @@
       <li class="itemName">
         <p class="leftCon"><span class="leftLabel">*</span>名称</p>
         <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-        <!--<span class="iconCode" @click=""><img src="../assets/icon_code.png" /></span>-->
       </li>
       <li v-show="type_enterprises">
         <p class="leftCon"><span class="leftLabel">*</span>税号</p>
