@@ -278,7 +278,7 @@ export default {
   .codeAloneSp{
     position: relative;
     margin-bottom: 0.32rem;
-    padding-top: 0.32rem;
+    padding: 0.32rem 0.32rem 0;
   }
   .codeAloneTitle{
     position: relative;

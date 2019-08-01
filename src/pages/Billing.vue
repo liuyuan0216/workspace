@@ -57,7 +57,7 @@
       <li class="itemName">
         <p class="leftCon"><span class="leftLabel">*</span>名称</p>
         <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-        <!--<span class="iconCode" @click=""><img src="../assets/icon_code.png" /></span>-->
+        <span class="iconCode" @click="scan"><img src="../assets/icon_code.png" /></span>
       </li>
       <li v-show="type_enterprises">
         <p class="leftCon"><span class="leftLabel">*</span>税号</p>
@@ -166,7 +166,6 @@ import Alert from 'vux/src/components/alert'
 import Confirm from 'vux/src/components/Confirm'
 import Loading from 'vux/src/components/Loading'
 import Toast from 'vux/src/components/toast'
-import wx from 'weixin-js-sdk'
 
 export default {
   name: 'Billing',
@@ -238,8 +237,7 @@ export default {
     Alert,
     Confirm,
     Loading,
-    Toast,
-    wx
+    Toast
   },
   watch:{
     radioStatus: function(newval, oldval){
@@ -364,6 +362,15 @@ export default {
     next();
   },
   methods:{
+    //扫一扫
+    scan(){
+      if(window.AlipayJSBridge){
+        callback && callback();
+      }else{
+        // 如果没有注入则监听注入的事件
+        document.addEventListener('AlipayJSBridgeReady', callback, false);
+      }
+    },
     //初始化请求数据
     getData(){
       this.showLoading = false;
