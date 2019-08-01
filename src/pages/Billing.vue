@@ -364,12 +364,8 @@ export default {
   methods:{
     //扫一扫
     scan(){
-      if(window.AlipayJSBridge){
-        callback && callback();
-      }else{
-        // 如果没有注入则监听注入的事件
-        document.addEventListener('AlipayJSBridgeReady', callback, false);
-      }
+
+      
     },
     //初始化请求数据
     getData(){
