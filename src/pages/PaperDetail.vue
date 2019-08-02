@@ -7,10 +7,6 @@
     >
       <h2 class="header_title">发票详情</h2>
     </x-header>
-    <!--<div class="detailStatus marginTop" @click="jumpExpress">
-      <p class="detailStatusCon" v-if="data.sign==1">快递状态<span>{{data.kprq}}</span></p>
-      <span class="detailChakan" v-if="data.sign==1"><b></b></span>
-    </div>-->
     <div class="detailStatus marginTop" v-if="data.sign==0">
       <p class="detailStatusCon detailStatusNull">发票未开具</p>
     </div>
@@ -71,10 +67,6 @@ export default {
     //获取数据
     getData(){
       this.data = this.itemData;
-    },
-    //查看快递状态
-    jumpExpress(){
-      this.$router.push({path:'/express'});
     }
   },
   mounted () {

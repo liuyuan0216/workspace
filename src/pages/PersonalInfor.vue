@@ -178,8 +178,6 @@ export default {
         url = window.URL.createObjectURL(file) ;
       }
       this.img = url;
-      //localStorage.setItem("img", url);
-      //this.uploadImg();
     },
     //上传修改后的头像
     uploadImg() {

@@ -10,152 +10,158 @@
     </x-header>
 
     <!--<p class="billingTitle">{{company}}</p>-->
-    <ul class="commonList listBilling BillingTop">
-      <li>
-        <p class="leftCon">发票类型</p>
-        <div class="rightLabel">
-          <!--<div class="lxRadio" v-for="(item,index) in fpzl_list" :key="item.id">
-            <label :class="{'onClick':checkedValue==index}"></label>
-            <input
-              type="radio"
-              v-model="checkedValue"
-              :value="index"
-              @click="checkFp(item)"
-              />
-            <span v-if="item=='t'">电子发票</span>
-            <span v-if="item=='c'">普票</span>
-            <span v-if="item=='s'">专票</span>
-          </div>-->
-          <div class="lxRadio">
-            <label class="onClick"></label>
-            <input type="radio"/>
-            <span>电子发票</span>
+    <div class="billing_wrap" :class="isScan?'scan_wrap':''">
+      <ul class="commonList listBilling BillingTop">
+        <li>
+          <p class="leftCon">发票类型</p>
+          <div class="rightLabel">
+            <!--<div class="lxRadio" v-for="(item,index) in fpzl_list" :key="item.id">
+              <label :class="{'onClick':checkedValue==index}"></label>
+              <input
+                type="radio"
+                v-model="checkedValue"
+                :value="index"
+                @click="checkFp(item)"
+                />
+              <span v-if="item=='t'">电子发票</span>
+              <span v-if="item=='c'">普票</span>
+              <span v-if="item=='s'">专票</span>
+            </div>-->
+            <div class="lxRadio">
+              <label class="onClick"></label>
+              <input type="radio"/>
+              <span>电子发票</span>
+            </div>
           </div>
-        </div>
-      </li>
-      <li>
-        <p class="leftCon">抬头类型</p>
-        <div class="rightLabel">
-          <div class="lxRadio" v-for="(item,index) in radios" :key="item.id">
-            <label :class="{'onClick':item.isChecked}"></label>
-            <input
-              type="radio"
-              v-model="radioType"
-              :value="item.value"
-              :checked='item.isChecked'
-              @click="checkTt(index)"/>
-            <span>{{item.label}}</span>
+        </li>
+        <li>
+          <p class="leftCon">抬头类型</p>
+          <div class="rightLabel">
+            <div class="lxRadio" v-for="(item,index) in radios" :key="item.id">
+              <label :class="{'onClick':item.isChecked}"></label>
+              <input
+                type="radio"
+                v-model="radioType"
+                :value="item.value"
+                :checked='item.isChecked'
+                @click="checkTt(index)"/>
+              <span>{{item.label}}</span>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
-    <div class="itemBillingFirst" @click="jumpTitleList">
-      <p>购方信息</p>
-      <span>+ 选择抬头</span>
-    </div>
-    <ul class="commonList listBilling">
-      <li class="itemName">
-        <p class="leftCon"><span class="leftLabel">*</span>名称</p>
-        <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-        <span class="iconCode" @click="scan"><img src="../assets/icon_code.png" /></span>
-      </li>
-      <li v-show="type_enterprises">
-        <p class="leftCon"><span class="leftLabel">*</span>税号</p>
-        <input type="text" class="rightInput" placeholder="请输入税号" ref="sh" v-model="titleData.gfsh"/>
-      </li>
-      <li v-show="type_enterprises">
-        <p class="leftCon">地址电话</p>
-        <input type="text" class="rightInput" placeholder="请输入地址电话" ref="dzdh" v-model="titleData.gfdzdh"/>
-      </li>
-      <li v-show="type_enterprises">
-        <p class="leftCon">开户行及账号</p>
-        <input type="text" class="rightInput" placeholder="请输入开户行及账号" ref="yhzh" v-model="titleData.gfyhzh"/>
-      </li>
-      <li v-show="type_t">
-        <p class="leftCon">手机号</p>
-        <input type="number" class="rightInput" placeholder="请输入手机号码" ref="phone" v-model="titleData.phone"/>
-      </li>
-      <li v-show="type_t">
-        <p class="leftCon"><span class="leftLabel">*</span>邮箱地址</p>
-        <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
-      </li>
-      <li v-show="type_c">
-        <p class="leftCon">邮寄地址</p>
-        <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
-      </li>
-      <li v-show="type_c">
-        <p class="leftCon">联系人</p>
-        <input type="text" class="rightInput" placeholder="请输入联系人" ref="receiver" v-model="titleData.receiver"/>
-      </li>
-      <li v-show="type_c">
-        <p class="leftCon">联系方式</p>
-        <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
-      </li>
-    </ul>
-    <div class="commonList listBilling">
-      <div class="addGoodsTitle">
-        <p><span class="leftLabel">*</span>商品</p>
-        <p>数量</p>
-        <p>含税单价</p>
-        <p>含税金额</p>
-      </div>
-      <ul class="addGoodsList" ref="listBox">
-        <li class="itemGoods" v-if="spxx" v-for="(item,index) in spxx" @click="changeItem(item,index)">
-          <input class="spid" v-model="item.spid" hidden></input>
-          <div class="goodsItem spmcItem">
-            <p class="spmc overflowCon">{{item.spmc}}</p>
-            <span v-if="item.slv">税率：<b class="slv">{{item.slv}}</b></span>
-          </div>
-          <input class="ggxh" v-model="item.ggxh" hidden></input>
-          <input class="jldw" v-model="item.jldw" hidden></input>
-          <p class="goodsItem spsl">{{item.spsl||0}}</p>
-          <p class="goodsItem spdj">{{item.spdj||0}}</p>
-          <p class="goodsItem je">{{item.je}}</p>
         </li>
       </ul>
-      <p class="addCon" @click="jumpEditGoods">点击录入商品</p>
+      <div class="itemBillingFirst" @click="jumpTitleList">
+        <p>购方信息</p>
+        <span>+ 选择抬头</span>
+      </div>
+
+      <ul class="commonList listBilling">
+        <li class="itemName">
+          <p class="leftCon"><span class="leftLabel">*</span>名称</p>
+          <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
+          <span class="iconCode" @click="startScan"><img src="../assets/icon_code.png" /></span>
+        </li>
+        <li v-show="type_enterprises">
+          <p class="leftCon"><span class="leftLabel">*</span>税号</p>
+          <input type="text" class="rightInput" placeholder="请输入税号" ref="sh" v-model="titleData.gfsh"/>
+        </li>
+        <li v-show="type_enterprises">
+          <p class="leftCon">地址电话</p>
+          <input type="text" class="rightInput" placeholder="请输入地址电话" ref="dzdh" v-model="titleData.gfdzdh"/>
+        </li>
+        <li v-show="type_enterprises">
+          <p class="leftCon">开户行及账号</p>
+          <input type="text" class="rightInput" placeholder="请输入开户行及账号" ref="yhzh" v-model="titleData.gfyhzh"/>
+        </li>
+        <li v-show="type_t">
+          <p class="leftCon">手机号</p>
+          <input type="number" class="rightInput" placeholder="请输入手机号码" ref="phone" v-model="titleData.phone"/>
+        </li>
+        <li v-show="type_t">
+          <p class="leftCon"><span class="leftLabel">*</span>邮箱地址</p>
+          <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
+        </li>
+        <li v-show="type_c">
+          <p class="leftCon">邮寄地址</p>
+          <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
+        </li>
+        <li v-show="type_c">
+          <p class="leftCon">联系人</p>
+          <input type="text" class="rightInput" placeholder="请输入联系人" ref="receiver" v-model="titleData.receiver"/>
+        </li>
+        <li v-show="type_c">
+          <p class="leftCon">联系方式</p>
+          <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
+        </li>
+      </ul>
+      <div class="commonList listBilling">
+        <div class="addGoodsTitle">
+          <p><span class="leftLabel">*</span>商品</p>
+          <p>数量</p>
+          <p>含税单价</p>
+          <p>含税金额</p>
+        </div>
+        <ul class="addGoodsList" ref="listBox">
+          <li class="itemGoods" v-if="spxx" v-for="(item,index) in spxx" @click="changeItem(item,index)">
+            <input class="spid" v-model="item.spid" hidden></input>
+            <div class="goodsItem spmcItem">
+              <p class="spmc overflowCon">{{item.spmc}}</p>
+              <span v-if="item.slv">税率：<b class="slv">{{item.slv}}</b></span>
+            </div>
+            <input class="ggxh" v-model="item.ggxh" hidden></input>
+            <input class="jldw" v-model="item.jldw" hidden></input>
+            <p class="goodsItem spsl">{{item.spsl||0}}</p>
+            <p class="goodsItem spdj">{{item.spdj||0}}</p>
+            <p class="goodsItem je">{{item.je}}</p>
+          </li>
+        </ul>
+        <p class="addCon" @click="jumpEditGoods">点击录入商品</p>
+      </div>
+      <ul class="commonList listBilling">
+        <li>
+          <input type="text" class="rightInput bzInput" ref="bz" placeholder="添加备注（选填）"/>
+        </li>
+      </ul>
+
+      <confirm
+        v-model="show"
+        title="温馨提醒"
+        confirm-text="确定"
+        :show-cancel-button="false"
+      >
+        {{text}}
+      </confirm>
+      <confirm
+        v-model="showUpdate"
+        :title="title"
+        confirm-text="确定"
+        :show-cancel-button="false"
+      >
+        {{text}}
+      </confirm>
+      <confirm
+        v-model="showInvalid"
+        title="温馨提醒"
+        confirm-text="去重新登录"
+        :show-cancel-button="false"
+        @on-confirm="goLogin"
+      >
+        {{text}}
+      </confirm>
+      <loading v-model="showLoading" text=""></loading>
+      <toast v-model="showToast" type="text">提交成功</toast>
+
     </div>
-    <ul class="commonList listBilling">
-      <li>
-        <input type="text" class="rightInput bzInput" ref="bz" placeholder="添加备注（选填）"/>
-      </li>
-    </ul>
-    <div
-      class="ftWrap"
-      slot="bottom">
+    <div class="ftWrap" slot="bottom" :class="isScan?'scan_wrap':''">
       <div class="jeBox">
         <p>合计金额：</p>
         <span class="jeNum">{{price}}</span>
       </div>
       <button class="submitBtn" @click="submitEdit">提交开票</button>
     </div>
-    <confirm
-      v-model="show"
-      title="温馨提醒"
-      confirm-text="确定"
-      :show-cancel-button="false"
-    >
-      {{text}}
-    </confirm>
-    <confirm
-      v-model="showUpdate"
-      :title="title"
-      confirm-text="确定"
-      :show-cancel-button="false"
-    >
-      {{text}}
-    </confirm>
-    <confirm
-      v-model="showInvalid"
-      title="温馨提醒"
-      confirm-text="去重新登录"
-      :show-cancel-button="false"
-      @on-confirm="goLogin"
-    >
-      {{text}}
-    </confirm>
-    <loading v-model="showLoading" text=""></loading>
-    <toast v-model="showToast" type="text">提交成功</toast>
+    <div class="scan">
+      <div id="bcid"></div>
+    </div>
   </view-box>
 </template>
 
@@ -166,6 +172,8 @@ import Alert from 'vux/src/components/alert'
 import Confirm from 'vux/src/components/Confirm'
 import Loading from 'vux/src/components/Loading'
 import Toast from 'vux/src/components/toast'
+
+let scan = null
 
 export default {
   name: 'Billing',
@@ -228,7 +236,10 @@ export default {
       dataArr: [],
       price: 0,  //总金额
       spdj: '',
-      spsl: ''
+      spsl: '',
+      //scan
+      isScan: false,
+      codeUrl: '',
     }
   },
   components:{
@@ -353,19 +364,55 @@ export default {
         vm.type_enterprises = true;
         vm.price = 0;
         vm.$refs.bz.value = '';
+        vm.isScan = false;
       });
     }
   },
   beforeRouteLeave(to, from, next){
     this.scrollTop = this.$refs.viewBox.getScrollTop();
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
+    //关闭扫描控件
+    this.isScan = false;
+    this.closeScan();
     next();
   },
   methods:{
-    //扫一扫
-    scan(){
+    //创建扫描控件
+    startScan(){
+      let that = this;
+      this.isScan = true;
+      if(!window.plus) return
 
-      
+      scan = new plus.barcode.Barcode('bcid');
+      scan.onmarked = onmarked;
+      scan.start();
+      function onmarked(type, result, file){
+        switch (type) {
+          case plus.barcode.QR:
+            type = 'QR'
+            break
+          case plus.barcode.EAN13:
+            type = 'EAN13'
+            break
+          case plus.barcode.EAN8:
+            type = 'EAN8'
+            break
+          default:
+            type = '其它' + type
+            break
+        }
+        result = result.replace(/\n/g, '');
+        that.codeUrl = result;  //获取扫描结果数据
+        alert(result);
+        that.closeScan();
+      }
+    },
+    //关闭条码识别控件
+    closeScan(){
+      if(!window.plus) return
+      this.isScan = false;
+      scan.cancel();  //关闭扫描
+      scan.close();  //关闭控件
     },
     //初始化请求数据
     getData(){
@@ -756,9 +803,10 @@ export default {
     background: #fff;
     height: 1rem;
     line-height: 1rem;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left:0;
+    z-index: 1000;
     display: flex;
     justify-content: space-between;
   }
@@ -842,7 +890,7 @@ export default {
     right:-0.1rem;
   }
   .iconCode img{
-    width:0.7rem;
+    width:0.65rem;
   }
   .billing .bzInput{
     width: 100% !important;
@@ -867,5 +915,37 @@ export default {
     transform: rotate(315deg);
     top: 8px;
     left: 7px;
+  }
+
+
+  .billing_wrap{
+    position: relative;
+    z-index: 1000;
+  }
+  .scan_wrap{
+    z-index: 1;
+  }
+  .scan{
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+  }
+  .scanBtn{
+    position: absolute;
+    left: 0;
+    bottom: 1rem;
+  }
+  #bcid{
+    position: absolute;
+    top: 46px;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    font-size: 0.34rem;
+    color: #333;
   }
 </style>
