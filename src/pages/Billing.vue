@@ -372,8 +372,11 @@ export default {
     this.scrollTop = this.$refs.viewBox.getScrollTop();
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
     //关闭扫描控件
-    this.isScan = false;
-    this.closeScan();
+    if(this.isScan){
+      this.isScan = false;
+      this.closeScan();
+      return false
+    }
     next();
   },
   methods:{
@@ -381,8 +384,24 @@ export default {
     startScan(){
       let that = this;
       this.isScan = true;
-      if(!window.plus) return
+      var result = '11北京市盟度→2→3→4→AALIPAY_CYjskdkdk→'
 
+      var title = result.substring(result.indexOf("11") + 2, result.indexOf("→2"));
+      var sh = result.substring(result.indexOf("→2") + 2, result.indexOf("→3"));
+      if(!sh){
+        this.title_type = '0';
+      }
+      var dzdh = result.substring(result.indexOf("→3") + 2, result.indexOf("→4"));
+      var yhzh = result.substring(result.indexOf("→4") + 2, result.indexOf("→AALIPAY"));
+      this.titleData = {
+        gfname:title,
+        gfsh:sh,
+        gfdzdh:dzdh,
+        gfyhzh:yhzh
+      }
+      this.isScan = false;
+
+      if(!window.plus) return
       scan = new plus.barcode.Barcode('bcid');
       scan.onmarked = onmarked;
       scan.start();
@@ -402,8 +421,12 @@ export default {
             break
         }
         result = result.replace(/\n/g, '');
-        that.codeUrl = result;  //获取扫描结果数据
-        alert(result);
+        //判断数据是否含有链接 （微信）
+        if(result.indexOf('http')>=0&&result.indexOf('w.url.cn/')>=0){
+          that.codeUrl = result;  //获取扫描结果数据
+        }else{  //支付宝数据
+          var title = result.substring(result.indexOf("11") + 2, result.indexOf("→2"));
+        }
         that.closeScan();
       }
     },
