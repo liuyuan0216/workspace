@@ -550,7 +550,7 @@ export default {
     line-height: 0.6rem;
     padding: 0.24rem 0;
   }
-  .billing_code .addGoodsList li{
+  #app .billing_code .addGoodsList li{
     border-bottom: 0.01rem solid #f2f2f2;
   }
   .billing_code .addGoodsList .goodsItem{

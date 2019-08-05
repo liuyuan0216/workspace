@@ -278,9 +278,12 @@ export default {
   .codeAloneSp{
     position: relative;
     margin-bottom: 0.32rem;
-    padding: 0.32rem 0.32rem 0;
+  }
+  .codeAloneSp .leftLabel,.codeAloneJe .leftLabel{
+    top: 0.36rem;
   }
   .codeAloneTitle{
+    padding-top: 0.32rem;
     position: relative;
     font-size: 0.32rem;
     line-height: 0.4rem;
@@ -311,7 +314,6 @@ export default {
     background: url("../assets/icon_task.png") no-repeat right center transparent;
   }
   .codeAloneJe{
-    padding: 0.32rem 0.32rem;
     margin-bottom: 0.32rem;
   }
   .codeAloneNum{

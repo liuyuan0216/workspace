@@ -9,8 +9,7 @@
       <h2 class="header_title">开票</h2>
     </x-header>
 
-    <!--<p class="billingTitle">{{company}}</p>-->
-    <!--<div class="billing_wrap" :class="isScan?'scan_wrap':''">-->
+    <div class="billing_wrap" :class="isScan?'scan_wrap':''">
       <ul class="commonList listBilling BillingTop">
         <li>
           <p class="leftCon">发票类型</p>
@@ -54,14 +53,13 @@
         <p>购方信息</p>
         <span>+ 选择抬头</span>
       </div>
-
       <ul class="commonList listBilling">
         <li class="itemName">
           <p class="leftCon"><span class="leftLabel">*</span>名称</p>
           <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-          <!--<span class="iconCode" @click="startScan">
-            <img src="../assets/icon_code.png" />
-          </span>-->
+          <span class="iconCode" @click="startScan">
+              <img src="../assets/icon_code.png" />
+            </span>
         </li>
         <li v-show="type_enterprises">
           <p class="leftCon"><span class="leftLabel">*</span>税号</p>
@@ -83,7 +81,7 @@
           <p class="leftCon"><span class="leftLabel">*</span>邮箱地址</p>
           <input type="text" class="rightInput" placeholder="请输入邮箱地址" ref="email" v-model="titleData.email"/>
         </li>
-        <li v-show="type_c">
+        <!--<li v-show="type_c">
           <p class="leftCon">邮寄地址</p>
           <input type="text" class="rightInput" placeholder="请输入邮寄地址" ref="receipt_address" v-model="titleData.receipt_address"/>
         </li>
@@ -94,7 +92,7 @@
         <li v-show="type_c">
           <p class="leftCon">联系方式</p>
           <input type="number" class="rightInput" placeholder="请输入联系方式" ref="phone" v-model="titleData.phone"/>
-        </li>
+        </li>-->
       </ul>
       <div class="commonList listBilling">
         <div class="addGoodsTitle">
@@ -152,17 +150,20 @@
       </confirm>
       <loading v-model="showLoading" text=""></loading>
       <toast v-model="showToast" type="text">提交成功</toast>
-    <!--</div>-->
-    <div class="ftWrap" slot="bottom"> <!--:class="isScan?'scan_wrap':''">-->
+    </div>
+    <div
+      class="ftWrap"
+      :class="isScan?'scan_wrap':''"
+      slot="bottom">
       <div class="jeBox">
         <p>合计金额：</p>
         <span class="jeNum">{{price}}</span>
       </div>
       <button class="submitBtn" @click="submitEdit">提交开票</button>
     </div>
-    <!--<div class="scan">
+    <div class="scan">
       <div id="bcid"></div>
-    </div>-->
+    </div>
   </view-box>
 </template>
 
@@ -173,9 +174,7 @@ import Alert from 'vux/src/components/alert'
 import Confirm from 'vux/src/components/Confirm'
 import Loading from 'vux/src/components/Loading'
 import Toast from 'vux/src/components/toast'
-
-//let scan = null
-
+let scan = null
 export default {
   name: 'Billing',
   data(){
@@ -240,7 +239,7 @@ export default {
       spsl: '',
       //scan
       isScan: false,
-      codeUrl: '',
+      codeUrl: ''
     }
   },
   components:{
@@ -362,10 +361,11 @@ export default {
             isChecked: false,
           }
         ]
+        vm.showLoading = false;
         vm.type_enterprises = true;
         vm.price = 0;
         vm.$refs.bz.value = '';
-        //vm.isScan = false;
+        vm.isScan = false;
       });
     }
   },
@@ -373,39 +373,27 @@ export default {
     this.scrollTop = this.$refs.viewBox.getScrollTop();
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
     //关闭扫描控件
-    /*if(this.isScan){
+    if(this.isScan){
       this.isScan = false;
       this.closeScan();
       return false
-    }*/
+    }
     next();
   },
   methods:{
     //创建扫描控件
     startScan(){
+      document.activeElement.blur();  //隐藏软键盘
       let that = this;
-      this.isScan = true;
-      var result = '11北京市盟度→2→3→4→AALIPAY_CYjskdkdk→'
-
-      var title = result.substring(result.indexOf("11") + 2, result.indexOf("→2"));
-      var sh = result.substring(result.indexOf("→2") + 2, result.indexOf("→3"));
-      if(!sh){
-        this.title_type = '0';
-      }
-      var dzdh = result.substring(result.indexOf("→3") + 2, result.indexOf("→4"));
-      var yhzh = result.substring(result.indexOf("→4") + 2, result.indexOf("→AALIPAY"));
-      this.titleData = {
-        gfname:title,
-        gfsh:sh,
-        gfdzdh:dzdh,
-        gfyhzh:yhzh
-      }
-      this.isScan = false;
-
       if(!window.plus) return
-      scan = new plus.barcode.Barcode('bcid');
-      scan.onmarked = onmarked;
-      scan.start();
+
+      this.timer = setTimeout(() => {
+        this.isScan = true;  //出现扫描控件
+        scan = new plus.barcode.Barcode('bcid');
+        scan.onmarked = onmarked;
+        scan.start();
+      }, 200)
+
       function onmarked(type, result, file){
         switch (type) {
           case plus.barcode.QR:
@@ -426,7 +414,18 @@ export default {
         if(result.indexOf('http')>=0&&result.indexOf('w.url.cn/')>=0){
           that.codeUrl = result;  //获取扫描结果数据
         }else{  //支付宝数据
-          var title = result.substring(result.indexOf("11") + 2, result.indexOf("→2"));
+          this.timer = setTimeout(() => {
+            var title = result.substring(result.indexOf("11") + 2, result.indexOf("→2"));
+            var sh = result.substring(result.indexOf("→2") + 2, result.indexOf("→3"));
+            var dzdh = result.substring(result.indexOf("→3") + 2, result.indexOf("→4"));
+            var yhzh = result.substring(result.indexOf("→4") + 2, result.indexOf("→AALIPAY"));
+            that.titleData = {
+              gfname:title,
+              gfsh:sh,
+              gfdzdh:dzdh,
+              gfyhzh:yhzh
+            }
+          }, 400)
         }
         that.closeScan();
       }
@@ -437,10 +436,6 @@ export default {
       this.isScan = false;
       scan.cancel();  //关闭扫描
       scan.close();  //关闭控件
-    },
-    //初始化请求数据
-    getData(){
-      this.showLoading = false;
     },
     //发票类型
     checkFp(item){
@@ -545,8 +540,8 @@ export default {
           yhzh: this.$refs.yhzh.value,
           email: this.$refs.email.value,
           phone: this.$refs.phone.value,
-          receipt_address: this.$refs.receipt_address.value,
-          receiver: this.$refs.receiver.value,
+          receipt_address: '',
+          receiver: '',
           bz: this.$refs.bz.value
         }
         this.$ajaxjp(url, data, true,(response) =>{
@@ -729,7 +724,6 @@ export default {
   },
   mounted () {
     this.locationData();  //local
-    this.getData();
   },
   beforeDestroy () {
     clearInterval(this.timer)
@@ -827,7 +821,7 @@ export default {
     background: #fff;
     height: 1rem;
     line-height: 1rem;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left:0;
     z-index: 1000;
@@ -914,7 +908,7 @@ export default {
     right:-0.1rem;
   }
   .iconCode img{
-    width:0.65rem;
+    width:0.7rem;
   }
   .billing .bzInput{
     width: 100% !important;
@@ -940,7 +934,6 @@ export default {
     top: 8px;
     left: 7px;
   }
-
 
   .billing_wrap{
     position: relative;
