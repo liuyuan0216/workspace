@@ -10,7 +10,7 @@
     </x-header>
 
     <!--<p class="billingTitle">{{company}}</p>-->
-    <div class="billing_wrap" :class="isScan?'scan_wrap':''">
+    <!--<div class="billing_wrap" :class="isScan?'scan_wrap':''">-->
       <ul class="commonList listBilling BillingTop">
         <li>
           <p class="leftCon">发票类型</p>
@@ -59,7 +59,9 @@
         <li class="itemName">
           <p class="leftCon"><span class="leftLabel">*</span>名称</p>
           <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-          <span class="iconCode" @click="startScan"><img src="../assets/icon_code.png" /></span>
+          <!--<span class="iconCode" @click="startScan">
+            <img src="../assets/icon_code.png" />
+          </span>-->
         </li>
         <li v-show="type_enterprises">
           <p class="leftCon"><span class="leftLabel">*</span>税号</p>
@@ -150,18 +152,17 @@
       </confirm>
       <loading v-model="showLoading" text=""></loading>
       <toast v-model="showToast" type="text">提交成功</toast>
-
-    </div>
-    <div class="ftWrap" slot="bottom" :class="isScan?'scan_wrap':''">
+    <!--</div>-->
+    <div class="ftWrap" slot="bottom"> <!--:class="isScan?'scan_wrap':''">-->
       <div class="jeBox">
         <p>合计金额：</p>
         <span class="jeNum">{{price}}</span>
       </div>
       <button class="submitBtn" @click="submitEdit">提交开票</button>
     </div>
-    <div class="scan">
+    <!--<div class="scan">
       <div id="bcid"></div>
-    </div>
+    </div>-->
   </view-box>
 </template>
 
@@ -173,7 +174,7 @@ import Confirm from 'vux/src/components/Confirm'
 import Loading from 'vux/src/components/Loading'
 import Toast from 'vux/src/components/toast'
 
-let scan = null
+//let scan = null
 
 export default {
   name: 'Billing',
@@ -221,7 +222,7 @@ export default {
       type_personal_show: false,
       radioStatus: '',  //抬头类型状态
       //选择的数据
-      titleData: [],
+      titleData: {},
       goodsData: [],
       spxx: [],
       //data
@@ -344,7 +345,7 @@ export default {
         vm.fpzl_list_data = localStorage.getItem("fpzl_list");
         vm.fpzl_list = vm.fpzl_list_data.replace(/,/g, "");
         vm.company = localStorage.getItem("company");
-        vm.titleData = [];
+        vm.titleData = {};
         vm.goodsData = [];
         //清空商品列表
         vm.spxx = [];
@@ -364,7 +365,7 @@ export default {
         vm.type_enterprises = true;
         vm.price = 0;
         vm.$refs.bz.value = '';
-        vm.isScan = false;
+        //vm.isScan = false;
       });
     }
   },
@@ -372,11 +373,11 @@ export default {
     this.scrollTop = this.$refs.viewBox.getScrollTop();
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
     //关闭扫描控件
-    if(this.isScan){
+    /*if(this.isScan){
       this.isScan = false;
       this.closeScan();
       return false
-    }
+    }*/
     next();
   },
   methods:{
