@@ -79,6 +79,7 @@ export default {
     if(from.name=='MyTitleList'){
       if(to.query.itemData){
         fromparams_list = to.query.itemData;
+        sessionStorage.setItem("titleInfor",JSON.stringify(fromparams_list));
       }
       next(vm => {
         vm.data = fromparams_list;
@@ -87,6 +88,12 @@ export default {
     }else if(from.name=='TitleEdit'){
       if(to.query.itemData){
         fromparams_edit = to.query.itemData;
+      }
+      //页面刷新
+      if(typeof(fromparams_edit)=="string"){
+        var getItem = sessionStorage.getItem("titleInfor");
+        var data = JSON.parse(getItem);
+        fromparams_edit = data;
       }
       next(vm => {
         vm.data = fromparams_edit;

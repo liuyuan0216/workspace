@@ -8,75 +8,250 @@
       <p slot="right" class="header_right" @click="tryAgain">刷新</p>
       <h2 class="header_title">发票列表</h2>
     </x-header>
-    <div v-if="!empty">
-      <v-loadmore
-        :top-method="loadTop"
-        :bottom-method="loadBottom"
-        :bottom-all-loaded="allLoaded"
-        @bottom-status-change="handleBottomChange"
-        @top-status-change="handleTopChange"
-        :auto-fill="false"
-        ref="loadmore"
-        class="loadmore"
-      >
-        <div slot="top" class="mint-loadmore-top">
-          <span v-show="topStatus!=='pull'"><inline-loading></inline-loading></span>
-        </div>
-        <ul class="orderList">
-          <li
-            @click="jumpDetail($event,item,index)"
-            v-for="(item,index) in list"
-            :data-type="item.fpzl"
+
+    <ul class="mint-tab">
+      <li
+        class="mint-button"
+        @click="activeTab1"
+        :class="active=='tab-container1'?'activeTab':''"
+      >全部</li>
+      <li
+        class="mint-button"
+        @click="activeTab2"
+        :class="active=='tab-container2'?'activeTab':''"
+      >已开票</li>
+      <li
+        class="mint-button"
+        @click="activeTab3"
+        :class="active=='tab-container3'?'activeTab':''"
+      >未开票</li>
+      <li
+        class="mint-button"
+        @click="activeTab4"
+        :class="active=='tab-container4'?'activeTab':''"
+      >待扫码</li>
+    </ul>
+    <mt-tab-container v-model="active">
+      <mt-tab-container-item id="tab-container1">
+        <div v-if="!empty">
+          <v-loadmore
+            :bottom-method="allListLoadBottom"
+            :bottom-all-loaded="allListLoaded"
+            @bottom-status-change="allListHandleBottomChange"
+            :auto-fill="false"
+            ref="allListLoadmore"
+            class="loadmore"
           >
-            <div class="orderListIcon" v-if="item.sign=='1'">
-              <img src="../assets/img_list_yes.png" />
+            <ul class="orderList">
+              <li
+                @click="jumpDetail($event,'allList',item,index)"
+                v-for="(item,index) in all_list"
+                :data-readFlag="item.readFlag"
+              >
+                <div class="orderListIcon" v-if="item.sign=='1'">
+                  <img src="../assets/img_list_yes.png" />
+                </div>
+                <div class="orderListIcon" v-if="item.sign=='0'&&!item.qrcode_url">
+                  <img src="../assets/img_list_no.png" />
+                </div>
+                <div class="orderListIcon" v-if="item.sign=='0'&&item.qrcode_url">
+                  <img src="../assets/img_list_nosm.png" />
+                </div>
+                <div class="orderListRight">
+                  <div class="orderListCon">
+                    <h2 class="orderListConTitle overflowCon" v-if="!item.qrcode_url">{{item.gfmc}}</h2>
+                    <h2 class="orderListConTitle overflowCon" v-if="item.qrcode_url">暂无（消费者未扫码）</h2>
+                    <p class="orderListConName overflowCon">{{item.spmc}}</p>
+                    <p v-if="item.fpzl=='t'">
+                      <span class="orderListConType">电子发票<b>{{item.create_time}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='c'">
+                      <span class="orderListConType">普通发票<b>{{item.create_time}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='s'">
+                      <span class="orderListConType">专用发票<b>{{item.create_time}}</b></span>
+                    </p>
+                  </div>
+                  <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
+                </div>
+              </li>
+            </ul>
+            <div slot="bottom" class="mint-loadmore-bottom">
+              <span v-show="allListBottomStatus!=='pull'" :class="{'rotate': allListBottomStatus === 'drop'}">加载更多...</span>
+              <span v-show="allListBottomStatus==='loading'">Loading...</span>
+              <divider v-show="allListLoaded">我是有底线的</divider>
             </div>
-            <div class="orderListIcon" v-if="item.sign=='0'&&!item.qrcode_url">
-              <img src="../assets/img_list_no.png" />
-            </div>
-            <div class="orderListIcon" v-if="item.sign=='0'&&item.qrcode_url">
-              <img src="../assets/img_list_nosm.png" />
-            </div>
-            <div class="orderListRight">
-              <div class="orderListCon">
-                <h2 class="orderListConTitle overflowCon" v-if="!item.qrcode_url">{{item.gfmc}}</h2>
-                <h2 class="orderListConTitle overflowCon" v-if="item.qrcode_url">暂无（消费者未扫码）</h2>
-                <p class="orderListConName overflowCon">{{item.spmc}}</p>
-                <p v-if="item.fpzl=='t'">
-                  <span class="orderListConType">电子发票<b>{{item.create_time}}</b></span>
-                </p>
-                <p v-if="item.fpzl=='c'">
-                  <span class="orderListConType">普通发票<b>{{item.create_time}}</b></span>
-                </p>
-                <p v-if="item.fpzl=='s'">
-                  <span class="orderListConType">专用发票<b>{{item.create_time}}</b></span>
-                </p>
-              </div>
-              <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
-            </div>
-          </li>
-        </ul>
-        <div slot="bottom" class="mint-loadmore-bottom">
-          <span v-show="bottomStatus!=='pull'" :class="{'rotate': bottomStatus === 'drop'}">加载更多...</span>
-          <span v-show="bottomStatus==='loading'">Loading...</span>
-          <divider v-show="allLoaded">我是有底线的</divider>
+          </v-loadmore>
         </div>
-      </v-loadmore>
-    </div>
-    <div class="orderListEmpty marginTop" v-if="empty">
-      <img src="../assets/img_list_empty.png" />
-      <p>还没有订单</p>
-      <button class="emptyBtn" @click="setBilling">立即添加</button>
-    </div>
-    <!--<confirm
-      v-model="showInvalid"
-      title="温馨提醒"
-      confirm-text="去重新登录"
-      :show-cancel-button="false"
-      @on-confirm="goLogin"
-    >
-      {{text}}
-    </confirm>-->
+        <div class="orderListEmpty marginTop" v-if="empty">
+          <img src="../assets/img_list_empty.png" />
+          <p>还没有订单</p>
+          <button class="emptyBtn" @click="setBilling">立即添加</button>
+        </div>
+      </mt-tab-container-item>
+
+      <mt-tab-container-item id="tab-container2">
+        <div v-if="!empty">
+          <v-loadmore
+            :bottom-method="issuedListLoadBottom"
+            :bottom-all-loaded="issuedListLoaded"
+            @bottom-status-change="issuedListHandleBottomChange"
+            :auto-fill="false"
+            ref="issuedListLoadmore"
+            class="loadmore"
+          >
+            <ul class="orderList">
+              <li
+                @click="jumpDetail($event,'issuedList',item,index)"
+                v-for="(item,index) in issued_list"
+                :data-readFlag="item.readFlag"
+              >
+                <div class="orderListIcon" v-if="item.sign=='1'">
+                  <img src="../assets/img_list_yes.png" />
+                </div>
+                <div class="orderListRight">
+                  <div class="orderListCon">
+                    <h2 class="orderListConTitle overflowCon" v-if="!item.qrcode_url">{{item.gfmc}}</h2>
+                    <h2 class="orderListConTitle overflowCon" v-if="item.qrcode_url">暂无（消费者未扫码）</h2>
+                    <p class="orderListConName overflowCon">{{item.spmc}}</p>
+                    <p v-if="item.fpzl=='t'">
+                      <span class="orderListConType">电子发票<b>{{item.kprq}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='c'">
+                      <span class="orderListConType">普通发票<b>{{item.kprq}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='s'">
+                      <span class="orderListConType">专用发票<b>{{item.kprq}}</b></span>
+                    </p>
+                  </div>
+                  <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
+                </div>
+              </li>
+            </ul>
+            <div slot="bottom" class="mint-loadmore-bottom">
+              <span v-show="issuedListBottomStatus!=='pull'" :class="{'rotate': issuedListBottomStatus === 'drop'}">加载更多...</span>
+              <span v-show="issuedListBottomStatus==='loading'">Loading...</span>
+              <divider v-show="issuedListLoaded">我是有底线的</divider>
+            </div>
+          </v-loadmore>
+        </div>
+        <div class="orderListEmpty marginTop" v-if="empty">
+          <img src="../assets/img_list_empty.png" />
+          <p>还没有订单</p>
+          <button class="emptyBtn" @click="setBilling">立即添加</button>
+        </div>
+      </mt-tab-container-item>
+
+      <mt-tab-container-item id="tab-container3">
+        <div v-if="!empty">
+          <v-loadmore
+            :bottom-method="unissuedListLoadBottom"
+            :bottom-all-loaded="unissuedListLoaded"
+            @bottom-status-change="unissuedListHandleBottomChange"
+            :auto-fill="false"
+            ref="unissuedListLoadmore"
+            class="loadmore"
+          >
+            <ul class="orderList">
+              <li
+                @click="jumpDetail($event,'unissuedList',item,index)"
+                v-for="(item,index) in unissued_list"
+                :data-readFlag="item.readFlag"
+              >
+                <div class="orderListIcon" v-if="item.sign=='0'&&!item.qrcode_url">
+                  <img src="../assets/img_list_no.png" />
+                </div>
+                <div class="orderListIcon" v-if="item.sign=='0'&&item.qrcode_url">
+                  <img src="../assets/img_list_nosm.png" />
+                </div>
+                <div class="orderListRight">
+                  <div class="orderListCon">
+                    <h2 class="orderListConTitle overflowCon" v-if="!item.qrcode_url">{{item.gfmc}}</h2>
+                    <h2 class="orderListConTitle overflowCon" v-if="item.qrcode_url">暂无（消费者未扫码）</h2>
+                    <p class="orderListConName overflowCon">{{item.spmc}}</p>
+                    <p v-if="item.fpzl=='t'">
+                      <span class="orderListConType">电子发票<b>{{item.create_time}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='c'">
+                      <span class="orderListConType">普通发票<b>{{item.create_time}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='s'">
+                      <span class="orderListConType">专用发票<b>{{item.create_time}}</b></span>
+                    </p>
+                  </div>
+                  <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
+                </div>
+              </li>
+            </ul>
+            <div slot="bottom" class="mint-loadmore-bottom">
+              <span v-show="unissuedListBottomStatus!=='pull'" :class="{'rotate': unissuedListBottomStatus === 'drop'}">加载更多...</span>
+              <span v-show="unissuedListBottomStatus==='loading'">Loading...</span>
+              <divider v-show="unissuedListLoaded">我是有底线的</divider>
+            </div>
+          </v-loadmore>
+        </div>
+        <div class="orderListEmpty marginTop" v-if="empty">
+          <img src="../assets/img_list_empty.png" />
+          <p>还没有订单</p>
+          <button class="emptyBtn" @click="setBilling">立即添加</button>
+        </div>
+      </mt-tab-container-item>
+
+      <mt-tab-container-item id="tab-container4">
+        <div v-if="!empty">
+          <v-loadmore
+            :bottom-method="unscannedListLoadBottom"
+            :bottom-all-loaded="unscannedListLoaded"
+            @bottom-status-change="unscannedListHandleBottomChange"
+            :auto-fill="false"
+            ref="unscannedListLoadmore"
+            class="loadmore"
+          >
+            <ul class="orderList">
+              <li
+                @click="jumpDetail($event,'unscannedList',item,index)"
+                v-for="(item,index) in unscanned_list"
+                :data-readFlag="item.readFlag"
+              >
+                <div class="orderListIcon" v-if="item.sign=='0'&&!item.qrcode_url">
+                  <img src="../assets/img_list_no.png" />
+                </div>
+                <div class="orderListIcon" v-if="item.sign=='0'&&item.qrcode_url">
+                  <img src="../assets/img_list_nosm.png" />
+                </div>
+                <div class="orderListRight">
+                  <div class="orderListCon">
+                    <h2 class="orderListConTitle overflowCon" v-if="!item.qrcode_url">{{item.gfmc}}</h2>
+                    <h2 class="orderListConTitle overflowCon" v-if="item.qrcode_url">暂无（消费者未扫码）</h2>
+                    <p class="orderListConName overflowCon">{{item.spmc}}</p>
+                    <p v-if="item.fpzl=='t'">
+                      <span class="orderListConType">电子发票<b>{{item.create_time}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='c'">
+                      <span class="orderListConType">普通发票<b>{{item.create_time}}</b></span>
+                    </p>
+                    <p v-if="item.fpzl=='s'">
+                      <span class="orderListConType">专用发票<b>{{item.create_time}}</b></span>
+                    </p>
+                  </div>
+                  <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
+                </div>
+              </li>
+            </ul>
+            <div slot="bottom" class="mint-loadmore-bottom">
+              <span v-show="unscannedListBottomStatus!=='pull'" :class="{'rotate': unscannedListBottomStatus === 'drop'}">加载更多...</span>
+              <span v-show="unscannedListBottomStatus==='loading'">Loading...</span>
+              <divider v-show="unscannedListLoaded">我是有底线的</divider>
+            </div>
+          </v-loadmore>
+        </div>
+        <div class="orderListEmpty marginTop" v-if="empty">
+          <img src="../assets/img_list_empty.png" />
+          <p>还没有订单</p>
+          <button class="emptyBtn" @click="setBilling">立即添加</button>
+        </div>
+      </mt-tab-container-item>
+    </mt-tab-container>
 
     <confirm
       v-model="showAlertLogin"
@@ -117,28 +292,6 @@
         <span slot="label" :class="tabbarMy? 'activeCon':''">我的</span>
       </tabbar-item>
     </tabbar>
-    <!--<ul class="mint-tab">
-      <li class="mint-button" @click="activeTab1">tab1</li>
-      <li class="mint-button" @click="activeTab2">tab2</li>
-      <li class="mint-button" @click="activeTab3">tab3</li>
-    </ul>
-    <mt-tab-container v-model="active" swipeable>
-      <mt-tab-container-item id="tab-container1">
-        <ul title="tab-container 1">
-          <li class="mint-cell" v-for="n in 10">这是第一条</li>
-        </ul>
-      </mt-tab-container-item>
-      <mt-tab-container-item id="tab-container2">
-        <ul title="tab-container 2">
-          <li class="mint-cell" v-for="n in 4">这是第二条</li>
-        </ul>
-      </mt-tab-container-item>
-      <mt-tab-container-item id="tab-container3">
-        <ul title="tab-container 3">
-          <li class="mint-cell" v-for="n in 7">这是第三条</li>
-        </ul>
-      </mt-tab-container-item>
-    </mt-tab-container>-->
   </view-box>
 </template>
 
@@ -153,8 +306,7 @@ import Loading from 'vux/src/components/Loading'
 import {Loadmore} from 'mint-ui'
 import Divider from 'vux/src/components/divider'
 import InlineLoading from 'vux/src/components/inline-loading'
-import { TabContainer, TabContainerItem } from 'mint-ui';
-
+import { TabContainer, TabContainerItem } from 'mint-ui'
 
 export default {
   name: 'OrderList',
@@ -166,18 +318,37 @@ export default {
       tabbarMy: false,
       empty: false,
       timeOut: false,
-      list: [],
       showInvalid: false,
       showAlertLogin: false,
       showLoading: false,
       showPopstate: false,
       text: '',
-      allLoaded: false,
-      topStatus: '',
-      bottomStatus: '',
-      count: 0,
-      page: 0,
       limit: 10,
+      //全部
+      allListLoaded: false,
+      allListBottomStatus: '',
+      allListCount: 0,
+      all_page: 0,
+      all_list: [],
+      //已开
+      issued_page: 0,
+      issued_list: [],
+      issuedListLoaded: false,
+      issuedListBottomStatus: '',
+      issuedListCount: 0,
+      //未开
+      unissued_page: 0,
+      unissued_list: [],
+      unissuedListLoaded: false,
+      unissuedListBottomStatus: '',
+      unissuedListCount: 0,
+      //待扫码
+      unscanned_page: 0,
+      unscanned_list: [],
+      unscannedListLoaded: false,
+      unscannedListBottomStatus: '',
+      unscannedListCount: 0,
+
       scrollTop: 0,
       came: false,
       readFlag: '',
@@ -207,20 +378,32 @@ export default {
           vm.came = sessionStorage.getItem("came");
           if(!vm.came){
             vm.empty = false;
-            vm.list = [];
+            vm.all_list = [];
             vm.showLoading = true;
-            vm.listData();
+            vm.allListData();
+            //默认显示全部
+            vm.active = 'tab-container1';
           }else{
-            var listIndex = sessionStorage.getItem("listIndex");
-            if(listIndex){
-              if(vm.list[listIndex].sign=='1'){
-                vm.list[listIndex].readFlag = '1';
+            var allListIndex = Number(sessionStorage.getItem("allListIndex"));
+            var issuedListIndex = Number(sessionStorage.getItem("issuedListIndex"));
+            if(vm.active=="tab-container1"){
+              if(allListIndex>=0){
+                if(vm.all_list[allListIndex].sign=='1'){
+                  vm.all_list[allListIndex].readFlag = '1';
+                }
+              }
+            }
+            if(vm.active=="tab-container2"){
+              if(issuedListIndex>=0){
+                if(vm.issued_list[issuedListIndex].sign=='1'){
+                  vm.issued_list[issuedListIndex].readFlag = '1';
+                }
               }
             }
           }
           return
         }else{
-          vm.listData();
+          vm.allListData();
         }
       });
     }else{
@@ -228,7 +411,9 @@ export default {
         vm.token = localStorage.getItem("token");
         vm.empty = false;
         vm.showLoading = true;
-        vm.listData();
+        vm.allListData();
+        //默认显示全部
+        vm.active = 'tab-container1';
       })
     }
   },
@@ -255,40 +440,71 @@ export default {
     }
   },
   methods:{
+    //切换tab
     activeTab1(){
       this.active = 'tab-container1';
+      this.allListLoaded = false;
+      this.$refs.viewBox.scrollTo(0);
+      if(!this.came){
+        this.showLoading = true;
+        this.allListData();
+      }
     },
     activeTab2(){
       this.active = 'tab-container2';
+      this.issuedListLoaded = false;
+      this.$refs.viewBox.scrollTo(0);
+      this.came = sessionStorage.getItem("came");
+      if(!this.came){
+        this.showLoading = true;
+        this.issuedListData();
+      }
     },
     activeTab3(){
       this.active = 'tab-container3';
+      this.unissuedListLoaded = false;
+      this.$refs.viewBox.scrollTo(0);
+      this.came = sessionStorage.getItem("came");
+      if(!this.came){
+        this.showLoading = true;
+        this.unissuedListData();
+      }
+    },
+    activeTab4(){
+      this.active = 'tab-container4';
+      this.unscannedListLoaded = false;
+      this.$refs.viewBox.scrollTo(0);
+      this.came = sessionStorage.getItem("came");
+      if(!this.came){
+        this.showLoading = true;
+        this.unscannedListData();
+      }
     },
 
-
-    //发票列表
-    listData(){
+    //全部发票列表
+    allListData(){
       if(!this.token){
         this.empty = true;
         this.timeOut = false;
         this.showInvalid = false;
+        this.showLoading = false;
         return
       }
       var _this = this;
-      this.page = 0;
+      this.all_page = 0;
       var url = this.local+'/api/user/fp_list';
       this.data = {
         userid: this.token,
-        page: this.page,
+        page: this.all_page,
         limit: this.limit
       }
       this.$ajaxjp(url, this.data, true, (response) =>{
         if(response.errcode==0){
           _this.showLoading = false;
-          _this.count = response.count;
+          _this.allListCount = response.count;
           if(response.fp_list.length>0){
             _this.timeOut = false;
-            _this.list = response.fp_list;
+            _this.all_list = response.fp_list;
           }else{
             _this.empty = true;
           }
@@ -307,39 +523,42 @@ export default {
           return
         }else{
           this.showLoading = false;
+          this.showInvalid = false;
           this.empty = false;
           this.timeOut = true;
           return
         }
       },function (error) {
         _this.showLoading = false;
+        _this.showInvalid = false;
         _this.empty = false;
         _this.timeOut = true;
-        _this.list = [];
+        _this.all_list = [];
         console.log(error);
       });
     },
     //more
-    moreList(){
-      this.page++;
+    allListMore(){
+      this.all_page++;
       var _this = this;
       var url = this.local+'/api/user/fp_list';
       var data = {
         userid: this.token,
-        page: this.page,
+        page: this.all_page,
         limit: this.limit
       }
       this.$ajaxjp(url, data, true, (response) =>{
         if(response.errcode==0){
           if(response.fp_list.length>0){
-            this.list = this.list.concat(response.fp_list);
+            this.all_list = this.all_list.concat(response.fp_list);
           }
         }
       },function (error) {
         _this.showLoading = false;
+        _this.showInvalid = false;
         _this.empty = false;
         _this.timeOut = true;
-        _this.list = [];
+        _this.all_list = [];
         console.log(error);
       });
     },
@@ -366,13 +585,22 @@ export default {
       this.$router.push({path:'/login'});
     },
     //点击li查看详情
-    jumpDetail(e,item,index){
-      var type = e.currentTarget.getAttribute("data-type");
-      sessionStorage.setItem("listIndex",index);
-      if(type=="t"){
+    jumpDetail(e,type,item,index){
+      var readFlag = e.currentTarget.getAttribute("data-readFlag");
+      if(type=="allList"){
+        sessionStorage.setItem("allListIndex",index);
+      }else if(type=="issuedList"){
+        sessionStorage.setItem("issuedListIndex",index);
+      }else if(type=="unissuedList"){
+        sessionStorage.setItem("unissuedListIndex",index);
+      }else if(type=="unscannedList"){
+        sessionStorage.setItem("unscannedListIndex",index);
+      }
+
+      if(readFlag=="0"){
         this.updateReadFlag(item,index);
       }else{
-        this.$router.push({path:'/paper_detail',query:{itemData:item,index:index}});
+        this.$router.push({path:'/electronic_detail',query:{itemData:item,index:index}});
       }
     },
     //去开票
@@ -386,40 +614,328 @@ export default {
     },
     //请重试
     tryAgain(){
-      //this.reload();
       if(!this.token){
         this.showAlertLogin = true;
         this.text = '请先登录';
         return false;
       }
       this.showLoading = true;
-      this.listData();
       this.$refs.viewBox.scrollTo(0);
-    },
-    //上拉加载更多
-    loadBottom(){
-      if(this.list.length < this.count){
-        this.moreList();
-      }else{
-        this.allLoaded = true;
+      //判断是哪一类
+      if(this.active=='tab-container1'){
+        this.allListData();
+      }else if(this.active=='tab-container2'){
+        this.issuedListData();
+      }else if(this.active=='tab-container3'){
+        this.unissuedListData();
+      }else if(this.active=='tab-container4'){
+        this.unscannedListData();
       }
-      this.$refs.loadmore.onBottomLoaded();
     },
-    handleBottomChange(status){
-      this.bottomStatus = status;
+    //全部---上拉加载更多
+    allListLoadBottom(){
+      if(this.all_list.length < this.allListCount){
+        this.allListMore();
+      }else{
+        this.allListLoaded = true;
+      }
+      this.$refs.allListLoadmore.onBottomLoaded();
     },
-    //下拉刷新
-    loadTop(){
-      this.listData();
-      this.$refs.loadmore.onTopLoaded();
+    allListHandleBottomChange(status){
+      this.allListBottomStatus = status;
     },
-    handleTopChange(status){
-      this.topStatus = status;
+
+
+    //已开发票列表
+    issuedListData(){
+      if(!this.token){
+        this.empty = true;
+        this.timeOut = false;
+        this.showInvalid = false;
+        this.showLoading = false;
+        return
+      }
+      var _this = this;
+      this.issued_page = 0;
+      var url = this.local+'/api/user/fpkj_list';
+      this.data = {
+        userid: this.token,
+        page: this.issued_page,
+        limit: this.limit,
+        sign: '1'
+      }
+      this.$ajaxjp(url, this.data, true, (response) =>{
+        if(response.errcode==0){
+          _this.showLoading = false;
+          _this.issuedListCount = response.count;
+          if(response.fp_list.length>0){
+            _this.timeOut = false;
+            _this.issued_list = response.fp_list;
+          }else{
+            _this.empty = true;
+          }
+          return false
+        }
+        if(response.errcode==0){   //登录用户失效
+          this.showLoading = false;
+          this.empty = false;
+          this.timeOut = false;
+          this.showInvalid = true;
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return
+        }else{
+          this.showLoading = false;
+          this.showInvalid = false;
+          this.empty = false;
+          this.timeOut = true;
+          return
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showInvalid = false;
+        _this.empty = false;
+        _this.timeOut = true;
+        _this.issued_list = [];
+        console.log(error);
+      });
+    },
+    //more
+    issuedListMore(){
+      this.issued_page++;
+      var _this = this;
+      var url = this.local+'/api/user/fpkj_list';
+      var data = {
+        userid: this.token,
+        page: this.issued_page,
+        limit: this.limit,
+        sign: '1'
+      }
+      this.$ajaxjp(url, data, true, (response) =>{
+        if(response.errcode==0){
+          if(response.fp_list.length>0){
+            this.issued_list = this.issued_list.concat(response.fp_list);
+          }
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showInvalid = false;
+        _this.empty = false;
+        _this.timeOut = true;
+        _this.issued_list = [];
+        console.log(error);
+      });
+    },
+    //已开---上拉加载更多
+    issuedListLoadBottom(){
+      if(this.issued_list.length < this.issuedListCount){
+        this.issuedListMore();
+      }else{
+        this.issuedListLoaded = true;
+      }
+      this.$refs.issuedListLoadmore.onBottomLoaded();
+    },
+    issuedListHandleBottomChange(status){
+      this.issuedListBottomStatus = status;
+    },
+
+    //未开发票列表
+    unissuedListData(){
+      if(!this.token){
+        this.empty = true;
+        this.timeOut = false;
+        this.showInvalid = false;
+        this.showLoading = false;
+        return
+      }
+      var _this = this;
+      this.unissued_page = 0;
+      var url = this.local+'/api/user/fpkj_list';
+      this.data = {
+        userid: this.token,
+        page: this.unissued_page,
+        limit: this.limit,
+        sign: '0'
+      }
+      this.$ajaxjp(url, this.data, true, (response) =>{
+        if(response.errcode==0){
+          _this.showLoading = false;
+          _this.unissuedListCount = response.count;
+          if(response.fp_list.length>0){
+            _this.timeOut = false;
+            _this.unissued_list = response.fp_list;
+          }else{
+            _this.empty = true;
+          }
+          return false
+        }
+        if(response.errcode==1003){   //登录用户失效
+          this.showLoading = false;
+          this.empty = false;
+          this.timeOut = false;
+          this.showInvalid = true;
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return
+        }else{
+          this.showLoading = false;
+          this.showInvalid = false;
+          this.empty = false;
+          this.timeOut = true;
+          return
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showInvalid = false;
+        _this.empty = false;
+        _this.timeOut = true;
+        _this.unissued_list = [];
+        console.log(error);
+      });
+    },
+    //more
+    unissuedListMore(){
+      this.unissued_page++;
+      var _this = this;
+      var url = this.local+'/api/user/fpkj_list';
+      var data = {
+        userid: this.token,
+        page: this.unissued_page,
+        limit: this.limit,
+        sign: '0'
+      }
+      this.$ajaxjp(url, data, true, (response) =>{
+        if(response.errcode==0){
+          if(response.fp_list.length>0){
+            this.unissued_list = this.unissued_list.concat(response.fp_list);
+          }
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showInvalid = false;
+        _this.empty = false;
+        _this.timeOut = true;
+        _this.unissued_list = [];
+        console.log(error);
+      });
+    },
+    //未开---上拉加载更多
+    unissuedListLoadBottom(){
+      if(this.unissued_list.length < this.unissuedListCount){
+        this.unissuedListMore();
+      }else{
+        this.unissuedListLoaded = true;
+      }
+      this.$refs.unissuedListLoadmore.onBottomLoaded();
+    },
+    unissuedListHandleBottomChange(status){
+      this.unissuedListBottomStatus = status;
+    },
+
+    //待扫码列表
+    unscannedListData(){
+      if(!this.token){
+        this.empty = true;
+        this.timeOut = false;
+        this.showInvalid = false;
+        this.showLoading = false;
+        return
+      }
+      var _this = this;
+      this.unscanned_page = 0;
+      var url = this.local+'/api/user/fp_scan_list';
+      this.data = {
+        userid: this.token,
+        page: this.unscanned_page,
+        limit: this.limit
+      }
+      this.$ajaxjp(url, this.data, true, (response) =>{
+        if(response.errcode==0){
+          _this.showLoading = false;
+          _this.unscannedListCount = response.count;
+          if(response.fp_list.length>0){
+            _this.timeOut = false;
+            _this.unscanned_list = response.fp_list;
+          }else{
+            _this.empty = true;
+          }
+          return false
+        }
+        if(response.errcode==1003){   //登录用户失效
+          this.showLoading = false;
+          this.empty = false;
+          this.timeOut = false;
+          this.showInvalid = true;
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return
+        }else{
+          this.showLoading = false;
+          this.showInvalid = false;
+          this.empty = false;
+          this.timeOut = true;
+          return
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showInvalid = false;
+        _this.empty = false;
+        _this.timeOut = true;
+        _this.unscanned_list = [];
+        console.log(error);
+      });
+    },
+    //more
+    unscannedListMore(){
+      this.unscanned_page++;
+      var _this = this;
+      var url = this.local+'/api/user/fp_scan_list';
+      var data = {
+        userid: this.token,
+        page: this.unscanned_page,
+        limit: this.limit,
+        sign: '0'
+      }
+      this.$ajaxjp(url, data, true, (response) =>{
+        if(response.errcode==0){
+          if(response.fp_list.length>0){
+            this.unscanned_list = this.unscanned_list.concat(response.fp_list);
+          }
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showInvalid = false;
+        _this.empty = false;
+        _this.timeOut = true;
+        _this.unscanned_list = [];
+        console.log(error);
+      });
+    },
+    //未开---上拉加载更多
+    unscannedListLoadBottom(){
+      if(this.unscanned_list.length < this.unscannedListCount){
+        this.unscannedListMore();
+      }else{
+        this.unscannedListLoaded = true;
+      }
+      this.$refs.unscannedListLoadmore.onBottomLoaded();
+    },
+    unscannedListHandleBottomChange(status){
+      this.unscannedListBottomStatus = status;
     }
   },
   mounted(){
     this.locationData();  //local
-    this.listData();
+    this.allListData();
   }
 }
 </script>
@@ -436,7 +952,7 @@ export default {
     display: flex;
   }
   .all_list .orderList li:first-child{
-    padding: 0.22rem 0.3rem 0.1rem 0.32rem;
+    padding: 0.3rem 0.3rem 0.1rem 0.32rem;
   }
   .all_list .orderList li:last-child{
     margin-bottom: 0.32rem;
@@ -534,39 +1050,46 @@ export default {
   /* mint-tab */
   .mint-tab{
     display: flex;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    height: 0.85rem;
+    border-bottom: 0.01rem solid #f2f2f2;
+    background: #fff;
+    position: absolute !important;
+    top: 46px;
+    left:0;
+    z-index: 100;
+    padding-top: 0 !important;
+    box-sizing: border-box;
+  }
+  .mint-tab .vux-tab-container{
+    height:0.85rem;
+    box-sizing: border-box;
+  }
+  .mint-tab .vux-tab{
+    height:0.85rem;
   }
   .mint-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border-radius: 4px;
-    border: 0;
-    box-sizing: border-box;
-    color: inherit;
-    display: block;
-    font-size: 18px;
-    height: 41px;
-    outline: 0;
-    overflow: hidden;
     position: relative;
-    text-align: center
+    text-align: center;
+    width:25%;
+    font-size: 0.28rem;
+    color: #999;
+    height: 0.85rem;
+    line-height: 0.85rem;
   }
-  .mint-button::after {
-    background-color: #000;
-    content: " ";
-    opacity: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    position: absolute
-  }
-  .mint-button:not(.is-disabled):active::after {
-    opacity: .4
+  .mint-button.activeTab{
+    box-sizing: border-box;
+    color: #ff9900;
+    border-bottom: 0.045rem solid #ff9900;
   }
   .mint-tab-container {
     overflow: hidden;
     position: relative;
+    z-index: 1;
+    margin-top: 46px;
+    padding-top: 0.8rem;
   }
   .mint-tab-container-wrap {
     display: -webkit-box;

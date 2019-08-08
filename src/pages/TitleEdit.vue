@@ -149,6 +149,7 @@ export default {
           if(response.errcode == 0){
             this.showLoading = false;
             this.showToast = true;
+            sessionStorage.setItem("titleInfor",JSON.stringify(data));
             this.timer = setTimeout(() => {
               if(this.fromList){
                 this.$router.push({path:'/my_title_list?isMy=true'});

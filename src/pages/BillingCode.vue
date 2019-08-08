@@ -7,7 +7,7 @@
     >
       <p slot="left" class="header_left" @click="goback"></p>
       <p slot="right" class="header_right" @click="jumpAlone">单明细开票</p>
-      <h2 class="header_title">开票</h2>
+      <h2 class="header_title">通知开票</h2>
     </x-header>
     <ul class="commonList listBilling BillingTop">
       <li>

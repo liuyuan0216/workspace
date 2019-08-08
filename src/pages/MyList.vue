@@ -127,7 +127,8 @@ export default {
       var data = {
         userid: localStorage.getItem("token"),
         page: this.page,
-        limit: this.limit
+        limit: this.limit,
+        sign: '1'
       }
       this.$ajaxjp(url, data, true, (response) =>{
         if(response.errcode==0){

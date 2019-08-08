@@ -7,7 +7,7 @@
     >
       <p slot="left" class="header_left" @click="goback"></p>
       <p slot="right" class="header_right" @click="jumpMore">多明细开票</p>
-      <h2 class="header_title">开票</h2>
+      <h2 class="header_title">通知开票</h2>
     </x-header>
     <div class="commonList codeAloneSp marginTop">
       <p class="codeAloneTitle"><span class="leftLabel">*</span>商品选择<span class="codeAloneAdd" @click="jumpAddGoods">添加商品</span></p>

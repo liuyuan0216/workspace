@@ -6,7 +6,7 @@
       :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
       <p slot="left" class="header_left" @click="goback"></p>
-      <h2 class="header_title">开票</h2>
+      <h2 class="header_title">通知开票</h2>
     </x-header>
 
     <div class="billing_wrap" :class="isScan?'scan_wrap':''">
@@ -238,8 +238,7 @@ export default {
       spdj: '',
       spsl: '',
       //scan
-      isScan: false,
-      codeUrl: ''
+      isScan: false
     }
   },
   components:{
@@ -412,7 +411,8 @@ export default {
         result = result.replace(/\n/g, '');
         //判断数据是否含有链接 （微信）
         if(result.indexOf('http')>=0&&result.indexOf('w.url.cn/')>=0){
-          that.codeUrl = result;  //获取扫描结果数据
+          //获取扫描结果数据
+          that.scanTitle(result);
         }else{  //支付宝数据
           this.timer = setTimeout(() => {
             var title = result.substring(result.indexOf("11") + 2, result.indexOf("→2"));
@@ -436,6 +436,48 @@ export default {
       this.isScan = false;
       scan.cancel();  //关闭扫描
       scan.close();  //关闭控件
+    },
+    //扫码微信
+    scanTitle(scan_url){
+      var _this = this;
+      var url = this.local+'/api/user/scan_title';
+      var data = {
+        userid: localStorage.getItem("token"),
+        scan_text: scan_url
+      }
+      this.$ajaxjp(url, data, true,(response) =>{
+        if(response.errcode==0){
+          var title = response.title;
+          var sh = response.tax_no;
+          var dzdh = response.dzdh;
+          var yhzh = response.yhzh;
+          _this.titleData = {
+            gfname:title,
+            gfsh:sh,
+            gfdzdh:dzdh,
+            gfyhzh:yhzh
+          }
+          return false
+        }
+        if(response.errcode==1003){   //登录用户失效
+          this.showInvalid = true;
+          this.text = '登录用户失效，请重新登录';
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+        }else{
+          this.popupsStatus = true;
+          this.showPopups();
+          this.text = '解析微信抬头失败';
+        }
+      },function (error) {
+        _this.popupsStatus = true;
+        _this.showPopups();
+        _this.text = '网络异常';
+        console.log(error);
+      });
     },
     //发票类型
     checkFp(item){
