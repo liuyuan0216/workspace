@@ -117,13 +117,13 @@
                     <h2 class="orderListConTitle overflowCon" v-if="item.qrcode_url">暂无（消费者未扫码）</h2>
                     <p class="orderListConName overflowCon">{{item.spmc}}</p>
                     <p v-if="item.fpzl=='t'">
-                      <span class="orderListConType">电子发票<b>{{item.kprq}}</b></span>
+                      <span class="orderListConType">电子发票<b>{{item.create_time}}</b></span>
                     </p>
                     <p v-if="item.fpzl=='c'">
-                      <span class="orderListConType">普通发票<b>{{item.kprq}}</b></span>
+                      <span class="orderListConType">普通发票<b>{{item.create_time}}</b></span>
                     </p>
                     <p v-if="item.fpzl=='s'">
-                      <span class="orderListConType">专用发票<b>{{item.kprq}}</b></span>
+                      <span class="orderListConType">专用发票<b>{{item.create_time}}</b></span>
                     </p>
                   </div>
                   <p class="orderListNoun">{{item.jshj}}<span class="redMark" v-if="item.readFlag=='0'"></span></p>
@@ -447,40 +447,36 @@ export default {
       this.active = 'tab-container1';
       this.allListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
-      if(!this.came||this.$refs.allList.childElementCount==0){
-        this.showLoading = true;
-        this.allListData();
-      }
+      // if(!this.came||this.$refs.allList){
+      //   this.showLoading = true;
+      //   this.allListData();
+      // }
+      this.showLoading = true;
+      this.allListData();
     },
     activeTab2(){
       this.active = 'tab-container2';
       this.issuedListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
       this.came = sessionStorage.getItem("came");
-      if(!this.came||this.$refs.issuedList.childElementCount==0){
-        this.showLoading = true;
-        this.issuedListData();
-      }
+      this.showLoading = true;
+      this.issuedListData();
     },
     activeTab3(){
       this.active = 'tab-container3';
       this.unissuedListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
       this.came = sessionStorage.getItem("came");
-      if(!this.came||this.$refs.unissuedList.childElementCount==0){
-        this.showLoading = true;
-        this.unissuedListData();
-      }
+      this.showLoading = true;
+      this.unissuedListData();
     },
     activeTab4(){
       this.active = 'tab-container4';
       this.unscannedListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
       this.came = sessionStorage.getItem("came");
-      if(!this.came||this.$refs.unscannedList.childElementCount==0){
-        this.showLoading = true;
-        this.unscannedListData();
-      }
+      this.showLoading = true;
+      this.unscannedListData();
     },
 
     //全部发票列表
@@ -505,6 +501,7 @@ export default {
           _this.showLoading = false;
           _this.allListCount = response.count;
           if(response.fp_list.length>0){
+            _this.empty = false;
             _this.timeOut = false;
             _this.all_list = response.fp_list;
           }else{
@@ -671,6 +668,7 @@ export default {
           _this.showLoading = false;
           _this.issuedListCount = response.count;
           if(response.fp_list.length>0){
+            _this.empty = false;
             _this.timeOut = false;
             _this.issued_list = response.fp_list;
           }else{
@@ -767,6 +765,7 @@ export default {
           _this.showLoading = false;
           _this.unissuedListCount = response.count;
           if(response.fp_list.length>0){
+            _this.empty = false;
             _this.timeOut = false;
             _this.unissued_list = response.fp_list;
           }else{
@@ -862,6 +861,7 @@ export default {
           _this.showLoading = false;
           _this.unscannedListCount = response.count;
           if(response.fp_list.length>0){
+            _this.empty = false;
             _this.timeOut = false;
             _this.unscanned_list = response.fp_list;
           }else{
