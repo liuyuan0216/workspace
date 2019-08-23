@@ -13,6 +13,10 @@
       <li class="itemBillingName">
         <p class="leftCon"><span class="leftLabel">*</span>商品名称</p>
         <input type="hidden" class="spid" ref="spid" v-model="goodsData.spid" />
+        <input type="hidden" ref="bm" v-model="goodsData.bm" />
+        <input type="hidden" ref="name" v-model="goodsData.name" />
+        <input type="hidden" ref="yhzc" v-model="goodsData.yhzc" />
+        <input type="hidden" ref="yhzcmc" v-model="goodsData.yhzcmc" />
         <input type="text" class="rightInput" ref="spmc" placeholder="请输入商品名称" v-model="goodsData.spmc"/>
         <span class="chooseGoods" @click="jumpGoodsList">+ 选择商品</span>
       </li>
@@ -135,6 +139,7 @@ export default {
         return
       }
       next(vm => {
+        vm.modeType = localStorage.getItem("modeType");
         vm.goodsData = fromparams_goods;
         vm.slv = Number(vm.goodsData.slv)*100+'%';
         vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
@@ -148,14 +153,21 @@ export default {
       if(typeof(to.query.itemChangeData)=='object'){
         fromparams_change = to.query.itemChangeData;
       }else{
-        next();
+        next(vm => {
+          vm.modeType = localStorage.getItem("modeType");
+          vm.goodsData = [];
+          vm.slv = '13%';
+          vm.spdj = '';
+          vm.spsl = '';
+          vm.price = '';
+        });
         return
       }
       next(vm => {
         vm.modeType = localStorage.getItem("modeType");
         vm.goodsData = fromparams_change;
         vm.slv = vm.goodsData.slv;
-        vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
+        vm.spdj = vm.goodsData.spdj;
         vm.spsl = vm.goodsData.spsl;
         vm.price = vm.goodsData.je;
       });
@@ -212,7 +224,7 @@ export default {
       if(e.currentTarget.value){
         this.spsl = Number(e.currentTarget.value).toFixed(2).toString();
         //如果有单价和数量 计算总额
-        if(this.spsl){
+        if(this.spdj){
           this.price = (Number(this.spdj)*Number(this.spsl)).toFixed(2).toString();
           return false
         }
@@ -308,7 +320,11 @@ export default {
             jldw: this.$refs.jldw.value,
             spdj: this.spdj,
             spsl: this.spsl,
-            je: this.price
+            je: this.price,
+            bm: this.$refs.bm.value,
+            name: this.$refs.name.value,
+            yhzc: this.$refs.yhzc.value,
+            yhzcmc :this.$refs.yhzcmc.value
           }
         ]
         this.showToast = true;

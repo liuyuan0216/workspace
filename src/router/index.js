@@ -34,6 +34,14 @@ import AddTitle from '@/pages/AddTitle'
 import Privacy from '@/pages/Privacy'
 import About from '@/pages/About'
 import Success from '@/pages/Success'
+import GoodsClassify from '@/pages/GoodsClassify'
+import GoodsClassifySub from '@/pages/GoodsClassifySub'
+import GoodsClassifySubNext1 from '@/pages/GoodsClassifySubNext1'
+import GoodsClassifySubNext2 from '@/pages/GoodsClassifySubNext2'
+import GoodsClassifySubNext3 from '@/pages/GoodsClassifySubNext3'
+import GoodsClassifySubNext4 from '@/pages/GoodsClassifySubNext4'
+import GoodsClassifySubNext5 from '@/pages/GoodsClassifySubNext5'
+import ChooseGoods from '@/pages/ChooseGoods'
 
 Vue.use(Router)
 
@@ -187,12 +195,18 @@ export default new Router({
     {  //开票-选择商品
       path: '/edit_goods',
       name: 'EditGoods',
-      component: EditGoods
+      component: EditGoods,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
     },
     {  //添加商品
       path: '/add_goods',
       name: 'AddGoods',
-      component: AddGoods
+      component: AddGoods,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
     },
     {  //添加抬头
       path: '/add_title',
@@ -213,6 +227,68 @@ export default new Router({
       path: '/success',
       name: 'Success',
       component: Success
+    },
+
+    {  //商品分类
+      path: '/goods_classify',
+      name: 'GoodsClassify',
+      component: GoodsClassify,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {  //分类下一级
+      path: '/goods_classify_sub',
+      name: 'GoodsClassifySub',
+      component: GoodsClassifySub,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {  //分类下一级
+      path: '/goods_classify_sub_next1',
+      name: 'GoodsClassifySubNext1',
+      component: GoodsClassifySubNext1,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/goods_classify_sub_next2',
+      name: 'GoodsClassifySubNext2',
+      component: GoodsClassifySubNext2,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/goods_classify_sub_next3',
+      name: 'GoodsClassifySubNext3',
+      component: GoodsClassifySubNext3,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/goods_classify_sub_next4',
+      name: 'GoodsClassifySubNext4',
+      component: GoodsClassifySubNext4,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/goods_classify_sub_next5',
+      name: 'GoodsClassifySubNext5',
+      component: GoodsClassifySubNext5,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {  //选择商品
+      path: '/choose_goods',
+      name: 'ChooseGoods',
+      component: ChooseGoods
     }
   ]
 })

@@ -136,6 +136,10 @@ export default {
           this.popupsStatus = true;
           this.showPopups();
           this.text = '手机号或密码不正确，请重新输入';
+        }else{
+          this.popupsStatus = true;
+          this.showPopups();
+          this.text = response.errmsg;
         }
       },function (error) {
         _this.timeOut = true;

@@ -3,8 +3,9 @@
     <x-header
       slot="header"
       class="header"
-      :left-options= "{showBack:true, backText:''}"
+      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
+      <p slot="left" class="header_left" @click="goback"></p>
       <p slot="right" class="header_right" v-if="isMy=='true'" @click="jumpAddGoods">添加商品</p>
       <h2 class="header_title" v-if="!isMy">选择商品</h2>
       <h2 class="header_title" v-if="isMy=='true'">我的商品信息</h2>
@@ -111,11 +112,18 @@ export default {
       this.showLoading = true;
       var _this = this;
       this.page = 0;
-      var url = this.local + '/api/user/sp_list';
-      var data = {
-        userid: localStorage.getItem("token"),
-        page: this.page,
-        limit: this.limit
+      if(this.isMy){
+        var url = this.local + '/api/user/sp_list_all';
+        var data = {
+          userid: localStorage.getItem("token")
+        }
+      }else{
+        var url = this.local + '/api/user/sp_list_fm';
+        var data = {
+          userid: localStorage.getItem("token"),
+          page: this.page,
+          limit: this.limit
+        }
       }
       this.$ajaxjp(url, data, true, (response) => {
         if (response.errcode == 0) {
@@ -179,7 +187,8 @@ export default {
       if(!this.isMy){
         this.$router.push({path:'/edit_goods',query:{itemGoodsData:item,itemGoodsIndex:index}});
       }else{
-        this.$router.push({path:'/add_goods',query:{itemGoodsData:item}});
+        sessionStorage.setItem("goodsStatus","edit");
+        this.$router.push({path:'/add_goods?isMy=true',query:{itemGoodsData:item}});
       }
     },
     //下拉加载更多
@@ -204,7 +213,15 @@ export default {
     },
     //跳转添加商品
     jumpAddGoods(){
-      this.$router.push({path:'/add_goods'});
+      sessionStorage.setItem("goodsStatus","add");
+      this.$router.push({path:'/add_goods?isMy=true'});
+    },
+    goback(){
+      if(this.isMy){
+        this.$router.push({path:'/my'});
+      }else{
+        this.$router.push({path:'/edit_goods'});
+      }
     }
   },
   mounted () {
@@ -279,5 +296,26 @@ export default {
     border: none;
     border-radius: 0.08rem;
     margin-top: 0.6rem;
+  }
+
+  /*back icon*/
+  .header_left{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -5px;
+    left: -5px;
+  }
+  .header_left:before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #fff;
+    border-width: 1px 0 0 1px;
+    -webkit-transform: rotate(315deg);
+    transform: rotate(315deg);
+    top: 8px;
+    left: 7px;
   }
 </style>

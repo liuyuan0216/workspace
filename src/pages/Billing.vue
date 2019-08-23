@@ -9,7 +9,7 @@
       <h2 class="header_title">通知开票</h2>
     </x-header>
 
-    <div class="billing_wrap" :class="isScan?'scan_wrap':''">
+    <div class="billing_wrap">
       <ul class="commonList listBilling BillingTop">
         <li>
           <p class="leftCon">发票类型</p>
@@ -57,7 +57,7 @@
         <li class="itemName">
           <p class="leftCon"><span class="leftLabel">*</span>名称</p>
           <input type="text" class="rightInput" placeholder="请输入名称" ref="name" v-model="titleData.gfname"/>
-          <span class="iconCode" @click="startScan">
+          <span class="iconCode" @click="startScan" v-show="showCode">
               <img src="../assets/icon_code.png" />
             </span>
         </li>
@@ -104,6 +104,10 @@
         <ul class="addGoodsList" ref="listBox">
           <li class="itemGoods" v-if="spxx" v-for="(item,index) in spxx" @click="changeItem(item,index)">
             <input class="spid" v-model="item.spid" hidden></input>
+            <input class="bm" v-model="item.bm" hidden></input>
+            <input class="name" v-model="item.name" hidden></input>
+            <input class="yhzc" v-model="item.yhzc" hidden></input>
+            <input class="yhzcmc" v-model="item.yhzcmc" hidden></input>
             <div class="goodsItem spmcItem">
               <p class="spmc overflowCon">{{item.spmc}}</p>
               <span v-if="item.slv">税率：<b class="slv">{{item.slv}}</b></span>
@@ -153,7 +157,6 @@
     </div>
     <div
       class="ftWrap"
-      :class="isScan?'scan_wrap':''"
       slot="bottom">
       <div class="jeBox">
         <p>合计金额：</p>
@@ -161,7 +164,7 @@
       </div>
       <button class="submitBtn" @click="submitEdit">提交开票</button>
     </div>
-    <div class="scan">
+    <div class="scan" ref="scan">
       <div id="bcid"></div>
     </div>
   </view-box>
@@ -238,7 +241,8 @@ export default {
       spdj: '',
       spsl: '',
       //scan
-      isScan: false
+      isScan: false,
+      showCode: true
     }
   },
   components:{
@@ -321,7 +325,11 @@ export default {
             slv: vm.goodsData[0].slv,
             spsl: vm.goodsData[0].spsl,
             spdj: vm.goodsData[0].spdj,
-            je: vm.goodsData[0].je
+            je: vm.goodsData[0].je,
+            bm: vm.goodsData[0].bm,
+            name: vm.goodsData[0].name,
+            yhzc: vm.goodsData[0].yhzc,
+            yhzcmc: vm.goodsData[0].yhzcmc
           }
         var obj = {};
         vm.price = 0;
@@ -365,6 +373,7 @@ export default {
         vm.price = 0;
         vm.$refs.bz.value = '';
         vm.isScan = false;
+        vm.$refs.scan.style.display = 'none';
       });
     }
   },
@@ -373,7 +382,6 @@ export default {
     this.$store.commit('changeRecruitScrollY', this.scrollTop);
     //关闭扫描控件
     if(this.isScan){
-      this.isScan = false;
       this.closeScan();
       return false
     }
@@ -383,9 +391,9 @@ export default {
     //创建扫描控件
     startScan(){
       document.activeElement.blur();  //隐藏软键盘
+      this.$refs.scan.style.display = 'block';
       let that = this;
       if(!window.plus) return
-
       this.timer = setTimeout(() => {
         this.isScan = true;  //出现扫描控件
         scan = new plus.barcode.Barcode('bcid');
@@ -434,6 +442,7 @@ export default {
     closeScan(){
       if(!window.plus) return
       this.isScan = false;
+      this.$refs.scan.style.display = 'none';
       scan.cancel();  //关闭扫描
       scan.close();  //关闭控件
     },
@@ -519,9 +528,11 @@ export default {
       if(index==0){
         this.title_type = '1';
         this.type_enterprises = true;
+        this.showCode = true;
       }else{
         this.title_type = '0';
         this.type_enterprises = false;
+        this.showCode = false;
       }
     },
     //弹窗显示
@@ -550,6 +561,10 @@ export default {
           var spdj = li[i].getElementsByClassName("spdj");
           var spsl = li[i].getElementsByClassName("spsl");
           var je = li[i].getElementsByClassName("je");
+          var bm = li[i].getElementsByClassName("bm");
+          var name = li[i].getElementsByClassName("name");
+          var yhzc = li[i].getElementsByClassName("yhzc");
+          var yhzcmc = li[i].getElementsByClassName("yhzcmc");
           var itemData ={  //商品信息
             spid: spid[0].value,
             spmc: spmc[0].innerHTML,
@@ -558,7 +573,11 @@ export default {
             spsl: spsl[0].innerHTML,
             spdj: spdj[0].innerHTML,
             slv: slv[0].innerHTML,
-            je: je[0].innerHTML
+            je: je[0].innerHTML,
+            bm: bm[0].value,
+            name: name[0].value,
+            yhzc: yhzc[0].value,
+            yhzcmc: yhzcmc[0].value
           }
           this.dataArr.push(itemData);
         }
@@ -866,7 +885,7 @@ export default {
     position: absolute;
     bottom: 0;
     left:0;
-    z-index: 1000;
+    //z-index: 1000;
     display: flex;
     justify-content: space-between;
   }
@@ -978,8 +997,8 @@ export default {
   }
 
   .billing_wrap{
-    position: relative;
-    z-index: 1000;
+    /*position: relative;*/
+    /*z-index: 1000;*/
   }
   .scan_wrap{
     z-index: 1;
@@ -990,7 +1009,8 @@ export default {
     left:0;
     width: 100%;
     height: 100%;
-    z-index: 99;
+    z-index: 100;
+    display: none;
   }
   .scanBtn{
     position: absolute;

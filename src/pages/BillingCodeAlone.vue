@@ -253,6 +253,7 @@ export default {
     },
     //跳转添加商品
     jumpAddGoods(){
+      sessionStorage.setItem("goodsStatus","add");
       this.$router.push({path:'/add_goods'});
     }
   },

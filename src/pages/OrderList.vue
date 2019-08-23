@@ -1,36 +1,38 @@
 <template>
   <view-box ref="viewBox" class="all_list">
-    <x-header
-      slot="header"
-      class="header"
-      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
-    >
-      <p slot="right" class="header_right" @click="tryAgain">刷新</p>
-      <h2 class="header_title">发票列表</h2>
-    </x-header>
+    <div class="headerBlock" slot="header">
+      <x-header
 
-    <ul class="mint-tab">
-      <li
-        class="mint-button"
-        @click="activeTab1"
-        :class="active=='tab-container1'?'activeTab':''"
-      >全部</li>
-      <li
-        class="mint-button"
-        @click="activeTab2"
-        :class="active=='tab-container2'?'activeTab':''"
-      >已开票</li>
-      <li
-        class="mint-button"
-        @click="activeTab3"
-        :class="active=='tab-container3'?'activeTab':''"
-      >未开票</li>
-      <li
-        class="mint-button"
-        @click="activeTab4"
-        :class="active=='tab-container4'?'activeTab':''"
-      >待扫码</li>
-    </ul>
+        class="header"
+        :left-options= "{showBack:false, backText:'', preventGoBack:true}"
+      >
+        <p slot="right" class="header_right" @click="tryAgain">刷新</p>
+        <h2 class="header_title">发票列表</h2>
+      </x-header>
+      <ul class="mint-tab">
+        <li
+          class="mint-button"
+          @click="activeTab1"
+          :class="active=='tab-container1'?'activeTab':''"
+        >全部</li>
+        <li
+          class="mint-button"
+          @click="activeTab2"
+          :class="active=='tab-container2'?'activeTab':''"
+        >已开票</li>
+        <li
+          class="mint-button"
+          @click="activeTab3"
+          :class="active=='tab-container3'?'activeTab':''"
+        >未开票</li>
+        <li
+          class="mint-button"
+          @click="activeTab4"
+          :class="active=='tab-container4'?'activeTab':''"
+        >待扫码</li>
+      </ul>
+    </div>
+
     <mt-tab-container v-model="active">
       <mt-tab-container-item id="tab-container1">
         <div v-if="!empty">
@@ -42,7 +44,7 @@
             ref="allListLoadmore"
             class="loadmore"
           >
-            <ul class="orderList">
+            <ul class="orderList" ref="allList">
               <li
                 @click="jumpDetail($event,'allList',item,index)"
                 v-for="(item,index) in all_list"
@@ -83,7 +85,7 @@
             </div>
           </v-loadmore>
         </div>
-        <div class="orderListEmpty marginTop" v-if="empty">
+        <div class="orderListEmpty" v-if="empty">
           <img src="../assets/img_list_empty.png" />
           <p>还没有订单</p>
           <button class="emptyBtn" @click="setBilling">立即添加</button>
@@ -100,7 +102,7 @@
             ref="issuedListLoadmore"
             class="loadmore"
           >
-            <ul class="orderList">
+            <ul class="orderList" ref="issuedList">
               <li
                 @click="jumpDetail($event,'issuedList',item,index)"
                 v-for="(item,index) in issued_list"
@@ -135,7 +137,7 @@
             </div>
           </v-loadmore>
         </div>
-        <div class="orderListEmpty marginTop" v-if="empty">
+        <div class="orderListEmpty" v-if="empty">
           <img src="../assets/img_list_empty.png" />
           <p>还没有订单</p>
           <button class="emptyBtn" @click="setBilling">立即添加</button>
@@ -152,7 +154,7 @@
             ref="unissuedListLoadmore"
             class="loadmore"
           >
-            <ul class="orderList">
+            <ul class="orderList" ref="unissuedList">
               <li
                 @click="jumpDetail($event,'unissuedList',item,index)"
                 v-for="(item,index) in unissued_list"
@@ -190,7 +192,7 @@
             </div>
           </v-loadmore>
         </div>
-        <div class="orderListEmpty marginTop" v-if="empty">
+        <div class="orderListEmpty" v-if="empty">
           <img src="../assets/img_list_empty.png" />
           <p>还没有订单</p>
           <button class="emptyBtn" @click="setBilling">立即添加</button>
@@ -207,7 +209,7 @@
             ref="unscannedListLoadmore"
             class="loadmore"
           >
-            <ul class="orderList">
+            <ul class="orderList" ref="unscannedList">
               <li
                 @click="jumpDetail($event,'unscannedList',item,index)"
                 v-for="(item,index) in unscanned_list"
@@ -245,7 +247,7 @@
             </div>
           </v-loadmore>
         </div>
-        <div class="orderListEmpty marginTop" v-if="empty">
+        <div class="orderListEmpty" v-if="empty">
           <img src="../assets/img_list_empty.png" />
           <p>还没有订单</p>
           <button class="emptyBtn" @click="setBilling">立即添加</button>
@@ -445,7 +447,7 @@ export default {
       this.active = 'tab-container1';
       this.allListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
-      if(!this.came){
+      if(!this.came||this.$refs.allList.childElementCount==0){
         this.showLoading = true;
         this.allListData();
       }
@@ -455,7 +457,7 @@ export default {
       this.issuedListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
       this.came = sessionStorage.getItem("came");
-      if(!this.came){
+      if(!this.came||this.$refs.issuedList.childElementCount==0){
         this.showLoading = true;
         this.issuedListData();
       }
@@ -465,7 +467,7 @@ export default {
       this.unissuedListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
       this.came = sessionStorage.getItem("came");
-      if(!this.came){
+      if(!this.came||this.$refs.unissuedList.childElementCount==0){
         this.showLoading = true;
         this.unissuedListData();
       }
@@ -475,7 +477,7 @@ export default {
       this.unscannedListLoaded = false;
       this.$refs.viewBox.scrollTo(0);
       this.came = sessionStorage.getItem("came");
-      if(!this.came){
+      if(!this.came||this.$refs.unscannedList.childElementCount==0){
         this.showLoading = true;
         this.unscannedListData();
       }
@@ -676,7 +678,7 @@ export default {
           }
           return false
         }
-        if(response.errcode==0){   //登录用户失效
+        if(response.errcode==1003){   //登录用户失效
           this.showLoading = false;
           this.empty = false;
           this.timeOut = false;
@@ -942,10 +944,16 @@ export default {
 
 <style lang="less">
   @import "~vux/src/styles/reset.less";
+  .headerBlock{
+    height: 46px;
+    padding-bottom: 0.85rem;
+  }
+  .all_list .weui-tab__panel{
+    padding-bottom: 105px;
+  }
   .all_list .orderList{
     background: #fff;
     position: relative;
-    top: 0;
   }
   .all_list .orderList li{
     padding: 0.12rem 0.3rem 0.1rem 0.32rem;
@@ -954,8 +962,8 @@ export default {
   .all_list .orderList li:first-child{
     padding: 0.3rem 0.3rem 0.1rem 0.32rem;
   }
-  .all_list .orderList li:last-child{
-    margin-bottom: 0.32rem;
+  .all_list .mint-loadmore-bottom{
+    padding-bottom: 40px;
   }
   .orderListIcon{
     width: 0.6rem;
@@ -1049,6 +1057,8 @@ export default {
 
   /* mint-tab */
   .mint-tab{
+    background: #fff;
+    width:100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1056,11 +1066,12 @@ export default {
     height: 0.85rem;
     border-bottom: 0.01rem solid #f2f2f2;
     background: #fff;
-    position: absolute !important;
+    top:46px;
+    position: relative;
+    /*position: fixed;
     top: 46px;
-    left:0;
+    left:0;*/
     z-index: 100;
-    padding-top: 0 !important;
     box-sizing: border-box;
   }
   .mint-tab .vux-tab-container{
@@ -1087,9 +1098,6 @@ export default {
   .mint-tab-container {
     overflow: hidden;
     position: relative;
-    z-index: 1;
-    margin-top: 46px;
-    padding-top: 0.8rem;
   }
   .mint-tab-container-wrap {
     display: -webkit-box;

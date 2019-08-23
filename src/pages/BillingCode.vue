@@ -43,6 +43,10 @@
       <ul class="addGoodsList" ref="listBox">
         <li class="itemGoods" v-if="spxx" v-for="(item,index) in spxx" @click="changeItem(item,index)">
           <input class="spid" v-model="item.spid" hidden></input>
+          <input class="bm" v-model="item.bm" hidden></input>
+          <input class="name" v-model="item.name" hidden></input>
+          <input class="yhzc" v-model="item.yhzc" hidden></input>
+          <input class="yhzcmc" v-model="item.yhzcmc" hidden></input>
           <div class="goodsItem spmcItem">
             <p class="spmc overflowCon">{{item.spmc}}</p>
             <span v-if="item.slv">税率：<b class="slv">{{item.slv}}</b></span>
@@ -223,7 +227,11 @@ export default {
             slv: vm.goodsData[0].slv,
             spsl: vm.goodsData[0].spsl,
             spdj: vm.goodsData[0].spdj,
-            je: vm.goodsData[0].je
+            je: vm.goodsData[0].je,
+            bm: vm.goodsData[0].bm,
+            name: vm.goodsData[0].name,
+            yhzc: vm.goodsData[0].yhzc,
+            yhzcmc: vm.goodsData[0].yhzcmc
           }
         var obj = {};
         vm.price = 0;
@@ -323,6 +331,10 @@ export default {
           var spdj = li[i].getElementsByClassName("spdj");
           var spsl = li[i].getElementsByClassName("spsl");
           var je = li[i].getElementsByClassName("je");
+          var bm = li[i].getElementsByClassName("bm");
+          var name = li[i].getElementsByClassName("name");
+          var yhzc = li[i].getElementsByClassName("yhzc");
+          var yhzcmc = li[i].getElementsByClassName("yhzcmc");
           var itemData ={  //商品信息
             spid: spid[0].value,
             spmc: spmc[0].innerHTML,
@@ -331,7 +343,11 @@ export default {
             spsl: spsl[0].innerHTML,
             spdj: spdj[0].innerHTML,
             slv: slv[0].innerHTML,
-            je: je[0].innerHTML
+            je: je[0].innerHTML,
+            bm: bm[0].value,
+            name: name[0].value,
+            yhzc: yhzc[0].value,
+            yhzcmc: yhzcmc[0].value
           }
           this.dataArr.push(itemData);
         }

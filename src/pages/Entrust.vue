@@ -20,14 +20,14 @@
         <img class="entrustIcon" src="../assets/icon_verb_edit.png" />
         <div class="entrustInfor">
           <h3 class="entrustType">手工填开</h3>
-          <p class="entrustTypeCon">自己填写开票信息更精准</p>
+          <p class="entrustTypeCon">自己填写发票信息更精准</p>
         </div>
       </li>
       <li @click="jumpScanCode">
         <img class="entrustIcon" src="../assets/icon_verb_code.png" />
         <div class="entrustInfor">
           <h3 class="entrustType">扫码自开</h3>
-          <p class="entrustTypeCon">消费者扫码自助开票</p>
+          <p class="entrustTypeCon">消费者扫码提交发票抬头</p>
         </div>
       </li>
     </ul>

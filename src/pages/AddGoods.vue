@@ -3,10 +3,10 @@
     <x-header
       slot="header"
       class="header"
-      :left-options= "{showBack:true, backText:''}"
+      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
     >
-      <h2 class="header_title" v-if="!itemGoodsData">添加商品</h2>
-      <h2 class="header_title" v-if="itemGoodsData">编辑商品</h2>
+      <p slot="left" class="header_left" @click="goback"></p>
+      <h2 class="header_title">{{titleText}}</h2>
     </x-header>
     <ul class="commonList marginTop">
       <li>
@@ -38,6 +38,40 @@
       <li>
         <p class="leftCon">商品单价</p>
         <input type="number" class="rightInput" ref="spdj" placeholder="请输入商品单价" v-model="spdj" @change="spdjNum($event)" />
+      </li>
+    </ul>
+    <ul class="commonList">
+      <li class="spflStyle itemFlbm">
+        <p class="leftCon"><span class="leftLabel">*</span>税收分类编码</p>
+        <p class="rightInput" :class="spflStatus?'spflStatus':''" ref="spflbm">{{spflbm}}</p>
+        <span class="icon_add" @click="jumpAdd">
+          <img src="../assets/icon_addgoods.png" />
+        </span>
+      </li>
+      <li class="spflStyle">
+        <p class="leftCon"><span class="leftLabel">*</span>税收分类名称</p>
+        <p class="rightInput" :class="spflStatus?'spflStatus':''" ref="spflmc">{{spflmc}}</p>
+      </li>
+      <li>
+        <p class="leftCon">享受优惠政策</p>
+        <select class="rightSelect" @change="changeType($event)" v-model="yhzc">
+          <option value="0">否</option>
+          <option value="1">是</option>
+        </select>
+      </li>
+      <li>
+        <p class="leftCon">优惠政策类型</p>
+        <select class="rightSelect" :class="!disabled?'disSelect':''" :disabled="!disabled" v-model="yhzcmc" ref="yhzcmc">
+          <option value="请选择">请选择</option>
+          <option value="100%先征后退">100%先征后退</option>
+          <option value="50%先征后退">50%先征后退</option>
+          <option value="免税">免税</option>
+          <option value="不征税">不征税</option>
+          <option value="简易征税">简易征税</option>
+          <option value="即征即退50%">即征即退50%</option>
+          <option value="即征即退30%">即征即退30%</option>
+          <option value="即征即退70%">即征即退70%</option>
+        </select>
       </li>
     </ul>
     <button class="commonBtn" @click="conserve">保存</button>
@@ -73,9 +107,18 @@ export default {
       popupsStatus: false,
       timer: null,
       goodsData: [],
-      itemGoodsData: this.$route.query.itemGoodsData,
+      goodsStatus: '',
       slv: '13%',
-      spdj: ''
+      spdj: '',
+      disabled: false,
+      titleText: '',
+      //编码
+      spflbm: '请选择税收分类编码',
+      spflmc: '请选择税收分类名称',
+      yhzc: '0',
+      yhzcmc: '请选择',
+      spflStatus: false,
+      isMy: this.$route.query.isMy
     }
   },
   components:{
@@ -87,22 +130,90 @@ export default {
   },
   beforeRouteEnter(to, from, next){
     var fromparams_goods = [];
-    if(from.name=='GoodsList'){
+    var fromparams_bm = [];
+    if(from.name=='GoodsList'||from.name=='GoodsClassify'||from.name=='GoodsClassifySub'||from.name=='GoodsClassifySubNext1'||from.name=='GoodsClassifySubNext2'||from.name=='GoodsClassifySubNext3'||from.name=='GoodsClassifySubNext4'||from.name=='GoodsClassifySubNext5'){
       if(typeof(to.query.itemGoodsData)=='object'){
-        fromparams_goods = to.query.itemGoodsData;
+        fromparams_goods.push(to.query.itemGoodsData);
+      }else if(typeof(to.query.itemData)=='object'){
+        fromparams_bm.push(to.query.itemData);
       }else{
-        next();
+        next(vm => {
+          vm.goodsStatus = sessionStorage.getItem("goodsStatus");
+          vm.isMy = vm.$route.query.isMy;
+          if(vm.goodsStatus=='edit'){
+            vm.titleText = '编辑商品'
+          }else{
+            vm.titleText = '添加商品'
+          }
+          //判断刚进来初始化
+          if(from.name=='GoodsList'){
+            vm.goodsData = [];
+            vm.slv = '13%';
+            //编码
+            vm.spflbm = '请选择税收分类编码';
+            vm.spflmc = '请选择税收分类名称';
+            vm.yhzc = '0';
+            vm.disabled = false;
+            vm.yhzcmc = '请选择';
+            vm.spflStatus = false;
+          }
+        });
         return
       }
       next(vm => {
-        vm.goodsData = fromparams_goods;
-        vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
-        if(vm.spdj=='0.00'){
-          vm.spdj = '';
+        vm.showLoading = false;
+        vm.spflStatus = true;
+        vm.goodsStatus = sessionStorage.getItem("goodsStatus");
+        vm.isMy = vm.$route.query.isMy;
+        //商品信息
+        if(fromparams_goods.length>0){
+          vm.goodsData = fromparams_goods[0];
+          vm.slv = Number(vm.goodsData.slv)*100+'%';
+          vm.spdj = Number(vm.goodsData.spdj).toFixed(2).toString();
+          if(vm.spdj=='0.00'){
+            vm.spdj = '';
+          }
+          //编码赋值
+          vm.spflbm = vm.goodsData.bm;
+          vm.spflmc = vm.goodsData.name;
+          vm.yhzc = vm.goodsData.yhzc;
+          vm.yhzcmc = vm.goodsData.yhzcmc;
+          //是否享受优惠政策
+          if(vm.yhzc=='1'){
+            vm.disabled = true;
+          }else{
+            vm.disabled = false;
+            vm.yhzcmc = '请选择';
+          }
+        }else if(fromparams_bm.length>0){  //编码信息
+          vm.spflbm = fromparams_bm[0].bm;
+          vm.spflmc = fromparams_bm[0].name;
+        }
+        if(vm.goodsStatus=='edit'){
+          vm.titleText = '编辑商品'
+        }else{
+          vm.titleText = '添加商品'
         }
       });
     }else{
-      next();
+      next(vm => {
+        vm.goodsData = [];
+        vm.slv = '13%';
+        //编码
+        vm.spflbm = '请选择税收分类编码';
+        vm.spflmc = '请选择税收分类名称';
+        vm.yhzc = '0';
+        vm.disabled = false;
+        vm.yhzcmc = '请选择';
+        vm.spflStatus = false;
+        vm.goodsStatus = sessionStorage.getItem("goodsStatus");
+        vm.isMy = vm.$route.query.isMy;
+        if(vm.goodsStatus=='edit'){
+          vm.titleText = '编辑商品'
+        }else{
+          vm.titleText = '添加商品'
+        }
+      });
     }
   },
   methods:{
@@ -116,6 +227,7 @@ export default {
         this.goodsData = this.itemGoodsData;
         this.slv = (this.goodsData.slv)*100+'%';
       }
+      this.showLoading = false;
     },
     //弹窗显示
     showPopups(){
@@ -130,8 +242,18 @@ export default {
     conserve(){
       this.submit();
       var _this = this;
+      //是否享受优惠政策
+      if(this.yhzc=='0'){
+        this.yhzcmc = '';
+      }
+
       if(this.isDone){ //通过了
         this.showLoading = true;  //loading
+        var slv = this.$refs.slv.value;
+        //如果 免税 或者 不征税的判断
+        if(this.$refs.yhzcmc.value=="免税"||this.$refs.yhzcmc.value=="不征税"){
+          slv = '0%';  //税率传0%
+        }
         var url = this.local+'/api/user/save_update_sp';
         var data = {
           userid: localStorage.getItem("token"),
@@ -139,15 +261,19 @@ export default {
           spmc: this.$refs.spmc.value,
           ggxh: this.$refs.ggxh.value,
           jldw: this.$refs.jldw.value,
-          slv: this.$refs.slv.value,
-          spdj: this.$refs.spdj.value
+          slv: slv,
+          spdj: this.$refs.spdj.value,
+          bm: this.spflbm,
+          name: this.spflmc,
+          yhzc: this.yhzc,
+          yhzcmc: this.yhzcmc
         }
         this.$ajaxjp(url, data, true,(response) =>{
           if(response.errcode==0){
             this.showLoading = false;
             this.showToast = true;
             this.timer = setTimeout(() => {
-              this.$router.go(-1);
+              this.$router.push({path:'/goods_list?isMy=true'});
             }, 500)
             return false
           }
@@ -193,6 +319,24 @@ export default {
         this.isDone = false;
         return false
       }
+      //编码
+      if(this.$refs.spflbm.innerHTML=='请选择税收分类编码'){
+        this.popupsStatus = true;
+        this.showPopups();
+        this.text = '税收分类编码不能为空';
+        this.isDone = false;
+        return false
+      }
+      //必须填写优惠政策类型
+      if(this.yhzc=='1'){
+        if(this.yhzcmc=='请选择'){
+          this.popupsStatus = true;
+          this.showPopups();
+          this.text = '优惠政策类型不能为空';
+          this.isDone = false;
+          return false
+        }
+      }
       if(this.$refs.spdj.value=="0.00"){
         this.popupsStatus = true;
         this.showPopups();
@@ -202,6 +346,29 @@ export default {
       }
       return this.isDone = true;
     },
+    //跳转到添加商品页面
+    jumpAdd(){
+      this.$router.push({path:'/goods_classify'});
+    },
+    //切换是否享受优惠政策
+    changeType(e){
+      var val = e.currentTarget.options[e.currentTarget.selectedIndex].value;
+      if(val=='1'){
+        this.disabled = true;
+        this.yhzc = '1';  //是否享受  是
+      }else{
+        this.disabled = false;
+        this.yhzcmc = '请选择';
+        this.yhzc = '0';  //是否享受  否
+      }
+    },
+    goback(){
+      if(this.isMy){
+        this.$router.push({path:'/goods_list?isMy=true'});
+      }else{
+        this.$router.push({path:'/billing_code_alone'});
+      }
+    }
   },
   mounted(){
     this.locationData();  //local
@@ -230,5 +397,56 @@ export default {
     -moz-appearance:none;
     -webkit-appearance:none;
     background: url("../assets/icon_task.png") no-repeat right center transparent;
+  }
+  .add_goods .commonList{
+    margin-bottom: 0.32rem;
+  }
+  .add_goods .leftCon{
+    width: 2.1rem;
+  }
+  .add_goods .rightInput{
+    width:4.8rem;
+  }
+  .itemFlbm{
+    position: relative;
+  }
+  .itemFlbm .icon_add{
+    position: absolute;
+    right: 0;
+  }
+  .itemFlbm .icon_add img {
+    width: 0.62rem;
+  }
+  .spflStyle .rightInput{
+    color: #ccc;
+    line-height: 0.34rem;
+    height: auto;
+  }
+  .spflStyle .spflStatus{
+    color: #999;
+  }
+  .disSelect{
+    color: #ccc;
+  }
+
+  /*back icon*/
+  .header_left{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -5px;
+    left: -5px;
+  }
+  .header_left:before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #fff;
+    border-width: 1px 0 0 1px;
+    -webkit-transform: rotate(315deg);
+    transform: rotate(315deg);
+    top: 8px;
+    left: 7px;
   }
 </style>
