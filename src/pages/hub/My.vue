@@ -1,0 +1,369 @@
+<template>
+  <view-box ref="viewBox" class="my">
+    <x-header
+      slot="header"
+      class="header"
+      :left-options= "{showBack:false, backText:'', preventGoBack:true}"
+    >
+      <h2 class="header_title">我的</h2>
+    </x-header>
+
+    <div class="personWrap marginTop" @click="jumpPerson">
+      <div class="personPhoto">
+        <img src="../../assets/img_my.png" v-if="!img" />
+        <img :src="img" v-if="img" />
+      </div>
+      <p class="personName" v-if="!token">未登录<b class="icon_arrow"></b></p>
+      <p class="personName" v-if="token">{{name}}<b class="icon_arrow"></b></p>
+    </div>
+    <ul class="passwordList">
+      <li @click="jumpMyList">
+        <img src="../../assets/icon_my_wdfp.png" />
+        <p class="leftCon">我的发票<b class="icon_arrow"></b></p>
+      </li>
+      <li @click="jumpMyTitle">
+        <img src="../../assets/icon_my_ttxx.png" />
+        <p class="leftCon">抬头信息<b class="icon_arrow"></b></p>
+      </li>
+      <li @click="jumpGoodsTitle">
+        <img src="../../assets/icon_my_spxx.png" />
+        <p class="leftCon">商品信息<b class="icon_arrow"></b></p>
+      </li>
+    </ul>
+    <ul class="passwordList">
+      <li @click="jumpPrivacy">
+        <img src="../../assets/icon_my_yszc.png" />
+        <p class="leftCon">隐私政策<b class="icon_arrow"></b></p>
+      </li>
+      <li class="versionItem" @click="jumpAbout">
+        <img src="../../assets/icon_my_gy.png" />
+        <p class="leftCon">关于<span class="versionNum">版本&nbsp;{{this.version}}<b class="icon_arrow"></b></span></p>
+      </li>
+    </ul>
+    <ul class="passwordList" v-if="token">
+        <li>
+          <p class="signoutCon" @click="clickOut">退出登录</p>
+        </li>
+    </ul>
+
+    <tabbar
+      slot="bottom">
+      <tabbar-item link="/">
+        <img slot="icon" src="../../assets/icon_tabbar_edit.png" v-if="!tabbarEdit">
+        <img slot="icon" src="../../assets/icon_tabbar_edit_active.png" v-if="tabbarEdit">
+        <span slot="label" :class="tabbarEdit? 'activeCon':''">委托开票</span>
+      </tabbar-item>
+      <tabbar-item link="/list">
+        <img slot="icon" src="../../assets/icon_tabbar_list.png" v-if="!tabbarList">
+        <img slot="icon" src="../../assets/icon_tabbar_list_active.png" v-if="tabbarList">
+        <span slot="label" :class="tabbarList? 'activeCon':''">发票列表</span>
+      </tabbar-item>
+      <tabbar-item selected>
+        <img slot="icon" src="../../assets/icon_tabbar_my.png" v-if="!tabbarMy">
+        <img slot="icon" src="../../assets/icon_tabbar_my_active.png" v-if="tabbarMy">
+        <span slot="label" :class="tabbarMy? 'activeCon':''">我的</span>
+      </tabbar-item>
+    </tabbar>
+    <confirm
+      v-model="showAlertLogin"
+      title="温馨提示"
+      confirm-text="确定"
+      cancel-text="取消"
+      @on-confirm="goLogin"
+    >
+      {{text}}
+    </confirm>
+    <confirm
+      v-model="showAlert"
+      title="提示"
+      confirm-text="确定"
+      cancel-text="取消"
+      @on-confirm="logout"
+    >
+      {{text}}
+    </confirm>
+    <loading v-model="showLoading" text=""></loading>
+    <toast v-model="showToast" type="text">{{toastText}}</toast>
+  </view-box>
+</template>
+
+<script>
+import ViewBox from 'vux/src/components/view-box/index'
+import XHeader from 'vux/src/components/x-header/index'
+import Tabbar from 'vux/src/components/tabbar/tabbar'
+import TabbarItem from 'vux/src/components/tabbar/tabbar-item'
+import Confirm from 'vux/src/components/confirm/index'
+import Loading from 'vux/src/components/loading/index'
+import Toast from 'vux/src/components/toast/index'
+
+export default {
+  name: 'My',
+  data(){
+    return {
+      token: localStorage.getItem("token"),
+      name: localStorage.getItem("name"),
+      img: localStorage.getItem("img"),
+      tabbarList: false,
+      tabbarEdit: false,
+      tabbarMy: true,
+      showAlert: false,
+      showAlertLogin: false,
+      popupsStatus: false,
+      text: '',
+      timer: null,
+      toastText: '',
+      showToast: false,
+      showLoading: false
+    }
+  },
+  components:{
+    ViewBox,
+    XHeader,
+    Tabbar,
+    TabbarItem,
+    Confirm,
+    Loading,
+    Toast
+  },
+  methods:{
+    getData(){
+      if(this.name==''||this.name=='undefined'||this.name=='null'){
+        this.name = '昵称';
+      }
+      this.img = localStorage.getItem("img");
+    },
+    jumpPerson(){  //个人信息
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/personal_infor'});
+    },
+    //重新登录
+    goLogin(){
+      this.$router.push({path:'/login'});
+    },
+    //取消回到首页
+    goIndex(){
+      this.$router.push({path:'/desk_entrust'});
+    },
+    jumpMyList(){  //我的发票列表
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/my_list'});
+    },
+    jumpMyTitle(){  //我的抬头信息
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/my_title_list', query:{isMy:"true"}});
+    },
+    jumpPrivacy(){  //隐私政策
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/privacy'})
+    },
+    jumpAbout(){  //关于
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/about'})
+    },
+    jumpGoodsTitle(){  //商品信息
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/goods_list',query:{isMy:"true"}})
+    },
+    //点击退出
+    clickOut(){
+      this.showAlert = true;
+      this.text = '确定要退出登录吗？';
+    },
+    //退出登录
+    logout(){
+      this.showLoading = true;
+      var _this = this;
+      var url = this.local+'/api/user/logout';
+      var data = {
+        userid: localStorage.getItem("token")
+      }
+      this.$ajaxjp(url, data, true, (response) =>{
+        if(response.errcode==0){
+          this.showLoading = false;
+          this.showToast = true;
+          this.toastText = '操作成功';
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          //退出后跳转到登录页
+          this.timer = setTimeout(() => {
+            this.$router.push({path: '/login'});
+          }, 500)
+          return false
+        }
+        if(response.errcode==1003){   //登录用户失效
+          this.showLoading = false;
+          this.$vux.confirm.show({
+            title: '温馨提示',
+            content: '登录用户失效，请重新登录',
+            onCancel () {
+              _this.goIndex();
+            },
+            onConfirm () {
+              _this.goLogin();
+            },
+          })
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return false
+        }
+        if(response.errcode==1016){   //登录用户失效
+          this.showLoading = false;
+          this.$vux.confirm.show({
+            title: '温馨提示',
+            content: '您的账号已在其他设备登录，请重新登录',
+            onCancel () {
+              _this.goIndex();
+            },
+            onConfirm () {
+              _this.goLogin();
+            },
+          })
+          //登录失效 重置
+          var local_storage = window.localStorage;
+          var session_storage = window.sessionStorage;
+          local_storage.clear();  //清除localStorage
+          session_storage.clear();  //清除sessionStorage
+          return false
+        }else{
+          this.showLoading = false;
+          this.showToast = true;
+          this.toastText = response.errmsg;
+        }
+      },function (error) {
+        _this.showLoading = false;
+        _this.showToast = true;
+        _this.toastText = '网络异常';
+      });
+    },
+    /* ~~ */
+    jumpMyService(){  //我的服务
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/my_service'});
+    },
+    jumpMyExpressList(){  //我的快递信息
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/express_list'});
+    },
+    jumpContactUs(){  //联系我们
+      if(!this.token){
+        this.showAlertLogin = true;
+        this.text = '请先登录';
+        return false;
+      }
+      this.$router.push({path:'/contact'});
+    }
+  },
+  mounted () {
+    this.locationData();  //local
+    this.getData();
+  }
+}
+</script>
+
+<style lang="less">
+  @import "../../../node_modules/vux/src/styles/reset.less";
+  .my .passwordList{
+    background: #fff;
+    margin-bottom: 0.32rem;
+  }
+  .my .passwordList li{
+    padding: 0.24rem 0.32rem;
+    line-height: 0.6rem;
+    border-bottom: 0.01rem solid #f2f2f2;
+    display: flex;
+    align-items: center;
+  }
+  .my .passwordList li:last-child{
+    border: none;
+  }
+  .my .passwordList.lxwmList li{
+    border-bottom: 0.01rem solid #f2f2f2;
+  }
+  .my .passwordList img{
+    width:0.5rem;
+  }
+  .my .passwordList .leftCon{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 0.18rem;
+    box-sizing: border-box;
+  }
+  .my .personWrap{
+    padding: 0.2rem 0.32rem;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.32rem;
+  }
+  .my .personPhoto{
+    width: 1.2rem;
+    height: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .my .personWrap img{
+    width: 1rem;
+  }
+  .my .personName{
+    font-size: 0.3rem;
+    color: #333;
+    line-height: 0.6rem;
+    width: 78%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+  .versionItem .versionNum{
+    line-height: 0.6rem;
+    display: flex;
+    align-items: center;
+  }
+  .signoutCon{
+    text-align: center;
+    font-size: 0.3rem;
+    width: 100%;
+  }
+</style>

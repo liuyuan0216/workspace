@@ -17,11 +17,13 @@ export var emailFormat = false;
 //税号
 export var shText = '';
 export var shFormat = false;
+//数字
+export var numFormat = false;
 
 export function locationData() {
-  //this.local = 'http://192.168.0.15:8087';
-  this.local = 'http://app.caikaixin.cn';
-  this.version = 'V1.2';
+  this.local = 'http://192.168.0.15:8087';
+  //this.local = 'http://app.caikaixin.cn';
+  this.version = 'V1.3';
 }
 
 //手机号格式
@@ -78,6 +80,16 @@ export function isSh(val) {
   return false
 }
 
+//数字格式
+export function isNumber(val) {
+  var reg = /^[0-9]+.?[0-9]*$/;
+  if (!reg.test(val)) {
+    this.numFormat = true;
+  }else{
+    this.numFormat = false;
+  }
+  return false;
+}
 //ajax请求 请求参数类型为application/x-www-form-urlencoded
 export function $ajaxjp(url, param, headerType, successFunction, errorFunction){
   if (successFunction == undefined || successFunction == null || errorFunction == undefined || errorFunction == null) {

@@ -1,254 +1,257 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Login from '@/pages/Login'
-import SwitchMode from '@/pages/SwitchMode'
-import OrderList from '@/pages/OrderList'
-import Entrust from '@/pages/Entrust'
-import Billing from '@/pages/Billing'
-import BillingCode from '@/pages/BillingCode'
-import BillingCodeAlone from '@/pages/BillingCodeAlone'
-import My from '@/pages/My'
+/*hub*/
+import Login from '@/pages/login/Login'
+import HubOrderList from '@/pages/hub/OrderList'
+import HubEntrust from '@/pages/hub/Entrust'
+import HubMy from '@/pages/hub/My'
 
-import ForgetPassword from '@/pages/ForgetPassword'
-import ElectronicDetail from '@/pages/ElectronicDetail'
-import PaperDetail from '@/pages/PaperDetail'
-import TitleList from '@/pages/TitleList'
-import GoodsList from '@/pages/GoodsList'
-import EntrustPhoto from '@/pages/EntrustPhoto'
-import PersonalInfor from '@/pages/PersonalInfor'
-import ChangePassword from '@/pages/ChangePassword'
-import MyList from '@/pages/MyList'
-import Again from '@/pages/Again'
-import Express from '@/pages/Express'
-import MyService from '@/pages/MyService'
-import MyTitleList from '@/pages/MyTitleList'
-import Contact from  '@/pages/Contact'
-import ExpressList from '@/pages/ExpressList'
-import TitleEdit from '@/pages/TitleEdit'
-import TitleInfor from '@/pages/TitleInfor'
-import CodeInfor from '@/pages/CodeInfor'
-import EditGoods from '@/pages/EditGoods'
-import AddGoods from '@/pages/AddGoods'
-import AddTitle from '@/pages/AddTitle'
-import Privacy from '@/pages/Privacy'
-import About from '@/pages/About'
-import Success from '@/pages/Success'
-import GoodsClassify from '@/pages/GoodsClassify'
-import GoodsClassifySub from '@/pages/GoodsClassifySub'
-import GoodsClassifySubNext1 from '@/pages/GoodsClassifySubNext1'
-import GoodsClassifySubNext2 from '@/pages/GoodsClassifySubNext2'
-import GoodsClassifySubNext3 from '@/pages/GoodsClassifySubNext3'
-import GoodsClassifySubNext4 from '@/pages/GoodsClassifySubNext4'
-import GoodsClassifySubNext5 from '@/pages/GoodsClassifySubNext5'
-import ChooseGoods from '@/pages/ChooseGoods'
+import HubForgetPassword from '@/pages/hub/ForgetPassword'
+import HubChangePassword from '@/pages/hub/ChangePassword'
+import HubBilling from '@/pages/hub/Billing'
+import HubBillingCode from '@/pages/hub/BillingCode'
+import HubBillingCodeAlone from '@/pages/hub/BillingCodeAlone'
+
+import HubElectronicDetail from '@/pages/hub/ElectronicDetail'
+import HubPaperDetail from '@/pages/hub/PaperDetail'
+
+import HubPersonalInfor from '@/pages/hub/PersonalInfor'
+import HubMyList from '@/pages/hub/MyList'
+import HubMyTitleList from '@/pages/hub/MyTitleList'
+import HubTitleList from '@/pages/hub/TitleList'
+import HubGoodsList from '@/pages/hub/GoodsList'
+import HubPrivacy from '@/pages/hub/Privacy'
+import HubAbout from '@/pages/hub/About'
+import HubTitleEdit from '@/pages/hub/TitleEdit'
+import HubTitleInfor from '@/pages/hub/TitleInfor'
+import HubCodeInfor from '@/pages/hub/CodeInfor'
+import HubEditGoods from '@/pages/hub/EditGoods'
+import HubAddGoods from '@/pages/hub/AddGoods'
+import HubAddTitle from '@/pages/hub/AddTitle'
+import HubSuccess from '@/pages/hub/Success'
+import HubGoodsClassify from '@/pages/hub/GoodsClassify'
+import HubGoodsClassifySub from '@/pages/hub/GoodsClassifySub'
+import HubGoodsClassifySubNext1 from '@/pages/hub/GoodsClassifySubNext1'
+import HubGoodsClassifySubNext2 from '@/pages/hub/GoodsClassifySubNext2'
+import HubGoodsClassifySubNext3 from '@/pages/hub/GoodsClassifySubNext3'
+import HubGoodsClassifySubNext4 from '@/pages/hub/GoodsClassifySubNext4'
+import HubGoodsClassifySubNext5 from '@/pages/hub/GoodsClassifySubNext5'
+import HubChooseGoods from '@/pages/hub/ChooseGoods'
+
+/*desk*/
+import DeskCreate from '@/pages/desk/Create'
+import DeskOrderList from '@/pages/desk/OrderList'
+import DeskEntrust from '@/pages/desk/Entrust'
+import DeskMy from '@/pages/desk/My'
+
+import DeskForgetPassword from '@/pages/desk/ForgetPassword'
+import DeskChangePassword from '@/pages/desk/ChangePassword'
+import DeskElectronicDetail from '@/pages/desk/ElectronicDetail'
+import DeskBilling from '@/pages/desk/Billing'
+import DeskBillingCode from '@/pages/desk/BillingCode'
+import DeskBillingCodeAlone from '@/pages/desk/BillingCodeAlone'
+import DeskSuccess from '@/pages/desk/Success'
+import DeskCodeInfor from '@/pages/desk/CodeInfor'
+
+import DeskPersonalInfor from '@/pages/desk/PersonalInfor'
+import DeskMyList from '@/pages/desk/MyList'
+import DeskBillingSetting from '@/pages/desk/BillingSetting'
+import DeskGoodsList from '@/pages/desk/GoodsList'
+import DeskPrivacy from '@/pages/desk/Privacy'
+import DeskAbout from '@/pages/desk/About'
+import DeskEditGoods from '@/pages/desk/EditGoods'
+import DeskAddGoods from '@/pages/desk/AddGoods'
+import DeskUnbindPhone from '@/pages/desk/UnbindPhone'
+import DeskBindPhone from '@/pages/desk/BindPhone'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    {  //委托开票
+    //首页
+    {
       path: '/',
       name: 'Entrust',
-      component: Entrust
-    },
-    {  //发票列表
-      path: '/list',
-      name: 'OrderList',
-      component: OrderList,
+      component: HubEntrust,
       meta: {
-        keepAlive: true  // 需要被缓存
+        auth: true
       }
     },
-    {  //切换模式
-      path: '/switch_mode',
-      name: 'SwitchMode',
-      component: SwitchMode
-    },
-    {  //登录
+    //登录
+    {
       path: '/login',
       name: 'Login',
       component: Login
     },
-    {  //忘记密码
-      path: '/forget',
-      name: 'ForgetPassword',
-      component: ForgetPassword
+    {
+      path: '/list',
+      name: 'OrderList',
+      component: HubOrderList,
+      meta: {
+        keepAlive: true  // 需要被缓存
+      }
     },
-    {  //我的
+    {
       path: '/my',
       name: 'My',
-      component: My
+      component: HubMy
     },
-    {  //电子详情
-      path: '/electronic_detail',
-      name: 'ElectronicDetail',
-      component: ElectronicDetail
+    //忘记密码
+    {
+      path: '/forget',
+      name: 'ForgetPassword',
+      component: HubForgetPassword
     },
-    {  //纸质详情
-      path: '/paper_detail',
-      name: 'PaperDetail',
-      component: PaperDetail
-    },
-    {  //开票
-      path: '/billing',
-      name: 'Billing',
-      component: Billing,
-      meta: {
-        keepAlive: true // 需要被缓存
-      }
-    },
-    {  //二维码开票
-      path: '/billing_code',
-      name: 'BillingCode',
-      component: BillingCode,
-      meta: {
-        keepAlive: true // 需要被缓存
-      }
-    },
-    {  //二维码开票 单条
-      path: '/billing_code_alone',
-      name: 'BillingCodeAlone',
-      component: BillingCodeAlone
-    },
-    {  //抬头列表
-      path: '/title_list',
-      name: 'TitleList',
-      component: TitleList
-    },
-    {  //商品列表
-      path: '/goods_list',
-      name: 'GoodsList',
-      component: GoodsList
-    },
-    {  //拍照委托
-      path: '/entrust_photo',
-      name: 'EntrustPhoto',
-      component: EntrustPhoto
-    },
-    {  //个人信息
-      path: '/personal_infor',
-      name: 'PersonalInfor',
-      component: PersonalInfor
-    },
-    {  //修改密码
+    {
       path: '/change_password',
       name: 'ChangePassword',
-      component: ChangePassword
+      component: HubChangePassword
     },
-    {  //我的发票列表
-      path: '/my_list',
-      name: 'MyList',
-      component: MyList
+    //电子详情
+    {
+      path: '/electronic_detail',
+      name: 'ElectronicDetail',
+      component: HubElectronicDetail
     },
-    {  //重新发送电子发票
-      path: '/again',
-      name: 'Again',
-      component: Again
+    {
+      path: '/paper_detail',
+      name: 'PaperDetail',
+      component: HubPaperDetail
     },
-    {  //物流状态
-      path: '/express',
-      name: 'Express',
-      component: Express
-    },
-    {  //我的服务
-      path: '/my_service',
-      name: 'MyService',
-      component: MyService
-    },
-    {  //我的发票抬头
-      path: '/my_title_list',
-      name: 'MyTitleList',
-      component: MyTitleList
-    },
-    {  //联系我们
-      path: '/contact',
-      name: 'Contact',
-      component: Contact
-    },
-    {  //快递信息
-      path: '/express_list',
-      name: 'ExpressList',
-      component: ExpressList
-    },
-    {  //编辑抬头
-      path: '/title_edit',
-      name: 'TitleEdit',
-      component: TitleEdit
-    },
-    {  //抬头信息详情
-      path: '/title_infor',
-      name: 'TitleInfor',
-      component: TitleInfor,
+    //开票
+    {
+      path: '/billing',
+      name: 'Billing',
+      component: HubBilling,
       meta: {
         keepAlive: true // 需要被缓存
       }
     },
-    {  //二维码页面
+    {
+      path: '/billing_code',
+      name: 'BillingCode',
+      component: HubBillingCode,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/billing_code_alone',
+      name: 'BillingCodeAlone',
+      component: HubBillingCodeAlone
+    },
+    {
       path: '/code_infor',
       name: 'CodeInfor',
-      component: CodeInfor,
+      component: HubCodeInfor,
       meta: {
         keepAlive: true // 需要被缓存
       }
     },
-    {  //开票-选择商品
-      path: '/edit_goods',
-      name: 'EditGoods',
-      component: EditGoods,
-      meta: {
-        keepAlive: true // 需要被缓存
-      }
-    },
-    {  //添加商品
-      path: '/add_goods',
-      name: 'AddGoods',
-      component: AddGoods,
-      meta: {
-        keepAlive: true // 需要被缓存
-      }
-    },
-    {  //添加抬头
-      path: '/add_title',
-      name: 'AddTitle',
-      component: AddTitle
-    },
-    {  //隐私政策
-      path: '/privacy',
-      name: 'Privacy',
-      component: Privacy
-    },
-    {  //关于
-      path: '/about',
-      name: 'About',
-      component: About
-    },
-    {  //开票成功
+    {
       path: '/success',
       name: 'Success',
-      component: Success
+      component: HubSuccess
+    },
+    {
+      path: '/choose_goods',
+      name: 'ChooseGoods',
+      component: HubChooseGoods
+    },
+    //我的---
+    {
+      path: '/title_list',
+      name: 'TitleList',
+      component: HubTitleList
+    },
+    {
+      path: '/goods_list',
+      name: 'GoodsList',
+      component: HubGoodsList
+    },
+    {
+      path: '/personal_infor',
+      name: 'PersonalInfor',
+      component: HubPersonalInfor
     },
 
-    {  //商品分类
+    {
+      path: '/my_list',
+      name: 'MyList',
+      component: HubMyList
+    },
+    {
+      path: '/my_title_list',
+      name: 'MyTitleList',
+      component: HubMyTitleList
+    },
+    {
+      path: '/title_edit',
+      name: 'TitleEdit',
+      component: HubTitleEdit
+    },
+    {
+      path: '/title_infor',
+      name: 'TitleInfor',
+      component: HubTitleInfor,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/edit_goods',
+      name: 'EditGoods',
+      component: HubEditGoods,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/add_goods',
+      name: 'AddGoods',
+      component: HubAddGoods,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/add_title',
+      name: 'AddTitle',
+      component: HubAddTitle
+    },
+    //隐私政策
+    {
+      path: '/privacy',
+      name: 'Privacy',
+      component: HubPrivacy
+    },
+    {
+      path: '/about',
+      name: 'About',
+      component: HubAbout
+    },
+    {
       path: '/goods_classify',
       name: 'GoodsClassify',
-      component: GoodsClassify,
+      component: HubGoodsClassify,
       meta: {
         keepAlive: true // 需要被缓存
       }
     },
-    {  //分类下一级
+    //编码分类
+    {
       path: '/goods_classify_sub',
       name: 'GoodsClassifySub',
-      component: GoodsClassifySub,
+      component: HubGoodsClassifySub,
       meta: {
         keepAlive: true // 需要被缓存
       }
     },
-    {  //分类下一级
+    {
       path: '/goods_classify_sub_next1',
       name: 'GoodsClassifySubNext1',
-      component: GoodsClassifySubNext1,
+      component: HubGoodsClassifySubNext1,
       meta: {
         keepAlive: true // 需要被缓存
       }
@@ -256,7 +259,7 @@ export default new Router({
     {
       path: '/goods_classify_sub_next2',
       name: 'GoodsClassifySubNext2',
-      component: GoodsClassifySubNext2,
+      component: HubGoodsClassifySubNext2,
       meta: {
         keepAlive: true // 需要被缓存
       }
@@ -264,7 +267,7 @@ export default new Router({
     {
       path: '/goods_classify_sub_next3',
       name: 'GoodsClassifySubNext3',
-      component: GoodsClassifySubNext3,
+      component: HubGoodsClassifySubNext3,
       meta: {
         keepAlive: true // 需要被缓存
       }
@@ -272,7 +275,7 @@ export default new Router({
     {
       path: '/goods_classify_sub_next4',
       name: 'GoodsClassifySubNext4',
-      component: GoodsClassifySubNext4,
+      component: HubGoodsClassifySubNext4,
       meta: {
         keepAlive: true // 需要被缓存
       }
@@ -280,15 +283,150 @@ export default new Router({
     {
       path: '/goods_classify_sub_next5',
       name: 'GoodsClassifySubNext5',
-      component: GoodsClassifySubNext5,
+      component: HubGoodsClassifySubNext5,
       meta: {
         keepAlive: true // 需要被缓存
       }
     },
-    {  //选择商品
-      path: '/choose_goods',
-      name: 'ChooseGoods',
-      component: ChooseGoods
+
+
+
+    /*desk*/
+    {
+      path: '/desk_create',
+      name: 'DeskCreate',
+      component: DeskCreate
+    },
+    {
+      path: '/desk_entrust',
+      name: 'DeskEntrust',
+      component: DeskEntrust,
+      meta: {
+        requireAuth: true
+      }
+    },
+    {
+      path: '/desk_list',
+      name: 'DeskOrderList',
+      component: DeskOrderList,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/desk_my',
+      name: 'DeskMy',
+      component: DeskMy
+    },
+    //忘记密码
+    {
+      path: '/desk_forget',
+      name: 'DeskForgetPassword',
+      component: DeskForgetPassword
+    },
+    {
+      path: '/desk_change_password',
+      name: 'DeskChangePassword',
+      component: DeskChangePassword
+    },
+    //修改手机号
+    {
+      path: '/desk_unbind_phone',
+      name: 'DeskUnbindPhone',
+      component: DeskUnbindPhone
+    },
+    {
+      path: '/desk_bind_phone',
+      name: 'DeskBindPhone',
+      component: DeskBindPhone
+    },
+    //电子详情
+    {
+      path: '/desk_electronic_detail',
+      name: 'DeskElectronicDetail',
+      component: DeskElectronicDetail
+    },
+    //开票
+    {
+      path: '/desk_billing',
+      name: 'DeskBilling',
+      component: DeskBilling,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/desk_billing_code',
+      name: 'DeskBillingCode',
+      component: DeskBillingCode,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/desk_billing_code_alone',
+      name: 'DeskBillingCodeAlone',
+      component: DeskBillingCodeAlone
+    },
+    {
+      path: '/desk_success',
+      name: 'DeskSuccess',
+      component: DeskSuccess
+    },
+    {
+      path: '/desk_code_infor',
+      name: 'DeskCodeInfor',
+      component: DeskCodeInfor,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    //我的
+    {
+      path: '/desk_personal_infor',
+      name: 'DeskPersonalInfor',
+      component: DeskPersonalInfor
+    },
+    {
+      path: '/desk_my_list',
+      name: 'DeskMyList',
+      component: DeskMyList
+    },
+    {
+      path: '/desk_billing_setting',
+      name: 'DeskBillingSetting',
+      component: DeskBillingSetting
+    },
+    {
+      path: '/desk_goods_list',
+      name: 'DeskGoodsList',
+      component: DeskGoodsList
+    },
+    {
+      path: '/desk_privacy',
+      name: 'DeskPrivacy',
+      component: DeskPrivacy
+    },
+    {
+      path: '/desk_about',
+      name: 'DeskAbout',
+      component: DeskAbout
+    },
+    {
+      path: '/desk_edit_goods',
+      name: 'DeskEditGoods',
+      component: DeskEditGoods,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
+    },
+    {
+      path: '/desk_add_goods',
+      name: 'DeskAddGoods',
+      component: DeskAddGoods,
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
     }
   ]
 })

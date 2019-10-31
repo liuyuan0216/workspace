@@ -128,7 +128,7 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
 }
 .rightCon{
   width: 5.5rem;
-  height: 0.46rem;
+  height: auto;
   line-height: 0.46rem;
   color: #999;
   font-size: 0.28rem;
@@ -140,6 +140,12 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
   line-height: 0.46rem;
   color: #999;
   font-size: 0.28rem;
+}
+.rightInput.weui-cell:before{
+  border:none;
+}
+.vux-x-input.rightInput{
+  padding: 0 !important;
 }
 .rightText{
   width: 5rem;
@@ -274,25 +280,25 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
 /*
   * alert
 */
-#app .weui-dialog__hd{
-  padding: 0.3rem 0.45rem 0;
+.weui-dialog__hd{
+  padding: 0.3rem 0.45rem 0 !important;
 }
-#app .weui-dialog__title{
-  font-size:0.36rem;
+.weui-dialog__title{
+  font-size:0.36rem !important;
   line-height: 0.8rem;
   display: block;
 }
-#app .weui-dialog__bd{
-  line-height: 0.46rem;
-  padding: 0.1rem 0.45rem 0.32rem;
-  min-height: auto;
-  font-size: 0.32rem;
+.weui-dialog__bd{
+  line-height: 0.46rem !important;
+  padding: 0.1rem 0.45rem 0.32rem !important;
+  min-height: auto !important;
+  font-size: 0.32rem !important;
 }
-#app .weui-dialog__ft a{
+.weui-dialog__ft a{
   color: #ff9900;
   font-size:0.36rem;
 }
-#app .weui-dialog__ft .weui-dialog__btn_default{
+.weui-dialog__ft .weui-dialog__btn_default{
   color: #999;
 }
 
@@ -336,10 +342,22 @@ textarea:-ms-input-placeholder { /* Internet Explorer 10+ */
 /*icon*/
 #app .weui-toast{
   top:28%;
-  min-height: 40px;
+  height: auto;
+  min-height: 0;
   width: 1.85rem !important;
   margin-left: -0.8rem;
   background: rgba(0, 0, 0, 0.6);
+}
+#app .my .weui-toast{
+  width: auto !important;
+  padding: 0.05rem 0.2rem;
+}
+#app .my .vux-loading .weui-toast{
+  height: 1rem !important;
+}
+#app .my .weui-icon_toast.weui-loading{
+  margin: 0;
+  vertical-align: text-top;
 }
 #app .again .weui-toast{
   top: 22%;
