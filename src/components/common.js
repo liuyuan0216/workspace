@@ -21,8 +21,8 @@ export var shFormat = false;
 export var numFormat = false;
 
 export function locationData() {
-  this.local = 'http://192.168.0.15:8087';
-  //this.local = 'http://app.caikaixin.cn';
+  //this.local = 'http://192.168.0.15:8087';
+  this.local = 'http://app.caikaixin.cn';
   this.version = 'V1.3';
 }
 

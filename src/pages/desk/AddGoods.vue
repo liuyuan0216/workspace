@@ -57,6 +57,15 @@
     >
       {{text}}
     </confirm>
+    <confirm
+      v-model="showInvalid"
+      title="温馨提醒"
+      confirm-text="去重新登录"
+      :show-cancel-button="false"
+      @on-confirm="goLogin"
+    >
+      {{text}}
+    </confirm>
     <loading v-model="showLoading" text=""></loading>
     <toast v-model="showToast" type="text">{{toastText}}</toast>
   </view-box>
@@ -79,6 +88,7 @@ export default {
       showToast: false,
       toastText: '保存成功',
       popupsStatus: false,
+      showInvalid: false,
       timer: null,
       goodsData: [],
       goodsStatus: '',
@@ -282,6 +292,10 @@ export default {
       }else{
         this.$router.push({path:'/desk_billing_code_alone'});
       }
+    },
+    //重新登录
+    goLogin(){
+      this.$router.push({path:'/login'});
     }
   },
   mounted(){

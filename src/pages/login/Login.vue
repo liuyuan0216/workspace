@@ -21,7 +21,6 @@
       </div>
       <span class="vux-close" @click="closePage"></span>
       <div class="divider">
-        <divider>desk版登录方式</divider>
         <div class="scanImg" @click="startScan">
           <img src="../../assets/icon_login.png"/>
           <p>扫码登录</p>
@@ -217,6 +216,9 @@ export default {
           //判断入口页面
           if(this.checkSign=='0'){
             localStorage.setItem("loginStatus", 'desk');
+            if(this.mobilePhone){
+              this.$router.push({path:'/desk_entrust'});
+            }
           }else{
             localStorage.setItem("loginStatus", 'hub');
           }
@@ -283,6 +285,7 @@ export default {
         try{
           var data = JSON.parse(result);
           if(data.invoice && data.kpjh){
+            that.closeScan();
             that.scanLogin(data);
           }
         }catch(e){
@@ -314,35 +317,24 @@ export default {
       }
       this.$ajaxjp(url, data, true,(response) =>{
         if(response.errcode==0){
-          alert(0)
           var userinfo = response.userinfo[0];
           this.mobilePhone = userinfo.mobilePhone;  //电话号码
           this.checkSign = userinfo.checkSign;  //标记desk:0
           //保存手机号 个人信息显示
-          alert('mobilePhone:'+this.mobilePhone)
-
           if(userinfo.mobilePhone){
             localStorage.setItem("token", userinfo.userid);
             localStorage.setItem("phone", userinfo.mobilePhone);
-            //请求myInfo
-            //this.myInfo();
-            alert('tiaozhuan1')
-            this.$router.push({
-              name: 'DeskMy'
-            })
+            this.myInfo();
           }else{
-            alert('tiaozhuan2')
             this.$router.push({path:'/desk_create',query:{invoice:result.invoice,kpjh:result.kpjh}});
           }
           return false
         }else{
-          alert(1)
           this.popupsStatus = true;
           this.showPopups();
           this.text = response.errmsg;
         }
       },function(error){
-        alert(2)
         _this.popupsStatus = true;
         _this.showPopups();
         _this.text = '网络异常';
@@ -484,8 +476,8 @@ export default {
     width:20px;
   }
   .divider{
-    position: absolute;
-    top: 10.2rem;
+    position: fixed;
+    top: 82%;
     left:0;
     width:100%;
     text-align: center;

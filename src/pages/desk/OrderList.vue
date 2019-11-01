@@ -266,7 +266,7 @@
     </confirm>
     <div class="orderListEmpty" v-if="showInvalid">
       <img src="../../assets/img_list_empty.png" />
-      <p>登录用户失效，请重新登录</p>
+      <p>{{listText}}</p>
       <button class="emptyBtn" @click="goLogin">重新登录</button>
     </div>
 
@@ -354,7 +354,9 @@ export default {
       scrollTop: 0,
       came: false,
       readFlag: '',
-      active: 'tab-container1'
+      active: 'tab-container1',
+      listText: '登录用户失效，请重新登录',
+      refresh: false
     }
   },
   components:{
@@ -507,16 +509,23 @@ export default {
           this.empty = false;
           this.timeOut = false;
           this.showInvalid = true;
+          this.all_list = [];
+          if(response.errcode==1016){
+            this.listText = '您的账号已在其他设备登录，请重新登录';
+          }
           //登录失效 重置
-          var local_storage = window.localStorage;
-          var session_storage = window.sessionStorage;
-          local_storage.clear();  //清除localStorage
-          session_storage.clear();  //清除sessionStorage
+          if(this.refresh){
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
+          }
         }else{
           this.showLoading = false;
           this.showInvalid = false;
           this.empty = false;
           this.timeOut = true;
+          this.all_list = [];
         }
       },function (error) {
         _this.showLoading = false;
@@ -609,6 +618,7 @@ export default {
         this.text = '请先登录';
         return false;
       }
+      this.refresh = true;  //标记刷新操作
       this.showLoading = true;
       this.$refs.viewBox.scrollTo(0);
       //判断是哪一类
@@ -672,16 +682,23 @@ export default {
           this.empty = false;
           this.timeOut = false;
           this.showInvalid = true;
+          this.issued_list = [];
+          if(response.errcode==1016){
+            this.listText = '您的账号已在其他设备登录，请重新登录';
+          }
           //登录失效 重置
-          var local_storage = window.localStorage;
-          var session_storage = window.sessionStorage;
-          local_storage.clear();  //清除localStorage
-          session_storage.clear();  //清除sessionStorage
+          if(this.refresh){
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
+          }
         }else{
           this.showLoading = false;
           this.showInvalid = false;
           this.empty = false;
           this.timeOut = true;
+          this.issued_list = [];
         }
       },function (error) {
         _this.showLoading = false;
@@ -767,16 +784,23 @@ export default {
           this.empty = false;
           this.timeOut = false;
           this.showInvalid = true;
+          this.unissued_list = [];
+          if(response.errcode==1016){
+            this.listText = '您的账号已在其他设备登录，请重新登录';
+          }
           //登录失效 重置
-          var local_storage = window.localStorage;
-          var session_storage = window.sessionStorage;
-          local_storage.clear();  //清除localStorage
-          session_storage.clear();  //清除sessionStorage
+          if(this.refresh){
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
+          }
         }else{
           this.showLoading = false;
           this.showInvalid = false;
           this.empty = false;
           this.timeOut = true;
+          this.unissued_list = [];
         }
       },function (error) {
         _this.showLoading = false;
@@ -861,16 +885,23 @@ export default {
           this.empty = false;
           this.timeOut = false;
           this.showInvalid = true;
+          this.unscanned_list = [];
+          if(response.errcode==1016){
+            this.listText = '您的账号已在其他设备登录，请重新登录';
+          }
           //登录失效 重置
-          var local_storage = window.localStorage;
-          var session_storage = window.sessionStorage;
-          local_storage.clear();  //清除localStorage
-          session_storage.clear();  //清除sessionStorage
+          if(this.refresh){
+            var local_storage = window.localStorage;
+            var session_storage = window.sessionStorage;
+            local_storage.clear();  //清除localStorage
+            session_storage.clear();  //清除sessionStorage
+          }
         }else{
           this.showLoading = false;
           this.showInvalid = false;
           this.empty = false;
           this.timeOut = true;
+          this.unscanned_list = [];
         }
       },function (error) {
         _this.showLoading = false;

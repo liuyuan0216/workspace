@@ -817,6 +817,7 @@ export default {
         this.text = '抬头名称不能为空';
         return false
       }
+      this.showLoading = true;
       var _this = this;
       var url = this.local+'/api/desk/enterpriseSearchByName';
       var data = {
@@ -825,6 +826,7 @@ export default {
       }
       this.$ajaxjp(url, data, true,(response) =>{
         if(response.errcode==0){
+          this.showLoading = false;
           this.showSearch = true;
           if(response.list.length>=1){
             this.searchList = response.list;
@@ -835,6 +837,7 @@ export default {
           return false
         }
         if(response.errcode==1003){   //登录用户失效
+          this.showLoading = false;
           this.showInvalid = true;
           this.text = '登录用户失效，请重新登录';
           //登录失效 重置
@@ -845,6 +848,7 @@ export default {
           return false
         }
         if(response.errcode==1016){   //登录用户失效
+          this.showLoading = false;
           this.showInvalid = true;
           this.text = '您的账号已在其他设备登录，请重新登录';
           //登录失效 重置

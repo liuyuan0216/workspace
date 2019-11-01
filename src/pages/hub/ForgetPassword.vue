@@ -306,7 +306,7 @@ export default {
     border: none;
   }
   .itemCode .rightInput{
-    width: 3.1rem;
+    width: 3rem;
   }
   .forgetPassword .codeBtn{
     border: 0.012rem solid #999;
